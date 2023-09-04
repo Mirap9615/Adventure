@@ -129,6 +129,11 @@ public:
     void changeID(int newID) {
         id = newID;
     }
+
+    int ID() {
+        return id;
+    };
+
 protected:
     std::string name;
     int id;
@@ -183,7 +188,7 @@ public:
     }
 
     // variation 1: id-based item adding
-    void addItems(int id, int amount, std::map<int, std::string>& items_all) {
+    void addItems(int id, int amount, std::map<int, std::string>& items_dict) {
         // Variable to keep track of remaining items to add
         int remaining = amount;
 
@@ -220,6 +225,41 @@ public:
         }
     }
 
+    void removeItems(int id, int amount, std::map<int, std::string>& items_dict) {
+        // Variable to keep track of remaining items to remove
+        int remaining = amount;
+
+        // First, try to remove the item from existing stacks
+        for (auto it = items.begin(); it != items.end(); ) {
+            if (it->second.first->ID() == id) {
+                // Found a stack with the same item ID
+                if (it->second.second >= remaining) {
+                    // The stack has enough items to fulfill the request
+                    it->second.second -= remaining;
+                    std::cout << "Item " << items_all[id] << " x " << remaining << " was removed successfully!\n";
+                    return;
+                } else {
+                    // Remove all items in this stack and update remaining
+                    remaining -= it->second.second;
+                    std::cout << "Item " << items_all[id] << " x " << it->second.second << " was removed successfully!\n";
+
+                    // Remove this slot from the map and update used_slots
+                    delete it->second.first;  // Free the Object*
+                    it = items.erase(it);  // Remove the slot
+                    --used_slots;
+                    continue;  // Skip the iterator increment
+                }
+            }
+            ++it;  // Move to the next slot
+        }
+
+        // If we reached here, there were not enough items to fulfill the request
+        if (remaining > 0) {
+            std::cout << "Could not remove all items. " << remaining << " items remaining.\n";
+        }
+    }
+
+
 private:
     int max_slots;
     int used_slots;
@@ -246,6 +286,11 @@ public:
     void addItemsToInventory(int id, int amount) {
         std::cout << "[" << name << "]" << " ";
         inventory.addItems(id, amount, items_all);
+    }
+
+    void removeItemsFromInventory(int id, int amount) {
+        std::cout << "[" << name << "]" << " ";
+        inventory.removeItems(id, amount, items_all);
     }
 protected:
     bool magic_able = false;
@@ -470,5 +515,6 @@ int main() {
     }
 
     organisms[0]->addItemsToInventory(1, 50);
+    organisms[0]->removeItemsFromInventory(1, 51);
 };
 
