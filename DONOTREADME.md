@@ -4,5 +4,5 @@ Stats is a collection of Attributes
 
 Object -> Item -> Weapon  
 
-Organism -> Magical -> Protagonist  
+Organism -> Magical -> Sicut -> Protagonist  
 
