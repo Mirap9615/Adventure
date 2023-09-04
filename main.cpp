@@ -1,14 +1,27 @@
 #include <iostream>
+#include <utility>
 #include <vector>
 #include <map>
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <memory>
 
 // Global Variables
 bool dev_mode = false;
 
+// Pre declaration
+class Attribute;
+class Object;
+class Item;
+class Weapon;
+class Organism;
+class Magical;
+class Sicut;
+class Protagonist;
+class Inventory;
 
+std::map<int, std::string> items_all;
 
 class Attribute {
     friend std::ostream &operator<<(std::ostream &os, const Attribute &rhs) {
@@ -47,7 +60,8 @@ public:
 
 
     float effectiveValue() const {
-        return (value + bonus_flat) * (1 + boost_percentage / 100.0);
+        //std::cout << "[value: " << value << "; bonus flat: " << bonus_flat << "; bonus percentage " << boost_percentage << "]";
+        return (value + bonus_flat) * ((1 + boost_percentage) / 1);
     }
 
     Attribute& operator+=(float inValue) {
@@ -57,7 +71,6 @@ public:
 
     Attribute& operator=(float inValue) {
         value = inValue;
-        max_value = inValue;
         return *this;
     }
 
@@ -96,26 +109,31 @@ public:
     defense(DEFENSE,10), phys_atk(PHYS_ATK, 4), mag_atk(MAG_ATK, 0),
     spd(SPD, 100), intelligence(INTELLIGENCE ,100), luck(LUCK, 0) {}
 
-private:
     Attribute hp; Attribute mana; Attribute stamina; Attribute defense; Attribute phys_atk;
     Attribute mag_atk; Attribute spd; Attribute intelligence; Attribute luck;
+private:
+
 };
-
-
 
 class Object {
 public:
-    Object(const std::string& given_name = "None", const std::string& given_description = "None")
-    : name(given_name), description(given_description) {
+    explicit Object(std::string  given_name = "None", std::string  given_description = "None")
+    : name(std::move(given_name)), description(std::move(given_description)) {
+        stackable = true;
         //std::cout << "An object was just created." << std::endl;
     }
     virtual void details() {
         std::cout << "The object exists." << std::endl;
     }
+
+    void changeID(int newID) {
+        id = newID;
+    }
 protected:
     std::string name;
     int id;
     std::string description;
+    bool stackable;
 };
 
 class Item : public Object  {
@@ -133,10 +151,11 @@ private:
 
 class Weapon : public Item {
 public:
-    Weapon(float damage_initial = 10, float durability_initial = 10, float bonus_damage_initial = 0, float boost_percentage_initial = 0 )
+    explicit Weapon(float damage_initial = 10, float durability_initial = 10, float bonus_damage_initial = 0, float boost_percentage_initial = 0 )
     : damage(damage_initial, damage_initial, bonus_damage_initial, boost_percentage_initial),
     durability(durability_initial, durability_initial, 0, 0) {
         damage.changeType(10); durability.changeType(11);
+        stackable = false;
     }
 
     void details() override {
@@ -155,27 +174,90 @@ private:
     Attribute durability;
 };
 
+class Inventory {
+public:
+    Inventory() : max_slots(8), used_slots(0) {}
+
+    bool inventoryFull() {
+        return (used_slots >= max_slots);
+    }
+
+    // variation 1: id-based item adding
+    void addItems(int id, int amount, std::map<int, std::string>& items_all) {
+        // Variable to keep track of remaining items to add
+        int remaining = amount;
+
+        // First, try to add the item to an existing stack
+        for (auto& pair : items) {
+            if (pair.second.second == id) {
+                // Found a stack with the same item ID
+                int canAdd = max_stack_size - pair.second.second;
+
+                if (canAdd >= remaining) {
+                    // The stack can accommodate all the new items
+                    pair.second.first += remaining;
+                    return;
+                } else {
+                    // Partially fill this stack and update remaining
+                    pair.second.second += max_stack_size;
+                    remaining -= canAdd;
+                }
+            }
+        }
+
+        // Check if a new slot is available for the remaining items.
+        if (!inventoryFull()) {
+            // Check if id is valid
+            if (items_all.find(id) != items_all.end()) {
+                items[++used_slots] = std::make_pair(new Object(), remaining); // Create a new Object here
+                items[used_slots].first->changeID(id);
+                std::cout << "Item " << items_all[id] << " x " << amount << " was added successfully!\n";
+            } else {
+                std::cout << "Invalid item ID. Couldn't add item.\n";
+            }
+        } else {
+            std::cout << "Inventory is full. Couldn't add remaining " << remaining << " items.\n";
+        }
+    }
+
+private:
+    int max_slots;
+    int used_slots;
+    const int max_stack_size = 128;
+    std::map<int, std::pair<Object*, int>> items;  // Slot # -> {Object*, Count}
+};
+
 class Organism {
 public:
-    Organism(const std::string& inputName) : name(inputName), carcerisStrength(100, 100, 0, 0) {
+    explicit Organism(std::string inputName) : name(std::move(inputName)), carcerisStrength(100, 100, 0, 0) {
     }
 
     virtual void behavior()  {
         std::cout << "As a organism, " << name << " is capable of running and rolling." << std::endl;
+    }
+
+    virtual void cast() {
+        std::cout << "As a mere organism, " << name << " cannot cast any magic voluntarily." << std::endl;
+    }
+
+    virtual void increaseMagicalAtk(float inputValue) {
+    }
+
+    void addItemsToInventory(int id, int amount) {
+        std::cout << "[" << name << "]" << " ";
+        inventory.addItems(id, amount, items_all);
     }
 protected:
     bool magic_able = false;
     Attribute carcerisStrength;
     Stats stats;
     std::string name;
-
-private:
-
+    Inventory inventory;
 };
 
 class Magical : public Organism {
 public:
-    Magical(const std::string& given_name) : Organism(given_name) {
+    explicit Magical(const std::string& given_name) : Organism(given_name) {
         magic_able = true;
         carcerisStrength = 150;
     }
@@ -183,12 +265,20 @@ public:
     void behavior() override {
         std::cout << "As a magic-capable, " << name << " is capable of performing mindless magic, while running and rolling." << std::endl;
     }
+
+    void cast() override {
+        std::cout << "If " << name << " was to cast magic, they would average " << stats.mag_atk.effectiveValue() << " magical damage per spell." << std::endl;
+    }
+
+    void increaseMagicalAtk(float inputValue) override {
+        stats.mag_atk += inputValue;
+    }
 private:
 };
 
 class Sicut : public Magical {
 public:
-    Sicut(std::string given_name) : Magical(given_name), charm(100, 100, 0,0) {
+    explicit Sicut(const std::string& given_name) : Magical(given_name), charm(100, 100, 0,0) {
         balance = 0;
         reputation = 0;
     }
@@ -205,45 +295,18 @@ protected:
 
 class Protagonist : public Sicut {
 public:
-    Protagonist(std::string given_name) : Sicut(given_name) {}
+    explicit Protagonist(const std::string& given_name) : Sicut(given_name), level(0) {}
     void behavior() override {
         std::cout << "As the protagonist, " << name << " is capable of performing world-changing feats, perhaps of magic, and potentially while running. Probably would not roll, maybe not even in private." << std::endl;
     }
-protected:
 private:
+    double level;
+    std::vector<std::string> current_quests;
 
 };
 
 
 /*
-class Inventory {
-public:
-    int MAX_SLOTS = 8;
-    static const int MAX_STACK_SIZE = 128;
-
-    std::map<std::string, int> items;
-    int totalSlots;
-
-    Inventory() : totalSlots(0) {}
-
-    bool addItem(const Item& item, int count = 1) {
-        if (totalSlots >= MAX_SLOTS && items.find(item.name) == items.end()) {
-            return false; // No free slots
-        }
-
-        int& itemCount = items[item.name];
-        itemCount += count;
-        if (item.stackable) {
-            while (itemCount > MAX_STACK_SIZE) {
-                itemCount -= MAX_STACK_SIZE;
-                totalSlots++;
-            }
-        } else {
-            totalSlots += count;
-        }
-
-        return true;
-    }
 
     bool removeItem(const Item& item, int count = 1) {
         auto it = items.find(item.name);
@@ -291,7 +354,7 @@ public:
     int level;
     std::string type;
     std::string habitat;
-    std::vector<std::string> current_quests;
+
     Stats stats;
     Inventory inventory;
 
@@ -367,19 +430,45 @@ void routeA() {
     Attribute one(35,10,0,0);
    Attribute two(11,12,13,14);
    std::cout << (one < two) << std::endl;
+   std::shared_ptr<Organism> entity1 = std::make_shared<Protagonist>("Mae");
+    std::shared_ptr<Organism> entity2 = entity1;
+    std::weak_ptr<Organism> entity3 = entity2;
 */
 
+void printAllItems(const std::map<int, std::string>& itemList) {
+    std::cout << "There are currently " << itemList.size() << " registered items." << std::endl;
+
+    for (const auto& pair : itemList) {
+        std::cout << "id: " << pair.first << " is " << pair.second << std::endl;
+    }
+}
 
 int main() {
-    Organism zebra("zebra");
-    Magical mzebra("Really magical zebra");
-    zebra.behavior();
-    mzebra.behavior();
-    Sicut john("John");
-    john.behavior();
-    Protagonist amy("Amy");
-    amy.behavior();
+    std::vector<std::unique_ptr<Organism>> organisms;
 
+    Object dirt("Dirt", "Some Dirt");
+    items_all[1] = "Dirt";
+    printAllItems(items_all);
 
-}
+    std::cout << std::endl;
+    std::unique_ptr<Organism> mae = std::make_unique<Protagonist>("Mae");
+    std::unique_ptr<Organism> zebra = std::make_unique<Organism>("Zebra");
+    std::unique_ptr<Organism> john = std::make_unique<Sicut>("John");
+
+    organisms.push_back(std::move(mae));
+    organisms.push_back(std::move(zebra));
+    organisms.push_back(std::move(john));
+
+    for (std::unique_ptr<Organism>& organism : organisms) {
+        //organism->behavior();
+        organism->cast();
+    }
+    organisms[0]->increaseMagicalAtk(15);
+    for (std::unique_ptr<Organism>& organism : organisms) {
+        //organism->behavior();
+        organism->cast();
+    }
+
+    organisms[0]->addItemsToInventory(1, 50);
+};
 
