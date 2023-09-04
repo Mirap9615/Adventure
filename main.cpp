@@ -18,6 +18,10 @@ class Attribute {
     }
 
     friend bool operator<(const Attribute &lhs, const Attribute &rhs) {
+        if (lhs.type != rhs.type) {
+            std::cerr << "Warning: do not compare apples to oranges! Defaulting to false.\n";
+            return false;
+        }
         if (lhs.effectiveValue() < rhs.effectiveValue()) {
             return true;
         }
@@ -53,6 +57,7 @@ public:
 
     Attribute& operator=(float inValue) {
         value = inValue;
+        max_value = inValue;
         return *this;
     }
 
@@ -61,7 +66,8 @@ public:
     }
 
 private:
-    int type; // 0 means unclassified, 1 to 9 are stat typs
+    int type; // 0 means unclassified, 1 to 9 are stat types
+    // 10 is damage, 11 is durability
     float value;
     float max_value;
     float bonus_flat;
@@ -130,6 +136,7 @@ public:
     Weapon(float damage_initial = 10, float durability_initial = 10, float bonus_damage_initial = 0, float boost_percentage_initial = 0 )
     : damage(damage_initial, damage_initial, bonus_damage_initial, boost_percentage_initial),
     durability(durability_initial, durability_initial, 0, 0) {
+        damage.changeType(10); durability.changeType(11);
     }
 
     void details() override {
@@ -150,12 +157,64 @@ private:
 
 class Organism {
 public:
-    Organism(const std::string& inputName) : name(inputName) {
+    Organism(const std::string& inputName) : name(inputName), carcerisStrength(100, 100, 0, 0) {
     }
-private:
+
+    virtual void behavior()  {
+        std::cout << "As a organism, " << name << " is capable of running and rolling." << std::endl;
+    }
+protected:
+    bool magic_able = false;
+    Attribute carcerisStrength;
     Stats stats;
     std::string name;
+
+private:
+
 };
+
+class Magical : public Organism {
+public:
+    Magical(const std::string& given_name) : Organism(given_name) {
+        magic_able = true;
+        carcerisStrength = 150;
+    }
+
+    void behavior() override {
+        std::cout << "As a magic-capable, " << name << " is capable of performing mindless magic, while running and rolling." << std::endl;
+    }
+private:
+};
+
+class Sicut : public Magical {
+public:
+    Sicut(std::string given_name) : Magical(given_name), charm(100, 100, 0,0) {
+        balance = 0;
+        reputation = 0;
+    }
+
+    void behavior() override {
+        std::cout << "As a sicut, " << name << " could potentially be performing mindful magic, while running. Probably would not roll, at least not in public." << std::endl;
+    }
+
+protected:
+    double balance;
+    double reputation;
+    Attribute charm;
+};
+
+class Protagonist : public Sicut {
+public:
+    Protagonist(std::string given_name) : Sicut(given_name) {}
+    void behavior() override {
+        std::cout << "As the protagonist, " << name << " is capable of performing world-changing feats, perhaps of magic, and potentially while running. Probably would not roll, maybe not even in private." << std::endl;
+    }
+protected:
+private:
+
+};
+
+
 /*
 class Inventory {
 public:
@@ -297,11 +356,7 @@ void routeA() {
     player.viewAndConsumeItem();
     Organism mark;
     mark.stats.hp.getEffectiveValue();
-*/
-
-
-int main() {
-    Weapon sword;
+     Weapon sword;
     sword.printStats();
     std::cout << std::endl;
     Weapon soul_sabre(50, 50);
@@ -309,5 +364,22 @@ int main() {
     std::cout << std::endl;
     Weapon enhanced_soul_sabre(50, 50, 25, 100);
     enhanced_soul_sabre.printStats();
+    Attribute one(35,10,0,0);
+   Attribute two(11,12,13,14);
+   std::cout << (one < two) << std::endl;
+*/
+
+
+int main() {
+    Organism zebra("zebra");
+    Magical mzebra("Really magical zebra");
+    zebra.behavior();
+    mzebra.behavior();
+    Sicut john("John");
+    john.behavior();
+    Protagonist amy("Amy");
+    amy.behavior();
+
+
 }
 
