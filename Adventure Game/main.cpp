@@ -175,7 +175,7 @@ public:
         }
     }
 
-    void changeSingle(int type, float value) {
+    bool changeSingleStat(int type, float value) {
         switch (type) {
             case HP:
                 hp += value;
@@ -211,12 +211,13 @@ public:
                 cd += value;
                 break;
             default:
-                std::cout << "Invalid attribute type.";
-                break;
+                std::cerr << "Invalid attribute type.";
+                return false;
         }
+        return true;
     }
 
-    void setSingle(int type, float value) {
+    bool setSingleStat(int type, float value) {
         switch (type) {
             case HP:
                 hp = value;
@@ -252,12 +253,13 @@ public:
                 cd = value;
                 break;
             default:
-                std::cout << "Invalid attribute type.";
-                break;
+                std::cerr << "Invalid attribute type.";
+                return false;
         }
+        return true;
     }
 
-    float getSingleEffective(int type) const {
+    float getSingleStatEffective(int type) const {
         switch (type) {
             case HP:
                 return hp.effectiveValue();
@@ -282,8 +284,8 @@ public:
             case CRIT_DAMAGE:
                 return cd.effectiveValue();
             default:
-                std::cout << "Invalid attribute type.";
-                break;
+                std::cerr << "Invalid attribute type.";
+                return -1;
         }
     }
 
@@ -520,16 +522,15 @@ public:
         std::cout << inventory << std::endl;
     };
 
-    void changeSingleStat(int type, float value) {
+    bool changeSingleStat(int type, float value) {
     // type: in the same order as always; value can be negative
-        stats.changeSingle(type, value);
+        return stats.changeSingleStat(type, value);
     }
 
     bool setSingleStat(int type, float value) {
         // type: in the same order as always; value cannot be negative
         if (value >= 0) {
-            stats.setSingle(type, value);
-            return true;
+            return stats.setSingleStat(type, value);
         } else {
             std::cout << "Cannot set a stat to a negative value!" << std::endl;
             return false;
@@ -537,35 +538,31 @@ public:
     }
 
     float getSingleStat(int type) const {
-        return stats.getSingleEffective(type);
+        return stats.getSingleStatEffective(type);
     }
 
-
     bool checkForMercy(Organism &opponent) {
-        float opponentHealth = opponent.stats.hp.effectiveValue();
-        float opponentMaxHealth = opponent.stats.hp.max();
-        float selfHealth = stats.hp.effectiveValue();
+        float opponentHealth = opponent.getSingleStat(HP);
+        float opponentMaxHealth = opponent.stats.hp.max(); // Assuming you don't have a getter for the max value
+        float selfHealth = getSingleStat(HP);
 
-        float threshold = std::max(5.0f, opponentMaxHealth *
-                                         0.1f);  // Threshold for low health: 5 or 10% of max health, whichever is higher
+        float threshold = std::max(5.0f, opponentMaxHealth * 0.1f);
+        // Threshold for low health: 5 or 10% of max health, whichever is higher
 
         // Check for the condition to let go
         if (opponentHealth <= threshold && opponentHealth < 0.5 * selfHealth) {
             std::cout << name << " let " << opponent.name << " go in their pitiful state, only having "
                       << opponentHealth << " health out of " << opponentMaxHealth << " health.\n";
-            opponent.stats.hp = threshold;  // Optionally, set the opponent's health to the threshold value
+            opponent.setSingleStat(HP, threshold); // Set the opponent's health to the threshold value
             return true;
         }
         return false;
     }
 
-
     float normal_attack_damage() const {
-        return (this->stats.mag_atk.effectiveValue() > this->stats.phys_atk.effectiveValue()) ?
-               this->stats.mag_atk.effectiveValue() : this->stats.phys_atk.effectiveValue();
+        float curr_mag_atk = getSingleStat(6); float curr_phys_atk = getSingleStat(5);
+        return (curr_mag_atk > curr_phys_atk) ? curr_mag_atk : curr_phys_atk;
     }
-
-
 
     float calculate_crit(float normal_attack_damage) {
         // RNG setup
@@ -573,17 +570,17 @@ public:
         std::mt19937 gen(seed);
         std::uniform_real_distribution<> dis(0.0, 100.0); // 0 to 100%
 
-        float crit_chance_lhs =
-                this->stats.cc.effectiveValue() + ((this->stats.intelligence.effectiveValue() - 100) / 10);
+        float crit_chance_lhs = getSingleStat(CRIT_CHANCE) + ((getSingleStat(INTELLIGENCE) - 100) / 10);
 
         if (dis(gen) < crit_chance_lhs) {
             // Critical hit
-            normal_attack_damage *= 1 + this->stats.cd.effectiveValue() / 100.0f;
+            normal_attack_damage *= 1 + getSingleStat(CRIT_DAMAGE) / 100.0f;
         }
         return normal_attack_damage;
     }
 
-     static CombatResult check_finish(Organism &lhs, Organism &rhs, int mode) {
+
+    static CombatResult check_finish(Organism &lhs, Organism &rhs, int mode) {
         CombatResult result{false, nullptr, nullptr};
         if (mode == 0) {
             if (lhs.stats.hp.effectiveValue() <= 0 && rhs.stats.hp.effectiveValue() <= 0) {
