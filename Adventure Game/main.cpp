@@ -10,6 +10,7 @@
 #include <cmath>
 #include <random>
 #include <chrono>
+#include <algorithm>
 
 // Global Variables
 bool dev_mode = true;
@@ -26,6 +27,10 @@ class Protagonist;
 class Inventory;
 
 std::map<int, std::string> items_all;
+
+float clamp(float value, float min, float max) {
+    return std::max(min, std::min(max, value));
+}
 
 class Attribute {
     friend std::ostream &operator<<(std::ostream &os, const Attribute &rhs) {
@@ -323,9 +328,19 @@ private:
     std::map<int, std::pair<Object*, int>> items;  // Slot # -> {Object*, Count}
 };
 
+
+float calculateMercifulDamage(float baseDamage, float opponentHealth) {
+    float actualDamage = baseDamage;
+    while (opponentHealth - actualDamage <= 0 && actualDamage >= 1) {
+        actualDamage /= 2;
+    }
+    return actualDamage;
+}
+
+
 class Organism {
 public:
-    explicit Organism(std::string inputName) : name(std::move(inputName)), carcerisStrength(100, 100, 0, 0), level(0), dead(false) {
+    explicit Organism(std::string inputName) : name(std::move(inputName)), carcerisStrength(100, 100, 0, 0), level(0), dead(false), balance(0) {
     }
 
     Organism(std::string inputName, const std::vector<float>& in_stats) : Organism(std::move(inputName)) {
@@ -368,6 +383,23 @@ public:
         std::cout << inventory << std::endl;
     };
 
+    bool checkForMercy(Organism& opponent) {
+        float opponentHealth = opponent.stats.hp.effectiveValue();
+        float opponentMaxHealth = opponent.stats.hp.max();
+        float selfHealth = stats.hp.effectiveValue();
+
+        float threshold = std::max(5.0f, opponentMaxHealth * 0.1f);  // Threshold for low health: 5 or 10% of max health, whichever is higher
+
+        // Check for the condition to let go
+        if (opponentHealth <= threshold && opponentHealth < 0.5 * selfHealth) {
+            std::cout << name << " let " << opponent.name << " go in their pitiful state, only having "
+                      << opponentHealth << " health out of " << opponentMaxHealth << " health.\n";
+            opponent.stats.hp = threshold;  // Optionally, set the opponent's health to the threshold value
+            return true;
+        }
+        return false;
+    }
+
     void fight(Organism& rhs) {
         if (dead) return;
         float power_lhs = this->stats.power();
@@ -384,7 +416,8 @@ public:
         stats.spd.effectiveValue();
     }
 
-    void turn_combat(Organism& rhs) {
+    void turn_combat(Organism& rhs, int mode = 0) {
+        // mode 0 = fight to the death, mode 1 = fight to 30% hp.
         if (dead || rhs.dead) return;
         // RNG setup
         auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
@@ -400,6 +433,8 @@ public:
         std::cout << this->name << "[" << int(power_lhs) << " power] versus " << rhs.name << "[" << int(power_rhs) << " power] " << std::endl;
 
         while (this->stats.hp.effectiveValue() > 0 && rhs.stats.hp.effectiveValue() > 0) {
+            checkForMercy(rhs);
+            rhs.checkForMercy(*this);
             progress_lhs += this->stats.spd.effectiveValue();
             progress_rhs += rhs.stats.spd.effectiveValue();
 
@@ -421,11 +456,20 @@ public:
                     damage *= 1 + this->stats.cd.effectiveValue() / 100.0f;
                 }
 
-                rhs.stats.hp -= damage;
-                progress_lhs = 0;
-                if (dev_mode) {
-                    std::cout << this->name << " attacks " << rhs.name << " for " << damage << " damage.\n";
+                if (mode == 1) {
+                    float mercifulDamage = calculateMercifulDamage(damage, rhs.stats.hp.effectiveValue());
+                    rhs.stats.hp -= mercifulDamage;
+                    if (mercifulDamage != damage) {
+                        std::cout << this->name << " attacked " << rhs.name << " with mercy, only dealing "
+                                  << mercifulDamage << " damage! (normal: " << damage << ")\n";
+                    }  else {
+                        std::cout << this->name << " attacks " << rhs.name << " for " << damage << " damage.\n";
+                    }
+                } else {
+                    rhs.stats.hp -= damage;
                 }
+
+                progress_lhs = 0;
             }
 
 
@@ -441,34 +485,112 @@ public:
                     damage *= 1 + rhs.stats.cd.effectiveValue() / 100.0f;
                 }
 
-                this->stats.hp -= damage;
+                if (mode == 1) {
+                    float mercifulDamage = calculateMercifulDamage(damage, stats.hp.effectiveValue());
+                    stats.hp -= mercifulDamage;
+                    if (mercifulDamage != damage) {
+                        std::cout << rhs.name << " attacked " << name << " with mercy, only dealing "
+                                  << mercifulDamage << " damage! (normal: " << damage << ")\n";
+                    } else {
+                        std::cout << rhs.name << " attacks " << this->name << " for " << damage << " damage.\n";
+                    }
+                } else {
+                    stats.hp -= damage;
+                }
                 progress_rhs = 0;
-                if (dev_mode) {
-                    std::cout << rhs.name << " attacks " << this->name << " for " << damage << " damage.\n";
+            }
+
+            if (mode == 0) {
+                // Declare the winner and loser
+                if (this->stats.hp.effectiveValue() <= 0 && rhs.stats.hp.effectiveValue() <= 0) {
+                    rhs.checkIfDead(); checkIfDead(); return;
+                    std::cout << "Both " << this->name << " and " << rhs.name << " have been defeated.\n";
+                    rhs.assignXPGainAndPrint(power_lhs, power_rhs);
+                    assignXPGainAndPrint(power_rhs, power_lhs);
+
+                } else if (this->stats.hp.effectiveValue() <= 0) {
+                    checkIfDead();
+                    rhs.balance += balance;
+                    balance = 0;
+                    std::cout << rhs.name << " wins and " << this->name << " loses.\n";
+                    rhs.assignXPGainAndPrint(power_lhs, power_rhs);
+
+
+                } else {
+                    rhs.checkIfDead();
+                    balance += rhs.balance;
+                    rhs.balance = 0;
+                    std::cout << this->name << " wins and " << rhs.name << " loses.\n";
+                    assignXPGainAndPrint(power_rhs, power_lhs);
+
+                }
+            }
+            if (mode == 1) {
+                // 30% = end fight
+                if ((this->stats.hp.effectiveValue() <= this->stats.hp.max() * 0.3 || rhs.stats.hp.effectiveValue() <= rhs.stats.hp.max() * 0.3
+                     || this->stats.hp.effectiveValue() < 3 || rhs.stats.hp.effectiveValue() < 3)) {
+                    // Someone's HP fell below 30% in mode 1
+                    if (this->stats.hp.effectiveValue() <= this->stats.hp.max() * 0.3 || this->stats.hp.effectiveValue() < 3) {
+                        // this organism lost in mode 1
+                        std::cout << rhs.name << " wins and takes all the balance from " << this->name << ".\n";
+                        rhs.balance += balance;
+                        balance = 0;
+                        checkIfDead();
+                        return;
+                    } else {
+                        // rhs organism lost in mode 1
+                        std::cout << this->name << " wins and takes all the balance from " << rhs.name << ".\n";
+                        balance += rhs.balance;
+                        rhs.balance = 0;
+                        rhs.checkIfDead();
+                        return;
+                    }
                 }
             }
         }
-
-        // Declare the winner and loser
-        if (this->stats.hp.effectiveValue() <= 0 && rhs.stats.hp.effectiveValue() <= 0) {
-            rhs.checkIfDead(); checkIfDead(); return;
-            std::cout << "Both " << this->name << " and " << rhs.name << " have been defeated.\n";
-            rhs.assignXPGainAndPrint(power_lhs, power_rhs);
-            assignXPGainAndPrint(power_rhs, power_lhs);
-
-        } else if (this->stats.hp.effectiveValue() <= 0) {
-            checkIfDead();
-            std::cout << rhs.name << " wins and " << this->name << " loses.\n";
-            rhs.assignXPGainAndPrint(power_lhs, power_rhs);
+    }
 
 
+    void attemptToPickpocket(Organism& rhs) {
+        if (dead) return;
+        if (rhs.dead) {
+            std::cout << name << " just attempted to pickpocket a dead corpse!" << std::endl;
+            return;
+        }
+        // Initialize the random number generator
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<> dis(0, 1); // generate a float between 0 and 1
+
+        // Calculate the base success rate
+        float baseSuccessRate = 0.2;  // 20%
+
+        // Modify success rate based on intelligence difference
+        float successRate = baseSuccessRate + 0.005f * (this->stats.intelligence.effectiveValue() - rhs.stats.intelligence.effectiveValue());
+        successRate = clamp(successRate, 0.0f, 1.0f); // Make sure it stays between 0 and 1
+
+        // Attempt the pickpocket
+        if (dis(gen) < successRate) {
+            // Successful pickpocket
+            this->balance += rhs.balance;
+            rhs.balance = 0;
+            std::cout << this->name << " successfully pickpocketed " << rhs.balance << " from " << rhs.name << "!\n";
         } else {
-            rhs.checkIfDead();
-            std::cout << this->name << " wins and " << rhs.name << " loses.\n";
-            assignXPGainAndPrint(power_rhs, power_lhs);
+            // Failed pickpocket
+            std::cout << this->name << " failed to pickpocket " << rhs.name << ".\n";
 
+            // Determine if combat is initiated
+            if (dis(gen) < 0.4) {
+                // 40% chance to initiate combat
+                std::cout << rhs.name << " caught " << this->name << " and initiates combat!\n";
+                rhs.turn_combat(*this, 1);
+            } else {
+                // 60% chance to let go without consequence
+                std::cout << rhs.name << " let " << this->name << " go without consequence.\n";
+            }
         }
     }
+
 
     float calculatePower() const {
         if (dead) return 0;
@@ -551,6 +673,7 @@ protected:
     Inventory inventory;
     int level;
     float xp;
+    float balance;
 };
 
 class Magical : public Organism {
@@ -592,7 +715,6 @@ public:
     }
 
 protected:
-    double balance;
     double reputation;
     Attribute charm;
 };
@@ -679,6 +801,16 @@ int main() {
     organisms[5]->turn_combat(*organisms[6]);
     organisms[0]->turn_combat(*organisms[5]);
     organisms[5]->fullHeal();
-    organisms[0]->turn_combat(*organisms[5]);
+    organisms[5]->attemptToPickpocket(*organisms[0]);
+    organisms[5]->attemptToPickpocket(*organisms[0]);
+    organisms[5]->attemptToPickpocket(*organisms[0]);
+    organisms[5]->attemptToPickpocket(*organisms[0]);
+    organisms[5]->attemptToPickpocket(*organisms[0]);
+    organisms[5]->attemptToPickpocket(*organisms[0]);
+    organisms[5]->attemptToPickpocket(*organisms[0]);
+    organisms[5]->attemptToPickpocket(*organisms[0]);
+    organisms[5]->attemptToPickpocket(*organisms[0]);
+    organisms[5]->attemptToPickpocket(*organisms[0]);
+
 
 };
