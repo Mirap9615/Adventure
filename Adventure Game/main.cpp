@@ -140,6 +140,15 @@ public:
 
     Attribute hp; Attribute mana; Attribute stamina; Attribute defense; Attribute phys_atk;
     Attribute mag_atk; Attribute spd; Attribute intelligence; Attribute luck; Attribute cc; Attribute cd;
+
+    void board_change(const std::vector<float>& in_stats) {
+        Attribute* attributes[] = {&hp, &mana, &stamina, &defense, &phys_atk, &mag_atk, &spd, &intelligence, &luck, &cc, &cd};
+        size_t numAttributes = sizeof(attributes) / sizeof(attributes[0]);
+
+        for (size_t i = 0; i < std::min(in_stats.size(), numAttributes); ++i) {
+            *(attributes[i]) = in_stats[i];
+        }
+    }
 private:
 
 };
@@ -317,6 +326,10 @@ public:
     explicit Organism(std::string inputName) : name(std::move(inputName)), carcerisStrength(100, 100, 0, 0), level(0) {
     }
 
+    Organism(std::string inputName, const std::vector<float>& in_stats) : Organism(std::move(inputName)) {
+        stats.board_change(in_stats);
+    }
+
     virtual void behavior()  {
         std::cout << "As a organism, " << name << " is capable of running and rolling." << std::endl;
     }
@@ -369,6 +382,11 @@ public:
 
         float progress_lhs = this->stats.spd.effectiveValue();
         float progress_rhs = rhs.stats.spd.effectiveValue();
+
+        float power_lhs = this->stats.power();
+        float power_rhs = rhs.stats.power();
+
+        std::cout << this->name << "[ " << int(power_lhs) << " power] versus " << rhs.name << "[ " << int(power_rhs) << " power] " << std::endl;
 
         while (this->stats.hp.effectiveValue() > 0 && rhs.stats.hp.effectiveValue() > 0) {
             progress_lhs += this->stats.spd.effectiveValue();
@@ -423,12 +441,58 @@ public:
         // Declare the winner and loser
         if (this->stats.hp.effectiveValue() <= 0 && rhs.stats.hp.effectiveValue() <= 0) {
             std::cout << "Both " << this->name << " and " << rhs.name << " have been defeated.\n";
+            rhs.assignXPGainAndPrint(power_lhs, power_rhs);
+            assignXPGainAndPrint(power_rhs, power_lhs);
         } else if (this->stats.hp.effectiveValue() <= 0) {
             std::cout << rhs.name << " wins and " << this->name << " loses.\n";
+            rhs.assignXPGainAndPrint(power_lhs, power_rhs);
         } else {
             std::cout << this->name << " wins and " << rhs.name << " loses.\n";
+            assignXPGainAndPrint(power_rhs, power_lhs);
         }
     }
+
+    float calculatePower() const {
+        return stats.power();
+    }
+
+    // Polynomial function to calculate XP required for next level
+    float xpRequiredForLevelUp() const {
+        float a = 0.1, b = 10, c = 40;
+        return a * std::pow(level, 2) + b * level + c;
+    }
+
+    void addXP(float xpGain) {
+        xp += xpGain;
+
+        // Check for level up
+        while (xp >= xpRequiredForLevelUp()) {
+            // elegant implementation allows for multiple level-ups at once
+            xp -= xpRequiredForLevelUp();
+            level++;
+        }
+    }
+
+    float calculateXPGain(float opponentPower, float selfPower) const {
+        float baseXP = opponentPower;
+
+        // Unbalanced matchup penalty
+        if (selfPower > 5 * opponentPower) {
+            float k = 0.2;  // This constant can be tuned
+            float reductionFactor = std::exp(-k * (selfPower / opponentPower - 5));
+            baseXP *= reductionFactor;
+        }
+
+        return baseXP;
+    }
+
+    void assignXPGainAndPrint(float opponentPower, float selfPower) {
+        float gainedXP = calculateXPGain(opponentPower, selfPower);
+        addXP(gainedXP);
+        std::cout << name << " gained " << gainedXP << " xp! ";
+        std::cout << "[Level " << level << ", " << xp << "/" << xpRequiredForLevelUp() << " to level " << (level + 1) << "]" << std::endl;
+    }
+
 
 
 
@@ -438,7 +502,8 @@ protected:
     Stats stats;
     std::string name;
     Inventory inventory;
-    float level;
+    int level;
+    float xp;
 };
 
 class Magical : public Organism {
@@ -446,6 +511,9 @@ public:
     explicit Magical(const std::string& given_name) : Organism(given_name) {
         magic_able = true;
         carcerisStrength = 150;
+    }
+    Magical(std::string inputName, const std::vector<float>& in_stats) : Organism(std::move(inputName)) {
+        stats.board_change(in_stats);
     }
 
     void behavior() override {
@@ -468,6 +536,9 @@ public:
         balance = 0;
         reputation = 0;
     }
+    Sicut(const std::string& inputName, const std::vector<float>& in_stats) : Magical(inputName), charm(100, 100, 0, 0) {
+        stats.board_change(in_stats);
+    }
 
     void behavior() override {
         std::cout << "As a sicut, " << name << " could potentially be performing mindful magic, while running. Probably would not roll, at least not in public." << std::endl;
@@ -482,6 +553,10 @@ protected:
 class Protagonist : public Sicut {
 public:
     explicit Protagonist(const std::string& given_name) : Sicut(given_name) {}
+    Protagonist(const std::string& inputName, const std::vector<float>& in_stats) : Sicut(inputName) {
+        stats.board_change(in_stats);
+    }
+
     void behavior() override {
         std::cout << "As the protagonist, " << name << " is capable of performing world-changing feats, perhaps of magic, and potentially while running. Probably would not roll, maybe not even in private." << std::endl;
     }
@@ -515,17 +590,18 @@ void loadItems() {
 
 int main() {
     //loadItems();
-    std::vector<std::unique_ptr<Organism>> organisms;
-
     //printAllItems(items_all);
-
+    std::vector<std::unique_ptr<Organism>> organisms;
     std::cout << std::endl;
     std::unique_ptr<Organism> mae = std::make_unique<Protagonist>("Mae");
     std::unique_ptr<Organism> zebra = std::make_unique<Organism>("Zebra");
     std::unique_ptr<Organism> john = std::make_unique<Sicut>("John");
+    std::unique_ptr<Organism> Pentalon = std::make_unique<Sicut>("Pentalon", std::vector<float>{325, 305, 700, 51, 16, 13, 138, 123});
+
     organisms.push_back(std::move(mae));
     organisms.push_back(std::move(zebra));
     organisms.push_back(std::move(john));
+    organisms.push_back(std::move(Pentalon));
 
     organisms[0]->increaseMagicalAtk(15);
     for (std::unique_ptr<Organism>& organism : organisms) {
@@ -533,8 +609,9 @@ int main() {
         organism->cast();
     }
 
-
     //organisms[0]->fight(*organisms[2]);
     organisms[0]->turn_combat(*organisms[2]);
+
+    organisms[0]->turn_combat(*organisms[3]);
 
 };
