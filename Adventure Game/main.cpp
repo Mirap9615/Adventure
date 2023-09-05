@@ -7,9 +7,12 @@
 #include <sstream>
 #include <memory>
 #include "nlohmann/json.hpp"
+#include <cmath>
+#include <random>
+#include <chrono>
 
 // Global Variables
-bool dev_mode = false;
+bool dev_mode = true;
 
 // Pre declaration
 class Attribute;
@@ -79,6 +82,11 @@ public:
         type = typeValue;
     }
 
+    Attribute& operator-=(float inValue) {
+        value -= inValue;
+        return *this;
+    }
+
 private:
     int type; // 0 means unclassified, 1 to 9 are stat types
     // 10 is damage, 11 is durability
@@ -89,9 +97,20 @@ private:
 };
 
 enum AttributeType {
-    HP = 1, MANA = 2, STAMINA = 3, DEFENSE = 4, PHYS_ATK = 5, MAG_ATK = 6, SPD = 7, INTELLIGENCE = 8, LUCK = 9
+    HP = 1, MANA = 2, STAMINA = 3, DEFENSE = 4, PHYS_ATK = 5, MAG_ATK = 6, SPD = 7, INTELLIGENCE = 8, LUCK = 9,
+    CRIT_CHANCE = 10,CRIT_DAMAGE = 11,
 };
 
+float calculatePower(float hp, float mana, float stamina, float defense, float phys_atk, float mag_atk, float speed, float intelligence) {
+    float term1 = (mag_atk * mana) / 6;
+    float term2 = phys_atk * std::pow(1.5, (speed / 100.0) - 1) * (stamina / 100.0);
+    float term3 = (hp + 3 * defense) * std::pow(1.1, stamina / 100.0);
+
+    float numerator = term1 + term2 + term3;
+    float denominator = std::pow(2, (intelligence - 100) / 20.0 - 1);
+
+    return (numerator * denominator) / 10;
+}
 class Stats {
     friend void changeAllTypes(Stats& stat) {
         stat.hp.changeType(1);
@@ -103,15 +122,24 @@ class Stats {
         stat.spd.changeType(7);
         stat.intelligence.changeType(8);
         stat.luck.changeType(9);
+        stat.cc.changeType(10);
+        stat.cd.changeType(11);
 
     }
 public:
     Stats() : hp(HP,100), mana(MANA,100), stamina(STAMINA,100),
     defense(DEFENSE,10), phys_atk(PHYS_ATK, 4), mag_atk(MAG_ATK, 0),
-    spd(SPD, 100), intelligence(INTELLIGENCE ,100), luck(LUCK, 0) {}
+    spd(SPD, 100), intelligence(INTELLIGENCE ,100), luck(LUCK, 0),
+    cc(CRIT_CHANCE, 5), cd(CRIT_DAMAGE, 50) {}
+
+    float power() const {
+        return calculatePower(hp.effectiveValue(), mana.effectiveValue(),stamina.effectiveValue(),
+                              defense.effectiveValue(),phys_atk.effectiveValue(),mag_atk.effectiveValue(),
+                              spd.effectiveValue(), intelligence.effectiveValue());
+    }
 
     Attribute hp; Attribute mana; Attribute stamina; Attribute defense; Attribute phys_atk;
-    Attribute mag_atk; Attribute spd; Attribute intelligence; Attribute luck;
+    Attribute mag_atk; Attribute spd; Attribute intelligence; Attribute luck; Attribute cc; Attribute cd;
 private:
 
 };
@@ -198,7 +226,7 @@ class Inventory {
 public:
     Inventory() : max_slots(8), used_slots(0) {}
 
-    bool inventoryFull() {
+    bool inventoryFull() const {
         return (used_slots >= max_slots);
     }
 
@@ -286,7 +314,7 @@ private:
 
 class Organism {
 public:
-    explicit Organism(std::string inputName) : name(std::move(inputName)), carcerisStrength(100, 100, 0, 0) {
+    explicit Organism(std::string inputName) : name(std::move(inputName)), carcerisStrength(100, 100, 0, 0), level(0) {
     }
 
     virtual void behavior()  {
@@ -318,12 +346,99 @@ public:
         std::cout << inventory << std::endl;
     };
 
+    void fight(Organism& rhs) {
+        float power_lhs = this->stats.power();
+        float power_rhs = rhs.stats.power();
+        std::cout << this->name << " versus " << rhs.name << std::endl;
+
+        if (power_lhs > power_rhs) {
+            std::cout << this->name << " wins the fight.\n";
+        } else if (power_rhs > power_lhs) {
+            std::cout << rhs.name << " wins the fight.\n";
+        } else {
+            std::cout << "It's a draw.\n";
+        }
+        stats.spd.effectiveValue();
+    }
+
+    void turn_combat(Organism& rhs) {
+        // RNG setup
+        auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+        std::mt19937 gen(seed);
+        std::uniform_real_distribution<> dis(0.0, 100.0); // 0 to 100%
+
+        float progress_lhs = this->stats.spd.effectiveValue();
+        float progress_rhs = rhs.stats.spd.effectiveValue();
+
+        while (this->stats.hp.effectiveValue() > 0 && rhs.stats.hp.effectiveValue() > 0) {
+            progress_lhs += this->stats.spd.effectiveValue();
+            progress_rhs += rhs.stats.spd.effectiveValue();
+
+            if (dev_mode) {
+                std::cout << "[" << this->name << " Progress: " << progress_lhs << ", HP: " << this->stats.hp.effectiveValue() << "] ";
+                std::cout << "[" << rhs.name << " Progress: " << progress_rhs << ", HP: " << rhs.stats.hp.effectiveValue() << "]\n";
+            }
+
+            if (progress_lhs >= 1000) {
+                // This organism attacks
+                float damage = (this->stats.mag_atk.effectiveValue() > this->stats.phys_atk.effectiveValue()) ?
+                               this->stats.mag_atk.effectiveValue() : this->stats.phys_atk.effectiveValue();
+
+                float crit_chance_lhs =
+                        this->stats.cc.effectiveValue() + ((this->stats.intelligence.effectiveValue() - 100) / 10);
+
+                if (dis(gen) < crit_chance_lhs) {
+                    // Critical hit
+                    damage *= 1 + this->stats.cd.effectiveValue() / 100.0f;
+                }
+
+                rhs.stats.hp -= damage;
+                progress_lhs = 0;
+                if (dev_mode) {
+                    std::cout << this->name << " attacks " << rhs.name << " for " << damage << " damage.\n";
+                }
+            }
+
+
+            if (progress_rhs >= 1000) {
+                // The opponent attacks
+                float damage = (rhs.stats.mag_atk.effectiveValue() > rhs.stats.phys_atk.effectiveValue()) ?
+                               rhs.stats.mag_atk.effectiveValue() : rhs.stats.phys_atk.effectiveValue();
+
+                float crit_chance_rhs = rhs.stats.cc.effectiveValue() + ((rhs.stats.intelligence.effectiveValue() - 100) / 10);
+
+                if (dis(gen) < crit_chance_rhs) {
+                    // Critical hit
+                    damage *= 1 + rhs.stats.cd.effectiveValue() / 100.0f;
+                }
+
+                this->stats.hp -= damage;
+                progress_rhs = 0;
+                if (dev_mode) {
+                    std::cout << rhs.name << " attacks " << this->name << " for " << damage << " damage.\n";
+                }
+            }
+        }
+
+        // Declare the winner and loser
+        if (this->stats.hp.effectiveValue() <= 0 && rhs.stats.hp.effectiveValue() <= 0) {
+            std::cout << "Both " << this->name << " and " << rhs.name << " have been defeated.\n";
+        } else if (this->stats.hp.effectiveValue() <= 0) {
+            std::cout << rhs.name << " wins and " << this->name << " loses.\n";
+        } else {
+            std::cout << this->name << " wins and " << rhs.name << " loses.\n";
+        }
+    }
+
+
+
 protected:
     bool magic_able = false;
     Attribute carcerisStrength;
     Stats stats;
     std::string name;
     Inventory inventory;
+    float level;
 };
 
 class Magical : public Organism {
@@ -366,12 +481,11 @@ protected:
 
 class Protagonist : public Sicut {
 public:
-    explicit Protagonist(const std::string& given_name) : Sicut(given_name), level(0) {}
+    explicit Protagonist(const std::string& given_name) : Sicut(given_name) {}
     void behavior() override {
         std::cout << "As the protagonist, " << name << " is capable of performing world-changing feats, perhaps of magic, and potentially while running. Probably would not roll, maybe not even in private." << std::endl;
     }
 private:
-    double level;
     std::vector<std::string> current_quests;
 
 };
@@ -400,34 +514,27 @@ void loadItems() {
 
 
 int main() {
-    loadItems();
+    //loadItems();
     std::vector<std::unique_ptr<Organism>> organisms;
 
-    printAllItems(items_all);
+    //printAllItems(items_all);
 
     std::cout << std::endl;
     std::unique_ptr<Organism> mae = std::make_unique<Protagonist>("Mae");
     std::unique_ptr<Organism> zebra = std::make_unique<Organism>("Zebra");
     std::unique_ptr<Organism> john = std::make_unique<Sicut>("John");
-
     organisms.push_back(std::move(mae));
     organisms.push_back(std::move(zebra));
     organisms.push_back(std::move(john));
 
-    for (std::unique_ptr<Organism>& organism : organisms) {
-        //organism->behavior();
-        organism->cast();
-    }
     organisms[0]->increaseMagicalAtk(15);
     for (std::unique_ptr<Organism>& organism : organisms) {
         //organism->behavior();
         organism->cast();
     }
 
-    organisms[0]->addItemsToInventory(1, 50);
-    organisms[0]->removeItemsFromInventory(2, 51);
-    organisms[0]->addItemsToInventory(2, 50);
-    organisms[0]->printInventory();
+
+    //organisms[0]->fight(*organisms[2]);
+    organisms[0]->turn_combat(*organisms[2]);
 
 };
-
