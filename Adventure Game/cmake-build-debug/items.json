@@ -1,0 +1,674 @@
+[
+    {
+        "id": 1,
+        "name": "dirt"
+    },
+    {
+        "id": 2,
+        "name": "stone"
+    },
+    {
+        "id": 3,
+        "name": "sand"
+    },
+    {
+        "id": 4,
+        "name": "gravel"
+    },
+    {
+        "id": 5,
+        "name": "glass"
+    },
+    {
+        "id": 6,
+        "name": "wood"
+    },
+    {
+        "id": 7,
+        "name": "copper"
+    },
+    {
+        "id": 8,
+        "name": "tin"
+    },
+    {
+        "id": 9,
+        "name": "silver"
+    },
+    {
+        "id": 10,
+        "name": "lead"
+    },
+    {
+        "id": 11,
+        "name": "iron"
+    },
+    {
+        "id": 12,
+        "name": "cobalt"
+    },
+    {
+        "id": 13,
+        "name": "gold"
+    },
+    {
+        "id": 14,
+        "name": "platinum"
+    },
+    {
+        "id": 15,
+        "name": "natural diamond"
+    },
+    {
+        "id": 16,
+        "name": "titanium"
+    },
+    {
+        "id": 17,
+        "name": "bucket of water"
+    },
+    {
+        "id": 18,
+        "name": "bucket of lava"
+    },
+    {
+        "id": 19,
+        "name": "bucket of honey"
+    },
+    {
+        "id": 20,
+        "name": "apple"
+    },
+    {
+        "id": 21,
+        "name": "orange"
+    },
+    {
+        "id": 22,
+        "name": "grape"
+    },
+    {
+        "id": 23,
+        "name": "berry"
+    },
+    {
+        "id": 24,
+        "name": "stone fruit"
+    },
+    {
+        "id": 25,
+        "name": "empty bucket"
+    },
+    {
+        "id": 26,
+        "name": "wood_sword"
+    },
+    {
+        "id": 27,
+        "name": "wood_axe"
+    },
+    {
+        "id": 28,
+        "name": "wood_pickaxe"
+    },
+    {
+        "id": 29,
+        "name": "wood_shovel"
+    },
+    {
+        "id": 30,
+        "name": "wood_spear"
+    },
+    {
+        "id": 31,
+        "name": "wood_bow"
+    },
+    {
+        "id": 32,
+        "name": "wood_helmet"
+    },
+    {
+        "id": 33,
+        "name": "wood_chestplate"
+    },
+    {
+        "id": 34,
+        "name": "wood_leggings"
+    },
+    {
+        "id": 35,
+        "name": "wood_boots"
+    },
+    {
+        "id": 36,
+        "name": "wood_shield"
+    },
+    {
+        "id": 37,
+        "name": "wood_block"
+    },
+    {
+        "id": 38,
+        "name": "wood_arrow"
+    },
+    {
+        "id": 39,
+        "name": "iron_sword"
+    },
+    {
+        "id": 40,
+        "name": "iron_axe"
+    },
+    {
+        "id": 41,
+        "name": "iron_pickaxe"
+    },
+    {
+        "id": 42,
+        "name": "iron_shovel"
+    },
+    {
+        "id": 43,
+        "name": "iron_spear"
+    },
+    {
+        "id": 44,
+        "name": "iron_bow"
+    },
+    {
+        "id": 45,
+        "name": "iron_helmet"
+    },
+    {
+        "id": 46,
+        "name": "iron_chestplate"
+    },
+    {
+        "id": 47,
+        "name": "iron_leggings"
+    },
+    {
+        "id": 48,
+        "name": "iron_boots"
+    },
+    {
+        "id": 49,
+        "name": "iron_shield"
+    },
+    {
+        "id": 50,
+        "name": "iron_block"
+    },
+    {
+        "id": 51,
+        "name": "iron_arrow"
+    },
+    {
+        "id": 52,
+        "name": "platinum_sword"
+    },
+    {
+        "id": 53,
+        "name": "platinum_axe"
+    },
+    {
+        "id": 54,
+        "name": "platinum_pickaxe"
+    },
+    {
+        "id": 55,
+        "name": "platinum_shovel"
+    },
+    {
+        "id": 56,
+        "name": "platinum_spear"
+    },
+    {
+        "id": 57,
+        "name": "platinum_bow"
+    },
+    {
+        "id": 58,
+        "name": "platinum_helmet"
+    },
+    {
+        "id": 59,
+        "name": "platinum_chestplate"
+    },
+    {
+        "id": 60,
+        "name": "platinum_leggings"
+    },
+    {
+        "id": 61,
+        "name": "platinum_boots"
+    },
+    {
+        "id": 62,
+        "name": "platinum_shield"
+    },
+    {
+        "id": 63,
+        "name": "platinum_block"
+    },
+    {
+        "id": 64,
+        "name": "platinum_arrow"
+    },
+    {
+        "id": 65,
+        "name": "titanium_sword"
+    },
+    {
+        "id": 66,
+        "name": "titanium_axe"
+    },
+    {
+        "id": 67,
+        "name": "titanium_pickaxe"
+    },
+    {
+        "id": 68,
+        "name": "titanium_shovel"
+    },
+    {
+        "id": 69,
+        "name": "titanium_spear"
+    },
+    {
+        "id": 70,
+        "name": "titanium_bow"
+    },
+    {
+        "id": 71,
+        "name": "titanium_helmet"
+    },
+    {
+        "id": 72,
+        "name": "titanium_chestplate"
+    },
+    {
+        "id": 73,
+        "name": "titanium_leggings"
+    },
+    {
+        "id": 74,
+        "name": "titanium_boots"
+    },
+    {
+        "id": 75,
+        "name": "titanium_shield"
+    },
+    {
+        "id": 76,
+        "name": "titanium_block"
+    },
+    {
+        "id": 77,
+        "name": "titanium_arrow"
+    },
+    {
+        "id": 78,
+        "name": "orichalcum_sword"
+    },
+    {
+        "id": 79,
+        "name": "orichalcum_axe"
+    },
+    {
+        "id": 80,
+        "name": "orichalcum_pickaxe"
+    },
+    {
+        "id": 81,
+        "name": "orichalcum_shovel"
+    },
+    {
+        "id": 82,
+        "name": "orichalcum_spear"
+    },
+    {
+        "id": 83,
+        "name": "orichalcum_bow"
+    },
+    {
+        "id": 84,
+        "name": "orichalcum_helmet"
+    },
+    {
+        "id": 85,
+        "name": "orichalcum_chestplate"
+    },
+    {
+        "id": 86,
+        "name": "orichalcum_leggings"
+    },
+    {
+        "id": 87,
+        "name": "orichalcum_boots"
+    },
+    {
+        "id": 88,
+        "name": "orichalcum_shield"
+    },
+    {
+        "id": 89,
+        "name": "orichalcum_block"
+    },
+    {
+        "id": 90,
+        "name": "orichalcum_arrow"
+    },
+    {
+        "id": 91,
+        "name": "mythium_sword"
+    },
+    {
+        "id": 92,
+        "name": "mythium_axe"
+    },
+    {
+        "id": 93,
+        "name": "mythium_pickaxe"
+    },
+    {
+        "id": 94,
+        "name": "mythium_shovel"
+    },
+    {
+        "id": 95,
+        "name": "mythium_spear"
+    },
+    {
+        "id": 96,
+        "name": "mythium_bow"
+    },
+    {
+        "id": 97,
+        "name": "mythium_helmet"
+    },
+    {
+        "id": 98,
+        "name": "mythium_chestplate"
+    },
+    {
+        "id": 99,
+        "name": "mythium_leggings"
+    },
+    {
+        "id": 100,
+        "name": "mythium_boots"
+    },
+    {
+        "id": 101,
+        "name": "mythium_shield"
+    },
+    {
+        "id": 102,
+        "name": "mythium_block"
+    },
+    {
+        "id": 103,
+        "name": "mythium_arrow"
+    },
+    {
+        "id": 104,
+        "name": "odel_sword"
+    },
+    {
+        "id": 105,
+        "name": "odel_axe"
+    },
+    {
+        "id": 106,
+        "name": "odel_pickaxe"
+    },
+    {
+        "id": 107,
+        "name": "odel_shovel"
+    },
+    {
+        "id": 108,
+        "name": "odel_spear"
+    },
+    {
+        "id": 109,
+        "name": "odel_bow"
+    },
+    {
+        "id": 110,
+        "name": "odel_helmet"
+    },
+    {
+        "id": 111,
+        "name": "odel_chestplate"
+    },
+    {
+        "id": 112,
+        "name": "odel_leggings"
+    },
+    {
+        "id": 113,
+        "name": "odel_boots"
+    },
+    {
+        "id": 114,
+        "name": "odel_shield"
+    },
+    {
+        "id": 115,
+        "name": "odel_block"
+    },
+    {
+        "id": 116,
+        "name": "odel_arrow"
+    },
+    {
+        "id": 117,
+        "name": "accursed_sword"
+    },
+    {
+        "id": 118,
+        "name": "accursed_axe"
+    },
+    {
+        "id": 119,
+        "name": "accursed_pickaxe"
+    },
+    {
+        "id": 120,
+        "name": "accursed_shovel"
+    },
+    {
+        "id": 121,
+        "name": "accursed_spear"
+    },
+    {
+        "id": 122,
+        "name": "accursed_bow"
+    },
+    {
+        "id": 123,
+        "name": "accursed_helmet"
+    },
+    {
+        "id": 124,
+        "name": "accursed_chestplate"
+    },
+    {
+        "id": 125,
+        "name": "accursed_leggings"
+    },
+    {
+        "id": 126,
+        "name": "accursed_boots"
+    },
+    {
+        "id": 127,
+        "name": "accursed_shield"
+    },
+    {
+        "id": 128,
+        "name": "accursed_block"
+    },
+    {
+        "id": 129,
+        "name": "accursed_arrow"
+    },
+    {
+        "id": 130,
+        "name": "mystium_sword"
+    },
+    {
+        "id": 131,
+        "name": "mystium_axe"
+    },
+    {
+        "id": 132,
+        "name": "mystium_pickaxe"
+    },
+    {
+        "id": 133,
+        "name": "mystium_shovel"
+    },
+    {
+        "id": 134,
+        "name": "mystium_spear"
+    },
+    {
+        "id": 135,
+        "name": "mystium_bow"
+    },
+    {
+        "id": 136,
+        "name": "mystium_helmet"
+    },
+    {
+        "id": 137,
+        "name": "mystium_chestplate"
+    },
+    {
+        "id": 138,
+        "name": "mystium_leggings"
+    },
+    {
+        "id": 139,
+        "name": "mystium_boots"
+    },
+    {
+        "id": 140,
+        "name": "mystium_shield"
+    },
+    {
+        "id": 141,
+        "name": "mystium_block"
+    },
+    {
+        "id": 142,
+        "name": "mystium_arrow"
+    },
+    {
+        "id": 143,
+        "name": "great_sword"
+    },
+    {
+        "id": 144,
+        "name": "great_axe"
+    },
+    {
+        "id": 145,
+        "name": "great_pickaxe"
+    },
+    {
+        "id": 146,
+        "name": "great_shovel"
+    },
+    {
+        "id": 147,
+        "name": "great_spear"
+    },
+    {
+        "id": 148,
+        "name": "great_bow"
+    },
+    {
+        "id": 149,
+        "name": "great_helmet"
+    },
+    {
+        "id": 150,
+        "name": "great_chestplate"
+    },
+    {
+        "id": 151,
+        "name": "great_leggings"
+    },
+    {
+        "id": 152,
+        "name": "great_boots"
+    },
+    {
+        "id": 153,
+        "name": "great_shield"
+    },
+    {
+        "id": 154,
+        "name": "great_block"
+    },
+    {
+        "id": 155,
+        "name": "great_arrow"
+    },
+    {
+        "id": 156,
+        "name": "divine_sword"
+    },
+    {
+        "id": 157,
+        "name": "divine_axe"
+    },
+    {
+        "id": 158,
+        "name": "divine_pickaxe"
+    },
+    {
+        "id": 159,
+        "name": "divine_shovel"
+    },
+    {
+        "id": 160,
+        "name": "divine_spear"
+    },
+    {
+        "id": 161,
+        "name": "divine_bow"
+    },
+    {
+        "id": 162,
+        "name": "divine_helmet"
+    },
+    {
+        "id": 163,
+        "name": "divine_chestplate"
+    },
+    {
+        "id": 164,
+        "name": "divine_leggings"
+    },
+    {
+        "id": 165,
+        "name": "divine_boots"
+    },
+    {
+        "id": 166,
+        "name": "divine_shield"
+    },
+    {
+        "id": 167,
+        "name": "divine_block"
+    },
+    {
+        "id": 168,
+        "name": "divine_arrow"
+    }
+]
