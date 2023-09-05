@@ -25,6 +25,7 @@ class Magical;
 class Sicut;
 class Protagonist;
 class Inventory;
+class Party;
 
 std::map<int, std::string> items_all;
 
@@ -348,18 +349,21 @@ float calculateMercifulDamage(float baseDamage, float opponentHealth) {
 
 
 class Organism {
+    friend Party;
 public:
-    explicit Organism(std::string inputName) : name(std::move(inputName)), carcerisStrength(100, 100, 0, 0), level(0), dead(false), balance(0) {
+    explicit Organism(std::string inputName) : name(std::move(inputName)), carcerisStrength(100, 100, 0, 0), level(0),
+                                               dead(false), balance(0) {
     }
 
-    Organism(std::string inputName, const std::vector<float>& in_stats) : Organism(std::move(inputName)) {
+    Organism(std::string inputName, const std::vector<float> &in_stats) : Organism(std::move(inputName)) {
         stats.board_change(in_stats);
     }
 
     std::string getName() {
         return name;
     }
-    virtual void behavior()  {
+
+    virtual void behavior() {
         if (dead) return;
         std::cout << "As a organism, " << name << " is capable of running and rolling." << std::endl;
     }
@@ -395,12 +399,13 @@ public:
         std::cout << inventory << std::endl;
     };
 
-    bool checkForMercy(Organism& opponent) {
+    bool checkForMercy(Organism &opponent) {
         float opponentHealth = opponent.stats.hp.effectiveValue();
         float opponentMaxHealth = opponent.stats.hp.max();
         float selfHealth = stats.hp.effectiveValue();
 
-        float threshold = std::max(5.0f, opponentMaxHealth * 0.1f);  // Threshold for low health: 5 or 10% of max health, whichever is higher
+        float threshold = std::max(5.0f, opponentMaxHealth *
+                                         0.1f);  // Threshold for low health: 5 or 10% of max health, whichever is higher
 
         // Check for the condition to let go
         if (opponentHealth <= threshold && opponentHealth < 0.5 * selfHealth) {
@@ -412,7 +417,7 @@ public:
         return false;
     }
 
-    void fight(Organism& rhs) {
+    void fight(Organism &rhs) {
         if (dead) return;
         float power_lhs = this->stats.power();
         float power_rhs = rhs.stats.power();
@@ -428,7 +433,28 @@ public:
         stats.spd.effectiveValue();
     }
 
-    void turn_combat(Organism& rhs, int mode = 0) {
+    float normal_attack_damage() const {
+        return (this->stats.mag_atk.effectiveValue() > this->stats.phys_atk.effectiveValue()) ?
+               this->stats.mag_atk.effectiveValue() : this->stats.phys_atk.effectiveValue();
+    }
+
+    float calculate_crit(float normal_attack_damage) {
+        // RNG setup
+        auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+        std::mt19937 gen(seed);
+        std::uniform_real_distribution<> dis(0.0, 100.0); // 0 to 100%
+
+        float crit_chance_lhs =
+                this->stats.cc.effectiveValue() + ((this->stats.intelligence.effectiveValue() - 100) / 10);
+
+        if (dis(gen) < crit_chance_lhs) {
+            // Critical hit
+            normal_attack_damage *= 1 + this->stats.cd.effectiveValue() / 100.0f;
+        }
+        return normal_attack_damage;
+    }
+
+    void turn_combat(Organism &rhs, int mode = 0) {
         // mode 0 = fight to the death, mode 1 = fight to 30% hp.
         if (dead || rhs.dead) return;
         // RNG setup
@@ -442,7 +468,8 @@ public:
         float power_lhs = this->stats.power();
         float power_rhs = rhs.stats.power();
 
-        std::cout << this->name << "[" << int(power_lhs) << " power] versus " << rhs.name << "[" << int(power_rhs) << " power] " << std::endl;
+        std::cout << this->name << "[" << int(power_lhs) << " power] versus " << rhs.name << "[" << int(power_rhs)
+                  << " power] " << std::endl;
 
         while (this->stats.hp.effectiveValue() > 0 && rhs.stats.hp.effectiveValue() > 0) {
             checkForMercy(rhs);
@@ -451,22 +478,15 @@ public:
             progress_rhs += rhs.stats.spd.effectiveValue();
 
             if (dev_mode) {
-                std::cout << "[" << this->name << " Progress: " << progress_lhs << ", HP: " << this->stats.hp.effectiveValue() << "] ";
-                std::cout << "[" << rhs.name << " Progress: " << progress_rhs << ", HP: " << rhs.stats.hp.effectiveValue() << "]\n";
+                std::cout << "[" << this->name << " Progress: " << progress_lhs << ", HP: "
+                          << this->stats.hp.effectiveValue() << "] ";
+                std::cout << "[" << rhs.name << " Progress: " << progress_rhs << ", HP: "
+                          << rhs.stats.hp.effectiveValue() << "]\n";
             }
 
             if (progress_lhs >= 1000) {
                 // This organism attacks
-                float damage = (this->stats.mag_atk.effectiveValue() > this->stats.phys_atk.effectiveValue()) ?
-                               this->stats.mag_atk.effectiveValue() : this->stats.phys_atk.effectiveValue();
-
-                float crit_chance_lhs =
-                        this->stats.cc.effectiveValue() + ((this->stats.intelligence.effectiveValue() - 100) / 10);
-
-                if (dis(gen) < crit_chance_lhs) {
-                    // Critical hit
-                    damage *= 1 + this->stats.cd.effectiveValue() / 100.0f;
-                }
+                float damage = calculate_crit(normal_attack_damage());
 
                 if (mode == 1) {
                     float mercifulDamage = calculateMercifulDamage(damage, rhs.stats.hp.effectiveValue());
@@ -474,7 +494,7 @@ public:
                     if (mercifulDamage != damage) {
                         std::cout << this->name << " attacked " << rhs.name << " with mercy, only dealing "
                                   << mercifulDamage << " damage! (normal: " << damage << ")\n";
-                    }  else {
+                    } else {
                         std::cout << this->name << " attacks " << rhs.name << " for " << damage << " damage.\n";
                     }
                 } else {
@@ -487,15 +507,8 @@ public:
 
             if (progress_rhs >= 1000) {
                 // The opponent attacks
-                float damage = (rhs.stats.mag_atk.effectiveValue() > rhs.stats.phys_atk.effectiveValue()) ?
-                               rhs.stats.mag_atk.effectiveValue() : rhs.stats.phys_atk.effectiveValue();
 
-                float crit_chance_rhs = rhs.stats.cc.effectiveValue() + ((rhs.stats.intelligence.effectiveValue() - 100) / 10);
-
-                if (dis(gen) < crit_chance_rhs) {
-                    // Critical hit
-                    damage *= 1 + rhs.stats.cd.effectiveValue() / 100.0f;
-                }
+                float damage = rhs.calculate_crit(rhs.normal_attack_damage());
 
                 if (mode == 1) {
                     float mercifulDamage = calculateMercifulDamage(damage, stats.hp.effectiveValue());
@@ -515,11 +528,12 @@ public:
             if (mode == 0) {
                 // Declare the winner and loser
                 if (this->stats.hp.effectiveValue() <= 0 && rhs.stats.hp.effectiveValue() <= 0) {
-                    rhs.checkIfDead(); checkIfDead(); return;
                     std::cout << "Both " << this->name << " and " << rhs.name << " have been defeated.\n";
-                    rhs.assignXPGainAndPrint(power_lhs, power_rhs);
-                    assignXPGainAndPrint(power_rhs, power_lhs);
-
+                    if (rhs.checkIfDead() && checkIfDead()) return;
+                    else {
+                        rhs.assignXPGainAndPrint(power_lhs, power_rhs);
+                        assignXPGainAndPrint(power_rhs, power_lhs);
+                    }
                 } else if (this->stats.hp.effectiveValue() <= 0) {
                     checkIfDead();
                     rhs.balance += balance;
@@ -527,8 +541,7 @@ public:
                     std::cout << rhs.name << " wins and " << this->name << " loses.\n";
                     rhs.assignXPGainAndPrint(power_lhs, power_rhs);
 
-
-                } else {
+                } else if (rhs.stats.hp.effectiveValue() <= 0) {
                     rhs.checkIfDead();
                     balance += rhs.balance;
                     rhs.balance = 0;
@@ -539,10 +552,12 @@ public:
             }
             if (mode == 1) {
                 // 30% = end fight
-                if ((this->stats.hp.effectiveValue() <= this->stats.hp.max() * 0.3 || rhs.stats.hp.effectiveValue() <= rhs.stats.hp.max() * 0.3
+                if ((this->stats.hp.effectiveValue() <= this->stats.hp.max() * 0.3 ||
+                     rhs.stats.hp.effectiveValue() <= rhs.stats.hp.max() * 0.3
                      || this->stats.hp.effectiveValue() < 3 || rhs.stats.hp.effectiveValue() < 3)) {
                     // Someone's HP fell below 30% in mode 1
-                    if (this->stats.hp.effectiveValue() <= this->stats.hp.max() * 0.3 || this->stats.hp.effectiveValue() < 3) {
+                    if (this->stats.hp.effectiveValue() <= this->stats.hp.max() * 0.3 ||
+                        this->stats.hp.effectiveValue() < 3) {
                         // this organism lost in mode 1
                         std::cout << rhs.name << " wins and takes all the balance from " << this->name << ".\n";
                         rhs.balance += balance;
@@ -563,7 +578,7 @@ public:
     }
 
 
-    void attemptToPickpocket(Organism& rhs) {
+    void attemptToPickpocket(Organism &rhs) {
         if (dead) return;
         if (rhs.dead) {
             std::cout << name << " just attempted to pickpocket a dead corpse!" << std::endl;
@@ -578,7 +593,8 @@ public:
         float baseSuccessRate = 0.2;  // 20%
 
         // Modify success rate based on intelligence difference
-        float successRate = baseSuccessRate + 0.005f * (this->stats.intelligence.effectiveValue() - rhs.stats.intelligence.effectiveValue());
+        float successRate = baseSuccessRate + 0.005f * (this->stats.intelligence.effectiveValue() -
+                                                        rhs.stats.intelligence.effectiveValue());
         successRate = clamp(successRate, 0.0f, 1.0f); // Make sure it stays between 0 and 1
 
         // Attempt the pickpocket
@@ -647,7 +663,8 @@ public:
         float gainedXP = calculateXPGain(opponentPower, selfPower);
         addXP(gainedXP);
         std::cout << name << " gained " << gainedXP << " xp! ";
-        std::cout << "[Level " << level << ", " << xp << "/" << xpRequiredForLevelUp() << " to level " << (level + 1) << "]" << std::endl;
+        std::cout << "[Level " << level << ", " << xp << "/" << xpRequiredForLevelUp() << " to level " << (level + 1)
+                  << "]" << std::endl;
     }
 
     bool checkIfDead() {
@@ -665,14 +682,44 @@ public:
         stats.hp = stats.hp.max();
 
         if (dead) {
-            std::cout << name << " was dead, but now they have " << stats.hp.max() << "/" << stats.hp.max() << " health!" << std::endl;
+            std::cout << name << " was dead, but now they have " << stats.hp.max() << "/" << stats.hp.max()
+                      << " health!" << std::endl;
             dead = false;
         } else {
             float afterHealth = stats.hp.max();
             float healthGain = afterHealth - beforeHealth;
-            std::cout << name << " had " << beforeHealth << " health, but now they have " << afterHealth << "/" << stats.hp.max() << " health! (+" << healthGain << ")" << std::endl;
+            std::cout << name << " had " << beforeHealth << " health, but now they have " << afterHealth << "/"
+                      << stats.hp.max() << " health! (+" << healthGain << ")" << std::endl;
         }
     }
+
+    float currentPower() {
+        return stats.power();
+    }
+
+    void attackOpponent(Organism &opponent, int mode) {
+        // This is an example using some hypothetical member variables and methods
+        float damage = calculate_crit(normal_attack_damage());
+
+        if (mode == 1) {
+            float mercifulDamage = calculateMercifulDamage(damage, opponent.stats.hp.effectiveValue());
+            opponent.stats.hp -= mercifulDamage;
+
+            // Only display "with mercy" if the merciful damage is less than the original damage
+            if (mercifulDamage < damage) {
+                std::cout << this->name << " attacked " << opponent.name << " with mercy, only dealing "
+                          << mercifulDamage << " damage! (normal: " << damage << ")\n";
+            } else {
+                std::cout << this->name << " attacks " << opponent.name << " for " << mercifulDamage << " damage.\n";
+            }
+        } else {
+            opponent.stats.hp -= damage;
+            std::cout << this->name << " attacks " << opponent.name << " for " << damage << " damage.\n";
+        }
+    }
+
+
+
 
 
 
@@ -925,7 +972,73 @@ public:
         }
     }
 
-    // Additional functionalities can go here
+    // Deep breaths everyone.
+    bool party_duel(Party& rhs, int mode = 0) {
+        std::vector<Organism*> partyA, partyB;
+
+        // Populate partyA and partyB vectors with organisms from both parties (up to 4 each)
+        int count = 0;
+        for (auto& member : members) {
+            if (count >= 4) break;
+            partyA.push_back(member.first);
+            count++;
+        }
+        count = 0;
+        for (auto& member : rhs.members) {
+            if (count >= 4) break;
+            partyB.push_back(member.first);
+            count++;
+        }
+
+        // Initialize a vector to store progress for each combatant
+        std::vector<float> progressA(partyA.size(), 0.0f);
+        std::vector<float> progressB(partyB.size(), 0.0f);
+
+        // Main combat loop
+        while (true) {
+            // Update progress based on speed
+            for (size_t i = 0; i < partyA.size(); ++i) {
+                progressA[i] += partyA[i]->stats.spd.effectiveValue();
+                if (progressA[i] >= 1000) {
+                    // Find the weakest opponent in partyB
+                    auto weakest_it = std::min_element(partyB.begin(), partyB.end(), [](Organism* a, Organism* b) {
+                        return a->currentPower() < b->currentPower();
+                    });
+
+                    // Attack the weakest opponent (assuming attack logic in attackOpponent method)
+                    partyA[i]->attackOpponent(**weakest_it, mode);
+
+                    // Reset progress
+                    progressA[i] = 0;
+                }
+            }
+
+            // Similar logic for partyB
+            for (size_t i = 0; i < partyB.size(); ++i) {
+                progressB[i] += partyB[i]->stats.spd.effectiveValue();
+                if (progressB[i] >= 1000) {
+                    auto weakest_it = std::min_element(partyA.begin(), partyA.end(), [](Organism* a, Organism* b) {
+                        return a->currentPower() < b->currentPower();
+                    });
+                    partyB[i]->attackOpponent(**weakest_it, mode);
+                    progressB[i] = 0;
+                }
+            }
+
+            // Remove dead combatants
+            partyA.erase(std::remove_if(partyA.begin(), partyA.end(), [](Organism* org) { return org->stats.hp.effectiveValue() <= 0; }), partyA.end());
+            partyB.erase(std::remove_if(partyB.begin(), partyB.end(), [](Organism* org) { return org->stats.hp.effectiveValue() <= 0; }), partyB.end());
+
+            // Check win conditions
+            if (partyA.empty()) {
+                return false;
+            } else if (partyB.empty()) {
+                return true;
+            }
+        }
+    }
+
+
 };
 
 int main() {
@@ -946,46 +1059,63 @@ int main() {
     organisms.push_back(createOrganism(1,"Aruvious", {430, 560, 1150, 85, 28, 45, 150, 145})); // 4
     organisms.push_back(createOrganism(0, "Girl", {1400, 1000, 1600, 100, 55, 100, 300, 160})); // 5
     organisms.push_back(createOrganism(0, "Girlier", {1400, 1000, 1600, 100, 55, 100, 300, 160})); // 6
-
-
-    organisms[0]->increaseMagicalAtk(15);
-    for (std::unique_ptr<Organism>& organism : organisms) {
-        //organism->behavior();
-        organism->cast();
-    }
-
-    //organisms[0]->fight(*organisms[2]);
-    //organisms[0]->turn_combat(*organisms[2]);
-    //organisms[0]->turn_combat(*organisms[3]);
-    //organisms[3]->turn_combat(*organisms[4]);
     organisms[5]->turn_combat(*organisms[6]);
     organisms[0]->turn_combat(*organisms[5]);
     organisms[5]->fullHeal();
-    organisms[5]->attemptToPickpocket(*organisms[0]);
-    organisms[5]->attemptToPickpocket(*organisms[0]);
-    organisms[5]->attemptToPickpocket(*organisms[0]);
-    organisms[5]->attemptToPickpocket(*organisms[0]);
-    organisms[5]->attemptToPickpocket(*organisms[0]);
-    organisms[5]->attemptToPickpocket(*organisms[0]);
-    organisms[5]->attemptToPickpocket(*organisms[0]);
-    organisms[5]->attemptToPickpocket(*organisms[0]);
-    organisms[5]->attemptToPickpocket(*organisms[0]);
-    organisms[5]->attemptToPickpocket(*organisms[0]);
+
 
     Organism* girlptr = organisms[5].get();
     Organism* maeptr = organisms[0].get();
     Organism* aruptr = organisms[4].get();
 
+    // Add more organisms for testing party_duel
+    organisms.push_back(createOrganism(1, "Vulcan", {1200, 900, 1300, 90, 50, 80, 250, 140})); // 7
+    organisms.push_back(createOrganism(2, "Athena", {1100, 950, 1250, 88, 52, 85, 245, 145})); // 8
+    organisms.push_back(createOrganism(3, "Thor", {1300, 850, 1350, 92, 48, 75, 255, 135}));  // 9
+    organisms.push_back(createOrganism(4, "Apollo", {1150, 920, 1280, 89, 51, 82, 248, 142})); // 10
+
+// Pointers for easy reference
+    Organism* vulcanptr = organisms[7].get();
+    Organism* athenaptr = organisms[8].get();
+    Organism* thorptr = organisms[9].get();
+    Organism* apolloptr = organisms[10].get();
+
+// Setup Salam party
     Party Salam("Salam");
     Salam.addMember(girlptr, LEADER);
-    Salam.addMember(maeptr, INITIATE);
-    Salam.promoteMember(girlptr, maeptr, OFFICER);
-    Salam.listMembers();
-    Salam.removeMember(maeptr, girlptr);
+    Salam.addMember(maeptr, OFFICER);
+    Salam.addMember(vulcanptr, MEMBER);
+    Salam.addMember(athenaptr, INITIATE);
+
+// Setup Epoch party
     Party Epoch("Epoch");
     Epoch.addMember(aruptr, LEADER);
-    Salam += Epoch;
+    Epoch.addMember(thorptr, OFFICER);
+    Epoch.addMember(apolloptr, MEMBER);
+    Epoch.addMember(organisms[6].get(), INITIATE); // Girlier
+
+// List members before the duel
+    std::cout << "\nMembers of Salam before the duel:\n";
     Salam.listMembers();
+    std::cout << "\nMembers of Epoch before the duel:\n";
+    Epoch.listMembers();
+
+// Execute the party duel
+    std::cout << "\nStarting the duel between Salam and Epoch...\n";
+    bool winner = Salam.party_duel(Epoch, 1);
+
+// Announce the winner
+    if (winner) {
+        std::cout << "\nThe winner is Salam!\n";
+    } else {
+        std::cout << "\nThe winner is Epoch!\n";
+    }
+
+// List members after the duel
+    std::cout << "\nMembers of Salam after the duel:\n";
+    Salam.listMembers();
+    std::cout << "\nMembers of Epoch after the duel:\n";
+    Epoch.listMembers();
 
 
 };
