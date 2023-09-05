@@ -32,6 +32,15 @@ float clamp(float value, float min, float max) {
     return std::max(min, std::min(max, value));
 }
 
+enum PartyRole {
+    INITIATE,
+    MEMBER,
+    OFFICER,
+    LEADER,
+    RULER
+};
+
+
 class Attribute {
     friend std::ostream &operator<<(std::ostream &os, const Attribute &rhs) {
         os << "current " << rhs.value << ", max " << rhs.max_value << ", bonus " << rhs.bonus_flat << ", enhanced by "
@@ -347,6 +356,9 @@ public:
         stats.board_change(in_stats);
     }
 
+    std::string getName() {
+        return name;
+    }
     virtual void behavior()  {
         if (dead) return;
         std::cout << "As a organism, " << name << " is capable of running and rolling." << std::endl;
@@ -768,6 +780,154 @@ static std::unique_ptr<Organism> createOrganism(const int type, const std::strin
     }
 }
 
+static bool compareByRank(const std::pair<Organism*, PartyRole>& a, const std::pair<Organism*, PartyRole>& b) {
+    return a.second > b.second;
+}
+
+std::string partyRoleToString(PartyRole role) {
+    switch(role) {
+        case INITIATE:
+            return "Initiate";
+        case MEMBER:
+            return "Member";
+        case OFFICER:
+            return "Officer";
+        case LEADER:
+            return "Leader";
+        case RULER:
+            return "Ruler";
+        default:
+            return "Unknown";
+    }
+}
+
+class Party {
+private:
+    std::vector<std::pair<Organism*, PartyRole>> members;
+    std::string name;
+    std::vector<std::string> history;
+
+public:
+    // Constructor
+    Party(std::string input_name ) :name(std::move(input_name)) {}
+
+    // Add a member to the party with a specific role
+
+    void addMember(Organism* organism, PartyRole role = INITIATE) {
+        members.emplace_back(organism, role);
+        std::stringstream ss;
+        ss << "Member added: " << organism << " as " << role;
+        history.push_back(ss.str());
+    }
+
+    // Remove a member from the party
+    void removeMember(Organism* organism) {
+        members.erase(std::remove_if(members.begin(), members.end(),
+                                     [&](const std::pair<Organism*, PartyRole>& member) {
+                                         return member.first == organism;
+                                     }),
+                      members.end());
+    }
+
+    // Check if an organism is in the same party
+    bool isInSameParty(Organism* organism) {
+        for (const auto& member : members) {
+            if (member.first == organism) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Method for promoting a member
+    void promoteMember(Organism* issuer, Organism* target, PartyRole newRole) {
+        for (auto & it : members) {
+            Organism* curr_name = it.first;
+            PartyRole& role = it.second;
+
+            // Issuer must have a higher rank and cannot promote beyond their own rank
+            if (curr_name == issuer && role > MEMBER && role >= newRole) {
+                for (auto & member : members) {
+                    Organism* curr_target = member.first;
+                    PartyRole& curr_role = member.second;
+
+                    if (curr_target == target && curr_role < role) {
+                        curr_role = newRole;
+                        std::cout << issuer->getName() << " promoted " << target->getName() << " to " << newRole << std::endl;
+                        std::stringstream ss;
+                        ss << issuer->getName() << " promoted " << target->getName() << " to " << newRole;
+                        history.push_back(ss.str());
+                        return;
+                    }
+                }
+            }
+        }
+        std::cout << "Cannot promote: Either issuer or target not found, or issuer doesn't have the authority." << std::endl;
+    }
+
+    void removeMember(Organism* issuer, Organism* target) {
+        for (auto it = members.begin(); it != members.end(); ++it) {
+            Organism* member = it->first;
+            PartyRole& role = it->second;
+
+            if (member == issuer && role > MEMBER) {
+                for (auto it2 = members.begin(); it2 != members.end(); ++it2) {
+                    Organism* mem = it2->first;
+                    PartyRole& rol = it2->second;
+
+                    if (mem == target && rol < role) {
+                        members.erase(it2);
+                        std::cout << "Member " << target << " was removed by " << issuer << std::endl;
+                        std::stringstream ss;
+                        ss << issuer << " removed " << target;
+                        history.push_back(ss.str());
+                        return;
+                    }
+                }
+            }
+        }
+        std::cout << "Cannot remove: Either issuer or target not found, or issuer doesn't have a high enough rank." << std::endl;
+    }
+
+    // Party merger
+    Party& operator+=(Party& rhs) {
+        for (auto& it : rhs.members) {
+            Organism* member = it.first;
+            PartyRole role = it.second;
+            this->members.emplace_back(std::make_pair(member, role));
+        }
+        std::stringstream ss;
+        ss << "Merged party " << rhs.name << " into " << this->name;
+        history.push_back(ss.str());
+        std::cout << "Merged party " << rhs.name << " into " << this->name << std::endl;
+        rhs.members.clear(); // Clear the rhs party's member list
+        return *this;
+    }
+
+
+    // Get the role of a party member
+    PartyRole getRole(Organism* organism) {
+        for (const auto& member : members) {
+            if (member.first == organism) {
+                return member.second;
+            }
+        }
+        return INITIATE;  // Default if not found
+    }
+
+    void listMembers() {
+        // Sort members by rank
+        std::sort(members.begin(), members.end(), compareByRank);
+
+        std::cout << "Members of Party " << name << ":" << std::endl;
+        for (const auto& member : members) {
+            std::cout << member.first->getName() << " (" << partyRoleToString(member.second) << ")" << std::endl;
+        }
+    }
+
+    // Additional functionalities can go here
+};
+
 int main() {
     //loadItems();
     //printAllItems(items_all);
@@ -811,6 +971,21 @@ int main() {
     organisms[5]->attemptToPickpocket(*organisms[0]);
     organisms[5]->attemptToPickpocket(*organisms[0]);
     organisms[5]->attemptToPickpocket(*organisms[0]);
+
+    Organism* girlptr = organisms[5].get();
+    Organism* maeptr = organisms[0].get();
+    Organism* aruptr = organisms[4].get();
+
+    Party Salam("Salam");
+    Salam.addMember(girlptr, LEADER);
+    Salam.addMember(maeptr, INITIATE);
+    Salam.promoteMember(girlptr, maeptr, OFFICER);
+    Salam.listMembers();
+    Salam.removeMember(maeptr, girlptr);
+    Party Epoch("Epoch");
+    Epoch.addMember(aruptr, LEADER);
+    Salam += Epoch;
+    Salam.listMembers();
 
 
 };
