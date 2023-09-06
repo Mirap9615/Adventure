@@ -31,6 +31,9 @@ class Inventory;
 class Party;
 class Events;
 
+
+void chapter_one(std::shared_ptr<Organism>& player);
+
 std::map<int, std::string> items_all;
 std::map<int, std::unique_ptr<Monster>> monsters_all;
 
@@ -724,11 +727,12 @@ public:
         float power_lhs = this->stats.power();
         float power_rhs = rhs.stats.power();
 
+
         float damageDealt_lhs = 0;
         float damageDealt_rhs = 0;
         int turns = 0;
 
-        std::cout << this->name << "[" << int(power_lhs) << " power] versus " << rhs.name << "[" << int(power_rhs)
+        std::cout << this->name << " [" << int(power_lhs) << " power] versus " << rhs.name << " [" << int(power_rhs)
                   << " power] " << std::endl;
 
         while (this->stats.hp.effectiveValue() > 0 && rhs.stats.hp.effectiveValue() > 0) {
@@ -1006,6 +1010,22 @@ public:
         details = detai;
     }
 
+    void earnSlate(float amount) {
+        if (amount < 0) {
+            std::cout << "You cannot earn negative amounts of slate!\n";
+        } else {
+            balance += amount;
+        }
+    }
+
+    void loseSlate(float amount) {
+        if (amount < 0) {
+            std::cout << "You cannot lose negative amounts of slate!\n";
+        } else {
+            balance -= amount;
+        }
+    }
+
 protected:
     bool magic_able = false;
     bool dead;
@@ -1018,6 +1038,12 @@ protected:
     float balance;
     std::string details;
 };
+
+float calculateSlate(const Organism& org) {
+    float power = org.calculatePower();
+    float slate = power * 10 * std::pow(power / 14.6, 2);
+    return slate;
+}
 
 class Magical : public Organism {
 public:
@@ -1499,6 +1525,8 @@ void preSetUp() {
     loadMonsters();
 }
 
+
+
 void displayInitialLore() {
     printSlowly(
             "--- The Story Begins ---\n"
@@ -1510,6 +1538,18 @@ void displayInitialLore() {
             "In Crende, you can carve out a new life, reclaim your honor, and perhaps even change the course of all of Sicutity, if you become a Hero.\n"
             "But there is no way you will become a Hero. Not unless you carve out your own destiny."
     );
+
+    printSlowly(
+            "--- Chapter One: The New Beginning ---\n"
+            "You make up your mind. You're going to become a great hero.\n"
+            "After a long journey, you finally arrive in Crende — thirsty, starving, but full of hope.\n"
+            "As you walk through the city, you marvel at its chaotic splendor. Yet, beneath it all, you feel an underlying sense of order, as if the city was controlled by invisible forces.\n"
+            "You know you need to join the adventurers' guild. Finding the grandest building in downtown, you register as an adventurer.\n"
+            "'You are an F10 rank adventurer, the lowest of the low,' says the clerk. You grit your teeth. 'I'll be A-rank soon enough, just you wait!'\n"
+            "The hall erupts in laughter. Face burning, you run out of the hall."
+            "You now stand in the middle of a busy city square, now a 'lowest of the low' tier adventurer. What do you do?\n"
+    );
+
 }
 
 void choiceJob() {
@@ -1523,7 +1563,13 @@ void choiceJob() {
     );
 }
 
-void choiceSolo(std::shared_ptr<Organism>& player) {
+void awardSlate(std::shared_ptr<Organism>& player, const Monster& defeated_monster) {
+    float deservedSlate = calculateSlate(defeated_monster);
+    player->earnSlate(deservedSlate);
+    std::cout << "For their efforts, " << player->getName() << " has earned " << deservedSlate << " slate!" << std::endl;
+
+}
+int choiceSolo(std::shared_ptr<Organism>& player) {
     printSlowly(
             "You walk through the city and towards the southern gate — the boundary separating the known world from the unknown.\n"
             "As you pass through the gate, you feel energy flowing through you, making you tremble with excitement.\n"
@@ -1531,11 +1577,47 @@ void choiceSolo(std::shared_ptr<Organism>& player) {
             "You march forward into the unknown. Suddenly, something hits your leg hard. You recognize it as a slime and prepare for battle.\n"
             "Drawing your iron sword — a purchase that cost you the rest of your money - you prepare yourself for the fight."
     );
+    // Prompt the player for a choice
+    std::string choice;
+    do {
+        std::cout << "Do you wish to fight? (y/n): ";
+        std::cin >> choice;
+    } while (choice != "y" && choice != "n");
+
+    if (choice == "n") {
+        return 1;
+    }
+
+    // Create a slime from the predefined monsters
     Monster first_slime = *monsters_all[1];
+
+    // Perform the combat
     player->turn_combat(first_slime, 0, true);
 
+    // Congratulate the player
+    awardSlate(player, *monsters_all[1]);
+    printSlowly("Congratulations! You have the talents of a true adventurer.");
+
+    // Lore crawl for additional slimes defeated
+
+    for (int i = 0; i < 3; ++i) {
+        Monster another_slime = *monsters_all[1];
+        player->turn_combat(another_slime, 0, true);
+        awardSlate(player, *monsters_all[1]);
+    }
+
+    printSlowly(
+            "\nReveling in the joy of killing monsters, you ventured deeper into the forest. Before you knew it, "
+            "you had killed another three slimes."
+            );
 
 
+
+    printSlowly(
+            "Before you realized it, the sun was setting. You quickly gather your things and return to the safety of the city."
+            );
+
+    return 0;
 }
 
 void choiceParty() {
@@ -1548,20 +1630,10 @@ void choiceParty() {
 }
 
 void chapter_one(std::shared_ptr<Organism>& player) {
-    printSlowly(
-            "--- Chapter One: The New Beginning ---\n"
-            "You make up your mind. You're going to become a great hero.\n"
-            "After a long journey, you finally arrive in Crende — thirsty, starving, but full of hope.\n"
-            "As you walk through the city, you marvel at its chaotic splendor. Yet, beneath it all, you feel an underlying sense of order, as if the city was controlled by invisible forces.\n"
-            "You know you need to join the adventurers' guild. Finding the grandest building in downtown, you register as an adventurer.\n"
-            "'You are an F10 rank adventurer, the lowest of the low,' says the clerk. You grit your teeth. 'I'll be A-rank soon enough, just you wait!'\n"
-            "The hall erupts in laughter. Face burning, you run out of the hall."
-    );
     std::vector<char> availableChoices {'a', 'b', 'c'};
     char choice;
 
     while (true) {
-        std::cout << "You now stand in the middle of a busy city square, now a 'lowest of the low' tier adventurer. What do you do?\n";
         if (std::find(availableChoices.begin(), availableChoices.end(), 'a') != availableChoices.end()) {
             std::cout << "a) Find a job in the city\n";
         }
@@ -1578,8 +1650,13 @@ void chapter_one(std::shared_ptr<Organism>& player) {
             choiceJob();
             availableChoices.erase(std::remove(availableChoices.begin(), availableChoices.end(), 'a'), availableChoices.end());
         } else if (choice == 'b') {
-            choiceSolo(player);
-            break;
+            int result = choiceSolo(player);
+            if (result == 0) {
+                return;
+            } else if (result == 1){
+                printSlowly("You stand at the city square once again, confidence vastly lowered. "
+                            "You know, deep down, that you were supposed to take that fight.");
+            }
         } else if (choice == 'c') {
             choiceParty();
             availableChoices.erase(std::remove(availableChoices.begin(), availableChoices.end(), 'c'), availableChoices.end());
@@ -1589,12 +1666,15 @@ void chapter_one(std::shared_ptr<Organism>& player) {
     }
 }
 
+void chapter_two(std::shared_ptr<Organism>& player) {
 
+}
 
 int main() {
     preSetUp();
     std::shared_ptr<Organism> player = createProtagonist();
     //displayInitialLore();
     chapter_one(player);
+    chapter_two(player);
 
 };
