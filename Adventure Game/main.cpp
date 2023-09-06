@@ -15,7 +15,7 @@
 #include <sstream> // for string stream operations
 
 // Global Variables
-bool dev_mode = true;
+bool dev_mode = false;
 
 // Pre declaration
 class Attribute;
@@ -301,6 +301,36 @@ public:
         }
     }
 
+    float getSingleStatMax(int type) const {
+        switch (type) {
+            case HP:
+                return hp.max();
+            case MANA:
+                return mana.max();
+            case STAMINA:
+                return stamina.max();
+            case DEFENSE:
+                return defense.max();
+            case PHYS_ATK:
+                return phys_atk.max();
+            case MAG_ATK:
+                return mag_atk.max();
+            case SPD:
+                return spd.max();
+            case INTELLIGENCE:
+                return intelligence.max();
+            case LUCK:
+                return luck.max();
+            case CRIT_CHANCE:
+                return cc.max();
+            case CRIT_DAMAGE:
+                return cd.max();
+            default:
+                std::cerr << "Invalid attribute type.";
+                return -1;
+        }
+    }
+
 private:
 
 };
@@ -466,6 +496,31 @@ public:
         max_slots += slots;
     }
 
+    // Assignment operator
+    Inventory& operator=(const Inventory& other) {
+        // 1. Check self assignment
+        if (this == &other) {
+            return *this;
+        }
+
+        // 2. Copy simple member variables
+        this->max_slots = other.max_slots;
+        this->used_slots = other.used_slots;
+
+        // 3. Clear existing items
+        for (auto& item : this->items) {
+            delete item.second.first;  // Deallocate Object* pointers
+        }
+        this->items.clear();
+
+        // 4. Copy items from 'other' object
+        for (const auto& item : other.items) {
+            auto objCopy = new Object(*(item.second.first));  // Deep copy, assuming Object has a copy constructor
+            this->items[item.first] = {objCopy, item.second.second};
+        }
+
+        return *this;
+    }
 private:
     int max_slots;
     int used_slots;
@@ -492,6 +547,28 @@ public:
     Organism(std::string inputName, const std::vector<float> &in_stats) : Organism(std::move(inputName)) {
         stats.board_change(in_stats);
     }
+
+    // assignment operator overload:
+    Organism& operator=(const Organism& other) {
+        if (this == &other) {
+            return *this; // Return *this to deal with self-assignment
+        }
+
+        // Copy member variables from 'other' object
+        this->magic_able = other.magic_able;
+        this->dead = other.dead;
+        this->carcerisStrength = other.carcerisStrength;
+        this->stats = other.stats;
+        this->name = other.name;
+        this->inventory = other.inventory;
+        this->level = other.level;
+        this->xp = other.xp;
+        this->balance = other.balance;
+        this->details = other.details;
+
+        return *this;
+    }
+
 
     std::string getName() {
         return name;
@@ -551,6 +628,10 @@ public:
 
     float getSingleStat(int type) const {
         return stats.getSingleStatEffective(type);
+    }
+
+    float getSingleStatMax(int type) const {
+        return stats.getSingleStatMax(type);
     }
 
     bool checkForMercy(Organism &opponent) {
@@ -647,8 +728,10 @@ public:
                   << " power] " << std::endl;
 
         while (this->stats.hp.effectiveValue() > 0 && rhs.stats.hp.effectiveValue() > 0) {
-            checkForMercy(rhs);
-            rhs.checkForMercy(*this);
+            if (mode != 0) {
+                checkForMercy(rhs);
+                rhs.checkForMercy(*this);
+            }
             progress_lhs += this->stats.spd.effectiveValue();
             progress_rhs += rhs.stats.spd.effectiveValue();
 
@@ -690,14 +773,15 @@ public:
                             power_winner = power_lhs;
                             power_loser = power_rhs;
                         }
-                        result.winner->assignXPGainAndPrint(power_loser, power_winner);
                         std::cout << result.winner->name << " wins and " << result.loser->name << " loses.\n";
                         if (result.loser->balance <= 0) {
-                            std::cout << result.loser->name << " has no money on their body!\n";
+                            //std::cout << result.loser->name << " has no money on their body!\n";
                         } else {
                             result.winner->balance += result.loser->balance;
                             result.loser->balance = 0;
                         }
+                        result.winner->assignXPGainAndPrint(power_loser, power_winner);
+                        std::cout << result.winner->name << " has " << result.winner->getSingleStat(1) << " / " << result.winner->getSingleStatMax(1) << " health remaining!";
                     }
                 } else if (mode == 1) {
                     rhs.checkIfDead();
@@ -716,6 +800,9 @@ public:
                             power_loser = power_rhs;
                         }
                         std::cout << result.winner->name << " wins and " << result.loser->name << " loses!\n";
+                        std::cout << result.winner->name << " has " << result.winner->getSingleStat(1) << " / " << result.winner->getSingleStatMax(1) << " health remaining!";
+                        std::cout << result.loser->name << " has " << result.loser->getSingleStat(1) << " / " << result.loser->getSingleStatMax(1) << " health remaining!";
+
                     }
                 }
             }
@@ -746,6 +833,58 @@ public:
             }
         }
     }
+
+    void turn_combat_quick(Organism &rhs, int mode = 0) {
+        if (dead || rhs.dead) return;
+
+        auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+        std::mt19937 gen(seed);
+        std::uniform_real_distribution<> dis(0.0, 100.0); // 0 to 100%
+
+        float progress_lhs = this->stats.spd.effectiveValue();
+        float progress_rhs = rhs.stats.spd.effectiveValue();
+
+        float damageDealt_lhs = 0;
+        float damageDealt_rhs = 0;
+        int turns = 0;
+
+        while (this->stats.hp.effectiveValue() > 0 && rhs.stats.hp.effectiveValue() > 0) {
+            if (mode != 0) {
+                checkForMercy(rhs);
+                rhs.checkForMercy(*this);
+            }
+            progress_lhs += this->stats.spd.effectiveValue();
+            progress_rhs += rhs.stats.spd.effectiveValue();
+
+            if (progress_lhs >= 1000) {
+                turns++;
+                damageDealt_lhs += performAttack(rhs, mode); // Assuming performAttack returns the damage dealt
+                progress_lhs = 0;
+            }
+            if (progress_rhs >= 1000) {
+                turns++;
+                damageDealt_rhs += rhs.performAttack(*this, mode);
+                progress_rhs = 0;
+            }
+
+            CombatResult result = check_finish(*this, rhs, mode);
+            if (result.isOver) {
+                turns++;
+                if (result.winner == nullptr) {
+                    // No winner
+                } else {
+                    // Someone won
+                }
+                break;
+            }
+
+
+        }
+        std::cout << "Fight over in " << turns << " turns.\n";
+        std::cout << this->name << " dealt " << damageDealt_lhs << " total damage. Remaining HP: " << this->stats.hp.effectiveValue() << ".\n";
+        std::cout << rhs.name << " dealt " << damageDealt_rhs << " total damage. Remaining HP: " << rhs.stats.hp.effectiveValue() << ".\n";
+    }
+
 
 
     void attemptToPickpocket(Organism &rhs) {
@@ -867,7 +1006,7 @@ public:
         return stats.power();
     }
 
-    void performAttack(Organism &opponent, int mode) {
+    float performAttack(Organism &opponent, int mode, bool silence = false) {
         // performs a single attack
         float damage = calculate_crit(normal_attack_damage());
 
@@ -877,14 +1016,24 @@ public:
 
             // Only display "with mercy" if the merciful damage is less than the original damage
             if (mercifulDamage < damage) {
-                std::cout << this->name << " attacked " << opponent.name << " with mercy, only dealing "
-                          << mercifulDamage << " damage! (normal: " << damage << ")\n";
+                if (!silence) {
+                    std::cout << this->name << " attacked " << opponent.name << " with mercy, only dealing "
+                              << mercifulDamage << " damage! (normal: " << damage << ")\n";
+                }
             } else {
-                std::cout << this->name << " attacks " << opponent.name << " for " << mercifulDamage << " damage.\n";
+                if (!silence) {
+                    std::cout << this->name << " attacks " << opponent.name << " for " << mercifulDamage
+                              << " damage.\n";
+                }
             }
+            return mercifulDamage;
         } else {
             opponent.stats.hp -= damage;
-            std::cout << this->name << " attacks " << opponent.name << " for " << damage << " damage.\n";
+            if (!silence) {
+                std::cout << this->name << " attacks " << opponent.name << " for " << damage << " damage.\n";
+            }
+
+            return damage;
         }
     }
 
@@ -926,14 +1075,23 @@ public:
     void increaseMagicalAtk(float inputValue) override {
         stats.mag_atk += inputValue;
     }
+
+    // simple assignment operator overload (cause there is nothing)
+    Magical& operator=(const Magical& other) {
+        // 1. Check self assignment
+        if (this == &other) {
+            return *this;
+        }
+
+        // 2. Copy the base class members
+        Organism::operator=(other);
+
+        // 3. Copy the derived class members
+        return *this;
+    }
+
 private:
 };
-
-#include <string>
-#include <vector>
-#include <iostream>
-
-// Assuming Magical and Organism classes are already defined
 
 class Monster : public Magical {
 public:
@@ -956,6 +1114,22 @@ public:
         std::cout << "As a monster of type " << type << ", " << getName() << " resides in " << habitat << "." << std::endl;
     }
 
+    // assignment operator overload
+    Monster& operator=(const Monster& other) {
+        if (this == &other) {
+            return *this; // return *this to deal with self-assignment
+        }
+
+        // Copy the base class members
+        Magical::operator=(other);
+
+        // Copy the derived class members
+        type = other.type;
+        habitat = other.habitat;
+
+        return *this;
+    }
+
 protected:
     std::string type;     // Monster type (e.g., "slime", "humanoid", etc.)
     std::string habitat;  // Habitat where the monster is found (e.g., "forest", "ocean", etc.)
@@ -974,6 +1148,28 @@ public:
 
     void behavior() override {
         std::cout << "As a sicut, " << name << " could potentially be performing mindful magic, while running. Probably would not roll, at least not in public." << std::endl;
+    }
+
+    // copy constructor (new thing)
+    Sicut(const Sicut& other) : Magical(other), charm(other.charm), reputation(other.reputation) {
+        // Assuming that the copy constructor for the Magical class and Attribute class handles everything appropriately
+    }
+
+    // copy assignment constructor (existing thing)
+    Sicut& operator=(const Sicut& other) {
+        // 1. Check self assignment
+        if (this == &other) {
+            return *this;  // Handle self-assignment
+        }
+
+        // 2. Call the base class copy assignment constructor overload
+        Magical::operator=(other);
+
+        // 3. Copy non-inherited, non-pointer members
+        this->charm = other.charm;
+        this->reputation = other.reputation;
+
+        return *this;
     }
 
 protected:
@@ -1275,12 +1471,12 @@ public:
 std::unique_ptr<Organism> createProtagonist() {
     std::string name;
     std::cout << "Welcome to the Adventure Game (Sick title coming eventually)!\n";
-    std::cout << "Please enter your character's name: ";
+    std::cout << "What would you like to be called?: ";
     std::getline(std::cin, name);
 
     auto protagonist = std::make_unique<Protagonist>(name);
 
-    std::cout << "You are now " << name << ", a fledgling adventurer in the Empire of Conselle.\n";
+    std::cout << "You are now " << name << ".\n";
     return protagonist;
 }
 
@@ -1362,14 +1558,17 @@ void choiceJob() {
     );
 }
 
-void choiceSolo() {
+void choiceSolo(std::shared_ptr<Organism>& player) {
     printSlowly(
-            "You walk through the city and towards the southern gate—the boundary separating the known world from the unknown.\n"
+            "You walk through the city and towards the southern gate — the boundary separating the known world from the unknown.\n"
             "As you pass through the gate, a strange energy flows through you, making you tremble with excitement.\n"
             "You venture past the city's boundary into an endless expanse of lush forest. 'This is the land of monsters?' you ponder.\n"
             "You march forward into the unknown. Suddenly, something hits your leg hard. You recognize it as a slime and prepare for battle.\n"
             "Drawing your iron sword — a purchase that cost you the rest of your money - you prepare yourself for the fight."
     );
+    Monster first_slime = *monsters_all[1];
+    player->turn_combat_quick(first_slime, 0);
+
 
 
 }
@@ -1383,7 +1582,7 @@ void choiceParty() {
     );
 }
 
-void chapter_one() {
+void chapter_one(std::shared_ptr<Organism>& player) {
     printSlowly(
             "--- Chapter One: The New Beginning ---\n"
             "You make up your mind. You're going to become a great hero.\n"
@@ -1414,7 +1613,7 @@ void chapter_one() {
             choiceJob();
             availableChoices.erase(std::remove(availableChoices.begin(), availableChoices.end(), 'a'), availableChoices.end());
         } else if (choice == 'b') {
-            choiceSolo();
+            choiceSolo(player);
             break;
         } else if (choice == 'c') {
             choiceParty();
@@ -1429,8 +1628,8 @@ void chapter_one() {
 
 int main() {
     preSetUp();
-    std::unique_ptr<Organism> player = createProtagonist();
-    displayInitialLore();
-    chapter_one();
+    std::shared_ptr<Organism> player = createProtagonist();
+    //displayInitialLore();
+    chapter_one(player);
 
 };
