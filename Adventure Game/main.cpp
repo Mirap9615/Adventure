@@ -24,6 +24,7 @@ class Item;
 class Weapon;
 class Organism;
 class Magical;
+class Monster;
 class Sicut;
 class Protagonist;
 class Inventory;
@@ -31,6 +32,7 @@ class Party;
 class Events;
 
 std::map<int, std::string> items_all;
+std::map<int, std::unique_ptr<Monster>> monsters_all;
 
 float clamp(float value, float min, float max) {
     return std::max(min, std::min(max, value));
@@ -885,6 +887,11 @@ public:
             std::cout << this->name << " attacks " << opponent.name << " for " << damage << " damage.\n";
         }
     }
+
+    void setDetails(const std::string& detai) {
+        details = detai;
+    }
+
 protected:
     bool magic_able = false;
     bool dead;
@@ -895,6 +902,7 @@ protected:
     int level;
     float xp;
     float balance;
+    std::string details;
 };
 
 class Magical : public Organism {
@@ -920,6 +928,39 @@ public:
     }
 private:
 };
+
+#include <string>
+#include <vector>
+#include <iostream>
+
+// Assuming Magical and Organism classes are already defined
+
+class Monster : public Magical {
+public:
+    // name, stats, type, habitat
+    Monster(const std::string& given_name, const std::vector<float>& in_stats, std::string given_type, std::string  given_habitat)
+            : Magical(given_name, in_stats), type(std::move(given_type)), habitat(std::move(given_habitat)) {
+    }
+
+    // Getters for the new attributes
+    std::string getType() const {
+        return type;
+    }
+
+    std::string getHabitat() const {
+        return habitat;
+    }
+
+    void behavior() override {
+        Magical::behavior();  // Call base class behavior
+        std::cout << "As a monster of type " << type << ", " << getName() << " resides in " << habitat << "." << std::endl;
+    }
+
+protected:
+    std::string type;     // Monster type (e.g., "slime", "humanoid", etc.)
+    std::string habitat;  // Habitat where the monster is found (e.g., "forest", "ocean", etc.)
+};
+
 
 class Sicut : public Magical {
 public:
@@ -978,6 +1019,30 @@ void loadItems() {
         int id = item["id"];
         std::string name = item["name"];
         items_all[id] = name;
+    }
+}
+
+std::unique_ptr<Monster> createBasicMonster(const std::string& name, const std::vector<float>& stats, const std::string& type, const std::string& habitat, const std::string& details = "A nameless monster.") {
+    std::unique_ptr<Monster> monster = std::make_unique<Monster>(name, stats, type, habitat);
+    monster->setDetails(details);
+    return monster;
+}
+
+void loadMonsters() {
+    std::ifstream file("monsters.json");
+    nlohmann::json json_data;
+    file >> json_data;
+
+    for (const auto& entry : json_data) {
+        int id = entry["id"];
+        std::string name = entry["name"];
+        std::vector<float> stats = {entry["Hp"], entry["Mp"], entry["Stamina"], entry["Defense"],
+                                    entry["Phys_Atk"], entry["Mag_Atk"], entry["Intelligence"]};
+        // vector < Health	Mana	Stamina	Defense	Phys Atk	Mag Atk	Speed	Int >
+        std::string type = entry["type"];
+        std::string habitat = entry["habitat"];
+        std::string details = entry["details"];
+        monsters_all[id] = createBasicMonster(name, stats, type, habitat, details);
     }
 }
 
@@ -1271,6 +1336,7 @@ void heckOff() {
 
 void preSetUp() {
     loadItems();
+    //loadMonsters();
 }
 
 void displayInitialLore() {
@@ -1289,7 +1355,7 @@ void displayInitialLore() {
 void choiceJob() {
     printSlowly(
             "You look around the city hoping to find a job, but people laugh in your face.\n"
-            "'You're too weak,' they say to you, 'go get stronger, weakling. You can't even man a store.'\n"
+            "'You're too weak,' they say to you, 'go get stronger. You can't even man a store.'\n"
             "You get mad and try to swing at someone. You instantly black out.\n"
             "You wake up a few hours later on the street, feeling saliva all over your body.\n"
             "You feel bloodied up. Did a random citizen really take you out with one punch?\n"
@@ -1303,8 +1369,10 @@ void choiceSolo() {
             "As you pass through the gate, a strange energy flows through you, making you tremble with excitement.\n"
             "You venture past the city's boundary into an endless expanse of lush forest. 'This is the land of monsters?' you ponder.\n"
             "You march forward into the unknown. Suddenly, something hits your leg hard. You recognize it as a slime and prepare for battle.\n"
-            "Drawing your iron sword—a purchase that cost your family a year's salary—you steel yourself for the fight."
+            "Drawing your iron sword — a purchase that cost you the rest of your money - you prepare yourself for the fight."
     );
+
+
 }
 
 void choiceParty() {
@@ -1360,12 +1428,10 @@ void chapter_one() {
 
 
 
-
 int main() {
-    // preSetUp()
+    preSetUp();
     std::unique_ptr<Organism> player = createProtagonist();
     displayInitialLore();
     chapter_one();
-
 
 };
