@@ -803,7 +803,7 @@ public:
                             result.loser->balance = 0;
                         }
                         result.winner->assignXPGainAndPrint(power_loser, power_winner);
-                        std::cout << result.winner->name << " has " << result.winner->getSingleStat(1) << " / " << result.winner->getSingleStatMax(1) << " health remaining!";
+                        std::cout << result.winner->name << " has " << result.winner->getSingleStat(1) << " / " << result.winner->getSingleStatMax(1) << " health remaining!\n";
                     }
                 } else if (mode == 1) {
                     rhs.checkIfDead();
@@ -1597,6 +1597,7 @@ int choiceSolo(std::shared_ptr<Organism>& player) {
     // Congratulate the player
     awardSlate(player, *monsters_all[1]);
     printSlowly("Congratulations! You have the talents of a true adventurer.");
+    printSlowly("\nReveling in the joy of killing monsters, you ventured deeper into the forest.");
 
     // Lore crawl for additional slimes defeated
 
@@ -1606,15 +1607,12 @@ int choiceSolo(std::shared_ptr<Organism>& player) {
         awardSlate(player, *monsters_all[1]);
     }
 
-    printSlowly(
-            "\nReveling in the joy of killing monsters, you ventured deeper into the forest. Before you knew it, "
-            "you had killed another three slimes."
-            );
+    printSlowly("\nBefore you knew it, you had killed another three slimes.");
 
 
 
     printSlowly(
-            "Before you realized it, the sun was setting. You quickly gather your things and return to the safety of the city."
+            "The sun was setting. You quickly gather your things and return to the safety of the city."
             );
 
     return 0;
