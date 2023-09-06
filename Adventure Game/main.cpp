@@ -844,6 +844,9 @@ public:
         float progress_lhs = this->stats.spd.effectiveValue();
         float progress_rhs = rhs.stats.spd.effectiveValue();
 
+        float power_lhs = this->stats.power();
+        float power_rhs = rhs.stats.power();
+
         float damageDealt_lhs = 0;
         float damageDealt_rhs = 0;
         int turns = 0;
@@ -869,23 +872,95 @@ public:
 
             CombatResult result = check_finish(*this, rhs, mode);
             if (result.isOver) {
-                turns++;
-                if (result.winner == nullptr) {
-                    // No winner
+                std::cout << "Fight over in " << turns << " turns.\n";
+                if (getSingleStat(HP) > 0) {
+                    std::cout << this->name << " dealt " << damageDealt_lhs << " damage total.\n";
                 } else {
-                    // Someone won
+                    std::cout << this->name << " dealt " << damageDealt_lhs << " damage total.\n";
                 }
-                break;
+
+                if (rhs.getSingleStat(HP) > 0) {
+                    std::cout << rhs.name << " dealt " << damageDealt_rhs << " damage total.\n";
+                } else {
+                    std::cout << rhs.name << " dealt " << damageDealt_rhs << " damage total.\n";
+                }
+                if (mode == 0) {
+                    // Fight to the death result
+                    rhs.checkIfDead();
+                    checkIfDead();
+                    if (result.winner == nullptr) {
+                        // nobody won
+                        std::cout << "Both " << this->name << " and " << rhs.name << " have died! Fight over.\n";
+                        // there will be no awarding of xp or anything. Both are dead, after all.
+                    } else {
+                        float power_winner = power_rhs;
+                        float power_loser = power_lhs;
+                        // somebody won
+                        if (result.winner == this) {
+                            // this is lhs, so
+                            power_winner = power_lhs;
+                            power_loser = power_rhs;
+                        }
+                        std::cout << result.winner->name << " wins and " << result.loser->name << " loses.\n";
+                        if (result.loser->balance <= 0) {
+                            //std::cout << result.loser->name << " has no money on their body!\n";
+                        } else {
+                            result.winner->balance += result.loser->balance;
+                            result.loser->balance = 0;
+                        }
+                        result.winner->assignXPGainAndPrint(power_loser, power_winner);
+                        std::cout << result.winner->name << " has " << result.winner->getSingleStat(1) << " / " << result.winner->getSingleStatMax(1) << " health remaining!";
+                    }
+
+                } else if (mode == 1) {
+                    rhs.checkIfDead();
+                    checkIfDead();
+                    if (result.winner == nullptr) {
+                        // nobody won
+                        std::cout << "Both " << this->name << " and " << rhs.name << " withdrew from the fight.\n";
+                        // You do not get xp from this.
+                    } else {
+                        float power_winner = power_rhs;
+                        float power_loser = power_lhs;
+                        // somebody won
+                        if (result.winner == this) {
+                            // this is lhs, so
+                            power_winner = power_lhs;
+                            power_loser = power_rhs;
+                        }
+                        std::cout << result.winner->name << " wins and " << result.loser->name << " loses!\n";
+                        std::cout << result.winner->name << " has " << result.winner->getSingleStat(1) << " / " << result.winner->getSingleStatMax(1) << " health remaining!";
+                        std::cout << result.loser->name << " has " << result.loser->getSingleStat(1) << " / " << result.loser->getSingleStatMax(1) << " health remaining!";
+
+                    }
+                }
             }
 
+            if (mode == 1) {
+                // 30% = end fight
+                if ((this->stats.hp.effectiveValue() <= this->stats.hp.max() * 0.3 ||
+                     rhs.stats.hp.effectiveValue() <= rhs.stats.hp.max() * 0.3
+                     || this->stats.hp.effectiveValue() < 3 || rhs.stats.hp.effectiveValue() < 3)) {
+                    // Someone's HP fell below 30% in mode 1
+                    if (this->stats.hp.effectiveValue() <= this->stats.hp.max() * 0.3 ||
+                        this->stats.hp.effectiveValue() < 3) {
+                        // this organism lost in mode 1
+                        std::cout << rhs.name << " wins and takes all the balance from " << this->name << ".\n";
+                        rhs.balance += balance;
+                        balance = 0;
+                        checkIfDead();
+                        return;
+                    } else {
+                        // rhs organism lost in mode 1
+                        std::cout << this->name << " wins and takes all the balance from " << rhs.name << ".\n";
+                        balance += rhs.balance;
+                        rhs.balance = 0;
+                        rhs.checkIfDead();
+                        return;
+                    }
+                }
+            }
 
-        }
-        std::cout << "Fight over in " << turns << " turns.\n";
-        if (getSingleStat(HP) > 0) {
-            std::cout << this->name << " dealt " << damageDealt_lhs << " total damage. Remaining HP: " << this->stats.hp.effectiveValue() << ".\n";
-        }
-        if (rhs.getSingleStat(HP) > 0) {
-            std::cout << rhs.name << " dealt " << damageDealt_rhs << " total damage. Remaining HP: " << rhs.stats.hp.effectiveValue() << ".\n";
         }
     }
 
@@ -1565,7 +1640,7 @@ void choiceJob() {
 void choiceSolo(std::shared_ptr<Organism>& player) {
     printSlowly(
             "You walk through the city and towards the southern gate — the boundary separating the known world from the unknown.\n"
-            "As you pass through the gate, a strange energy flows through you, making you tremble with excitement.\n"
+            "As you pass through the gate, you feel energy flowing through you, making you tremble with excitement.\n"
             "You venture past the city's boundary into an endless expanse of lush forest. 'This is the land of monsters?' you ponder.\n"
             "You march forward into the unknown. Suddenly, something hits your leg hard. You recognize it as a slime and prepare for battle.\n"
             "Drawing your iron sword — a purchase that cost you the rest of your money - you prepare yourself for the fight."
