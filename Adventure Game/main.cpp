@@ -858,12 +858,12 @@ public:
 
             if (progress_lhs >= 1000) {
                 turns++;
-                damageDealt_lhs += performAttack(rhs, mode); // Assuming performAttack returns the damage dealt
+                damageDealt_lhs += performAttack(rhs, mode, true); // Assuming performAttack returns the damage dealt
                 progress_lhs = 0;
             }
             if (progress_rhs >= 1000) {
                 turns++;
-                damageDealt_rhs += rhs.performAttack(*this, mode);
+                damageDealt_rhs += rhs.performAttack(*this, mode, true);
                 progress_rhs = 0;
             }
 
@@ -881,8 +881,12 @@ public:
 
         }
         std::cout << "Fight over in " << turns << " turns.\n";
-        std::cout << this->name << " dealt " << damageDealt_lhs << " total damage. Remaining HP: " << this->stats.hp.effectiveValue() << ".\n";
-        std::cout << rhs.name << " dealt " << damageDealt_rhs << " total damage. Remaining HP: " << rhs.stats.hp.effectiveValue() << ".\n";
+        if (getSingleStat(HP) > 0) {
+            std::cout << this->name << " dealt " << damageDealt_lhs << " total damage. Remaining HP: " << this->stats.hp.effectiveValue() << ".\n";
+        }
+        if (rhs.getSingleStat(HP) > 0) {
+            std::cout << rhs.name << " dealt " << damageDealt_rhs << " total damage. Remaining HP: " << rhs.stats.hp.effectiveValue() << ".\n";
+        }
     }
 
 
