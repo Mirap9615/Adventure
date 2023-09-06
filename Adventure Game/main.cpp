@@ -1035,14 +1035,13 @@ void loadMonsters() {
 
     for (const auto& entry : json_data) {
         int id = entry["id"];
-        std::string name = entry["name"];
+        std::string name = entry["Name"];
         std::vector<float> stats = {entry["Hp"], entry["Mp"], entry["Stamina"], entry["Defense"],
                                     entry["Phys_Atk"], entry["Mag_Atk"], entry["Intelligence"]};
         // vector < Health	Mana	Stamina	Defense	Phys Atk	Mag Atk	Speed	Int >
         std::string type = entry["type"];
         std::string habitat = entry["habitat"];
-        std::string details = entry["details"];
-        monsters_all[id] = createBasicMonster(name, stats, type, habitat, details);
+        monsters_all[id] = createBasicMonster(name, stats, type, habitat);
     }
 }
 
@@ -1336,7 +1335,7 @@ void heckOff() {
 
 void preSetUp() {
     loadItems();
-    //loadMonsters();
+    loadMonsters();
 }
 
 void displayInitialLore() {
