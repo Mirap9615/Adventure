@@ -5,25 +5,10 @@
 
 #ifndef FRONTIER_GAME_BEINGS_H
 #define FRONTIER_GAME_BEINGS_H
-
-#include <iostream>
-#include <utility>
-#include <vector>
-#include <map>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <memory>
-#include "nlohmann/json.hpp"
-#include <cmath>
-#include <random>
-#include <chrono>
-#include <algorithm>
-#include <thread> // for sleep
-#include <sstream> // for string stream operations
 #include "qol.h"
 #include "universal.h"
 #include "objects.h"
+#include "inventory.h"
 
 // 0. Necessary
 class Organism;
@@ -88,13 +73,13 @@ public:
     void addItemsToInventory(int id, int amount) {
         if (dead) return;
         std::cout << "[" << name << "]" << " ";
-        //inventory.addItems(id, amount, items_all);
+        inventory.addItems(id, amount, ItemsAllHook());
     }
 
     void removeItemsFromInventory(int id, int amount) {
         if (dead) return;
         std::cout << "[" << name << "]" << " ";
-        //inventory.removeItems(id, amount, items_all);
+        inventory.removeItems(id, amount, ItemsAllHook());
     }
 
     void expandInventory(int amount) {
@@ -531,10 +516,101 @@ protected:
     float balance;
     std::string details;
 };
-class Magical;
-class Monster;
-class Sicut;
-class Protagonist;
+class Magical : public Organism {
+public:
+    explicit Magical(const std::string& given_name) : Organism(given_name) {
+        magic_able = true;
+        carcerisStrength = 150;
+    }
+    Magical(std::string inputName, const std::vector<float>& in_stats) : Organism(std::move(inputName)) {
+        stats.board_change(in_stats);
+    }
+
+    void behavior() override {
+        std::cout << "As a magic-capable, " << name << " is capable of performing mindless magic, while running and rolling." << std::endl;
+    }
+
+    void cast() override {
+        std::cout << "If " << name << " was to cast magic, they would average " << stats.mag_atk.effectiveValue() << " magical damage per spell." << std::endl;
+    }
+
+    void increaseMagicalAtk(float inputValue) override {
+        stats.mag_atk += inputValue;
+    }
+
+    // simple assignment operator overload (cause there is nothing)
+    Magical& operator=(const Magical& other) {
+        // 1. Check self assignment
+        if (this == &other) {
+            return *this;
+        }
+
+        // 2. Copy the base class members
+        Organism::operator=(other);
+
+        // 3. Copy the derived class members
+        return *this;
+    }
+
+private:
+};
+
+
+class Sicut : public Magical {
+public:
+    explicit Sicut(const std::string& given_name) : Magical(given_name), charm(100, 100, 0,0) {
+        balance = 0;
+        reputation = 0;
+    }
+    Sicut(const std::string& inputName, const std::vector<float>& in_stats) : Magical(inputName), charm(100, 100, 0, 0) {
+        stats.board_change(in_stats);
+    }
+
+    void behavior() override {
+        std::cout << "As a sicut, " << name << " could potentially be performing mindful magic, while running. Probably would not roll, at least not in public." << std::endl;
+    }
+
+    // copy constructor (new thing)
+    Sicut(const Sicut& other) : Magical(other), charm(other.charm), reputation(other.reputation) {
+        // Assuming that the copy constructor for the Magical class and Attribute class handles everything appropriately
+    }
+
+    // copy assignment constructor (existing thing)
+    Sicut& operator=(const Sicut& other) {
+        // 1. Check self assignment
+        if (this == &other) {
+            return *this;  // Handle self-assignment
+        }
+
+        // 2. Call the base class copy assignment constructor overload
+        Magical::operator=(other);
+
+        // 3. Copy non-inherited, non-pointer members
+        this->charm = other.charm;
+        this->reputation = other.reputation;
+
+        return *this;
+    }
+
+protected:
+    double reputation;
+    Attribute charm;
+};
+
+class Protagonist : public Sicut {
+public:
+    explicit Protagonist(const std::string& given_name) : Sicut(given_name) {}
+    Protagonist(const std::string& inputName, const std::vector<float>& in_stats) : Sicut(inputName) {
+        stats.board_change(in_stats);
+    }
+
+    void behavior() override {
+        std::cout << "As the protagonist, " << name << " is capable of performing world-changing feats, perhaps of magic, and potentially while running. Probably would not roll, maybe not even in private." << std::endl;
+    }
+private:
+    std::vector<std::string> current_quests;
+
+};
 
 // 3. Class-Dependent
 float calculateSlate(const Organism& org);

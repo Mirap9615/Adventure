@@ -1,15 +1,10 @@
-#include <iostream>
-#include <utility>
-#include <vector>
-#include <map>
-#include <string>
-#include <memory>
-#include "nlohmann/json.hpp"
-#include <chrono>
-#include <algorithm>
+#include "universal.h"
 #include "beings.h"
 #include "qol.h"
 #include "objects.h"
+#include "inventory.h"
+#include "monster.h"
+#include "lore.h"
 
 
 // Global Variables
@@ -19,152 +14,10 @@ bool dev_mode = false;
 class Object;
 class Item;
 class Weapon;
-class Inventory;
 class Party;
 class Events;
 
-void chapter_one(std::shared_ptr<Organism>& player);
 std::map<int, std::unique_ptr<Monster>> monsters_all;
-
-
-
-class Magical : public Organism {
-public:
-    explicit Magical(const std::string& given_name) : Organism(given_name) {
-        magic_able = true;
-        carcerisStrength = 150;
-    }
-    Magical(std::string inputName, const std::vector<float>& in_stats) : Organism(std::move(inputName)) {
-        stats.board_change(in_stats);
-    }
-
-    void behavior() override {
-        std::cout << "As a magic-capable, " << name << " is capable of performing mindless magic, while running and rolling." << std::endl;
-    }
-
-    void cast() override {
-        std::cout << "If " << name << " was to cast magic, they would average " << stats.mag_atk.effectiveValue() << " magical damage per spell." << std::endl;
-    }
-
-    void increaseMagicalAtk(float inputValue) override {
-        stats.mag_atk += inputValue;
-    }
-
-    // simple assignment operator overload (cause there is nothing)
-    Magical& operator=(const Magical& other) {
-        // 1. Check self assignment
-        if (this == &other) {
-            return *this;
-        }
-
-        // 2. Copy the base class members
-        Organism::operator=(other);
-
-        // 3. Copy the derived class members
-        return *this;
-    }
-
-private:
-};
-
-class Monster : public Magical {
-public:
-    // name, stats, type, habitat
-    Monster(const std::string& given_name, const std::vector<float>& in_stats, std::string given_type, std::string  given_habitat)
-            : Magical(given_name, in_stats), type(std::move(given_type)), habitat(std::move(given_habitat)) {
-    }
-
-    // Getters for the new attributes
-    std::string getType() const {
-        return type;
-    }
-
-    std::string getHabitat() const {
-        return habitat;
-    }
-
-    void behavior() override {
-        Magical::behavior();  // Call base class behavior
-        std::cout << "As a monster of type " << type << ", " << getName() << " resides in " << habitat << "." << std::endl;
-    }
-
-    // assignment operator overload
-    Monster& operator=(const Monster& other) {
-        if (this == &other) {
-            return *this; // return *this to deal with self-assignment
-        }
-
-        // Copy the base class members
-        Magical::operator=(other);
-
-        // Copy the derived class members
-        type = other.type;
-        habitat = other.habitat;
-
-        return *this;
-    }
-
-protected:
-    std::string type;     // Monster type (e.g., "slime", "humanoid", etc.)
-    std::string habitat;  // Habitat where the monster is found (e.g., "forest", "ocean", etc.)
-};
-
-
-class Sicut : public Magical {
-public:
-    explicit Sicut(const std::string& given_name) : Magical(given_name), charm(100, 100, 0,0) {
-        balance = 0;
-        reputation = 0;
-    }
-    Sicut(const std::string& inputName, const std::vector<float>& in_stats) : Magical(inputName), charm(100, 100, 0, 0) {
-        stats.board_change(in_stats);
-    }
-
-    void behavior() override {
-        std::cout << "As a sicut, " << name << " could potentially be performing mindful magic, while running. Probably would not roll, at least not in public." << std::endl;
-    }
-
-    // copy constructor (new thing)
-    Sicut(const Sicut& other) : Magical(other), charm(other.charm), reputation(other.reputation) {
-        // Assuming that the copy constructor for the Magical class and Attribute class handles everything appropriately
-    }
-
-    // copy assignment constructor (existing thing)
-    Sicut& operator=(const Sicut& other) {
-        // 1. Check self assignment
-        if (this == &other) {
-            return *this;  // Handle self-assignment
-        }
-
-        // 2. Call the base class copy assignment constructor overload
-        Magical::operator=(other);
-
-        // 3. Copy non-inherited, non-pointer members
-        this->charm = other.charm;
-        this->reputation = other.reputation;
-
-        return *this;
-    }
-
-protected:
-    double reputation;
-    Attribute charm;
-};
-
-class Protagonist : public Sicut {
-public:
-    explicit Protagonist(const std::string& given_name) : Sicut(given_name) {}
-    Protagonist(const std::string& inputName, const std::vector<float>& in_stats) : Sicut(inputName) {
-        stats.board_change(in_stats);
-    }
-
-    void behavior() override {
-        std::cout << "As the protagonist, " << name << " is capable of performing world-changing feats, perhaps of magic, and potentially while running. Probably would not roll, maybe not even in private." << std::endl;
-    }
-private:
-    std::vector<std::string> current_quests;
-
-};
 
 class Events {
 public:
@@ -172,9 +25,11 @@ public:
 private:
 };
 
+void chapter_one(std::shared_ptr<Organism>& player);
+
+
 void printAllItems(const std::map<int, std::string>& itemList) {
     std::cout << "There are currently " << itemList.size() << " registered items." << std::endl;
-
     for (const auto& pair : itemList) {
         std::cout << "id: " << pair.first << " is " << pair.second << std::endl;
     }
@@ -184,11 +39,12 @@ void loadItems() {
     std::ifstream file("items.json");
     nlohmann::json json;
     file >> json;
+    std::map<int, std::string> items_all = ItemsAllHook();
 
     for (const auto& item : json) {
         int id = item["id"];
         std::string name = item["name"];
-        //items_all[id] = name;
+        items_all[id] = name;
     }
 }
 
@@ -508,50 +364,13 @@ void preSetUp() {
     loadMonsters();
 }
 
-
-
-void displayInitialLore() {
-    printSlowly(
-            "--- The Story Begins ---\n"
-            "You find yourself in the glorious Empire of Conselle, one of the most powerful Empires Syurga has ever seen.\n"
-            "Not long ago, you were expelled from the capital city of Mysynfo, after a misunderstanding with the ruling nobility.\n"
-            "With limited options and the world seemingly against you, you head south to the city of Crende.\n"
-            "Crende, the adventuring hub of the world, calls to you. Here, adventurers rise and fall like the tides, "
-            "and stories of glory and despair turn into legends.\n"
-            "In Crende, you can carve out a new life, reclaim your honor, and perhaps even change the course of all of Sicutity, if you become a Hero.\n"
-            "But there is no way you will become a Hero. Not unless you carve out your own destiny."
-    );
-
-    printSlowly(
-            "--- Chapter One: The New Beginning ---\n"
-            "You make up your mind. You're going to become a great hero.\n"
-            "After a long journey, you finally arrive in Crende — thirsty, starving, but full of hope.\n"
-            "As you walk through the city, you marvel at its chaotic splendor. Yet, beneath it all, you feel an underlying sense of order, as if the city was controlled by invisible forces.\n"
-            "You know you need to join the adventurers' guild. Finding the grandest building in downtown, you register as an adventurer.\n"
-            "'You are an F10 rank adventurer, the lowest of the low,' says the clerk. You grit your teeth. 'I'll be A-rank soon enough, just you wait!'\n"
-            "The hall erupts in laughter. Face burning, you run out of the hall."
-            "You now stand in the middle of a busy city square, now a 'lowest of the low' tier adventurer. What do you do?\n"
-    );
-
-}
-
-void choiceJob() {
-    printSlowly(
-            "You look around the city hoping to find a job, but people laugh in your face.\n"
-            "'You're too weak,' they say to you, 'go get stronger. You can't even man a store.'\n"
-            "You get mad and try to swing at someone. You instantly black out.\n"
-            "You wake up a few hours later on the street, feeling saliva all over your body.\n"
-            "You feel bloodied up. Did a random citizen really take you out with one punch?\n"
-            "You realize nobody in this city is normal. You are in the land of wolves."
-    );
-}
-
 void awardSlate(std::shared_ptr<Organism>& player, const Monster& defeated_monster) {
     float deservedSlate = calculateSlate(defeated_monster);
     player->earnSlate(deservedSlate);
     std::cout << "For their efforts, " << player->getName() << " has earned " << deservedSlate << " slate!" << std::endl;
 
 }
+
 int choiceSolo(std::shared_ptr<Organism>& player) {
     printSlowly(
             "You walk through the city and towards the southern gate — the boundary separating the known world from the unknown.\n"
@@ -601,15 +420,6 @@ int choiceSolo(std::shared_ptr<Organism>& player) {
     return 0;
 }
 
-void choiceParty() {
-    printSlowly(
-            "You return to the adventurers' guild, still smarting from the earlier humiliation.\n"
-            "As you step in, the laughter resumes — apparently, adventurers have long memories.\n"
-            "'Oh, its the big shot! You B rank yet?' A roguish adventurer smirked. \n"
-            "Your cheeks burn with embarrassment, and you run out of the hall once more."
-    );
-}
-
 void chapter_one(std::shared_ptr<Organism>& player) {
     std::vector<char> availableChoices {'a', 'b', 'c'};
     char choice;
@@ -647,8 +457,13 @@ void chapter_one(std::shared_ptr<Organism>& player) {
     }
 }
 
-void chapter_two(std::shared_ptr<Organism>& player) {
+void menuChoice() {
 
+}
+
+void chapter_two(std::shared_ptr<Organism>& player) {
+    returnToCity();
+    menuChoice();
 }
 
 int main() {

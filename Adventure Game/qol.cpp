@@ -11,14 +11,6 @@
 #include "qol.h"
 
 // 1. Class-Independent
-void printSlowly(const std::string& text, int delay_ms) {
-    for (char c : text) {
-        std::cout << c;
-        std::cout.flush(); // allows immediate printing
-        std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
-    }
-    std::cout << std::endl;
-}
 
 float calculatePower(float hp, float mana, float stamina, float defense, float phys_atk, float mag_atk, float speed, float intelligence) {
     float unified1 = (5 * mag_atk * (mana / 30) + phys_atk) * std::pow(1.5f, (speed / 100) - 1);
@@ -26,6 +18,7 @@ float calculatePower(float hp, float mana, float stamina, float defense, float p
 
     return (unified2 * std::pow(2, (intelligence - 100) / 20) - 1) / 10;
 }
+
 
 float calculateMercifulDamage(float baseDamage, float opponentHealth) {
     float actualDamage = baseDamage;

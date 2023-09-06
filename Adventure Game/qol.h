@@ -10,18 +10,12 @@
 #include "universal.h"
 
 // 1. Class-Independent
-// Prints the given string with a set amount of delay for every letter
-void printSlowly(const std::string& text, int delay_ms = 15);
 
 // Uses the m-type power formula to calculate power
 float calculatePower(float hp, float mana, float stamina, float defense, float phys_atk, float mag_atk, float speed, float intelligence);
 
 
 float calculateMercifulDamage(float baseDamage, float opponentHealth);
-
-//std::string getItem(int id, std::map<int, std::string>& items_all) {
-//    return items_all[id];
-//}
 
 
 // 2. Classes
