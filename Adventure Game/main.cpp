@@ -13,20 +13,24 @@
 #include <algorithm>
 #include <thread> // for sleep
 #include <sstream> // for string stream operations
-
+#include "beings.h"
+#include "qol.h"
 // Global Variables
 bool dev_mode = false;
+
+enum PartyRole {
+    INITIATE,
+    MEMBER,
+    OFFICER,
+    LEADER,
+    RULER
+};
 
 // Pre declaration
 class Attribute;
 class Object;
 class Item;
 class Weapon;
-class Organism;
-class Magical;
-class Monster;
-class Sicut;
-class Protagonist;
 class Inventory;
 class Party;
 class Events;
@@ -37,23 +41,6 @@ void chapter_one(std::shared_ptr<Organism>& player);
 std::map<int, std::string> items_all;
 std::map<int, std::unique_ptr<Monster>> monsters_all;
 
-float clamp(float value, float min, float max) {
-    return std::max(min, std::min(max, value));
-}
-
-enum PartyRole {
-    INITIATE,
-    MEMBER,
-    OFFICER,
-    LEADER,
-    RULER
-};
-
-struct CombatResult {
-    bool isOver;
-    Organism* winner;
-    Organism* loser;
-};
 
 void printSlowly(const std::string& text, int delay_ms = 15) {
     for (char c : text) {
@@ -65,84 +52,7 @@ void printSlowly(const std::string& text, int delay_ms = 15) {
 }
 
 
-class Attribute {
-    friend std::ostream &operator<<(std::ostream &os, const Attribute &rhs) {
-        os << "current " << rhs.value << ", max " << rhs.max_value << ", bonus " << rhs.bonus_flat << ", enhanced by "
-           << rhs.boost_percentage << "%" << ", netting " << rhs.effectiveValue();
-        return os;
-    }
 
-    friend bool operator<(const Attribute &lhs, const Attribute &rhs) {
-        if (lhs.type != rhs.type) {
-            std::cerr << "Warning: do not compare apples to oranges! Defaulting to false.\n";
-            return false;
-        }
-        if (lhs.effectiveValue() < rhs.effectiveValue()) {
-            return true;
-        }
-        return false;
-    }
-
-public:
-    // Constructor for two-input scenarios (for stats):
-    Attribute(int type, float inValue) : type(type), value(inValue) {
-        max_value = value;
-        bonus_flat = 0;
-        boost_percentage = 0;
-    }
-
-    // Constructor for multi-input scenarios (for vanity stats):
-    Attribute(float inValue, float max_value_in, float bonus_flat_in, float bonus_percentage_in) {
-        value = inValue;
-        max_value = max_value_in;
-        bonus_flat = bonus_flat_in;
-        boost_percentage = bonus_percentage_in;
-        type = 0;
-    }
-
-
-    float effectiveValue() const {
-        //std::cout << "[value: " << value << "; bonus flat: " << bonus_flat << "; bonus percentage " << boost_percentage << "]";
-        return (value + bonus_flat) * ((1 + boost_percentage) / 1);
-    }
-
-    Attribute& operator+=(float inValue) {
-        value += inValue;
-        return *this;
-    }
-
-    Attribute& operator=(float inValue) {
-        value = inValue;
-        max_value = inValue;
-        return *this;
-    }
-
-    void changeType(int typeValue) {
-        type = typeValue;
-    }
-
-    Attribute& operator-=(float inValue) {
-        value -= inValue;
-        return *this;
-    }
-
-    float max() const {
-        return max_value;
-    }
-
-private:
-    int type; // 0 means unclassified, 1 to 9 are stat types
-    // 10 is damage, 11 is durability
-    float value;
-    float max_value;
-    float bonus_flat;
-    float boost_percentage;
-};
-
-enum AttributeType {
-    HP = 1, MANA = 2, STAMINA = 3, DEFENSE = 4, PHYS_ATK = 5, MAG_ATK = 6, SPD = 7, INTELLIGENCE = 8, LUCK = 9,
-    CRIT_CHANCE = 10,CRIT_DAMAGE = 11,
-};
 
 float calculatePower(float hp, float mana, float stamina, float defense, float phys_atk, float mag_atk, float speed, float intelligence) {
     float unified1 = (5 * mag_atk * (mana / 30) + phys_atk) * std::pow(1.5f, (speed / 100) - 1);
@@ -1039,11 +949,6 @@ protected:
     std::string details;
 };
 
-float calculateSlate(const Organism& org) {
-    float power = org.calculatePower();
-    float slate = power * 10 * std::pow(power / 14.6, 2);
-    return slate;
-}
 
 class Magical : public Organism {
 public:
