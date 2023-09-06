@@ -710,133 +710,10 @@ public:
     }
 
 
-    void turn_combat(Organism &rhs, int mode = 0) {
+    void turn_combat(Organism &rhs, int mode = 0, bool quick = false) {
         // mode 0 = fight to the death, mode 1 = fight to 30% hp or lower.
         if (dead || rhs.dead) return;
         // RNG setup
-        auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-        std::mt19937 gen(seed);
-        std::uniform_real_distribution<> dis(0.0, 100.0); // 0 to 100%
-
-        float progress_lhs = this->stats.spd.effectiveValue();
-        float progress_rhs = rhs.stats.spd.effectiveValue();
-
-        float power_lhs = this->stats.power();
-        float power_rhs = rhs.stats.power();
-
-        std::cout << this->name << "[" << int(power_lhs) << " power] versus " << rhs.name << "[" << int(power_rhs)
-                  << " power] " << std::endl;
-
-        while (this->stats.hp.effectiveValue() > 0 && rhs.stats.hp.effectiveValue() > 0) {
-            if (mode != 0) {
-                checkForMercy(rhs);
-                rhs.checkForMercy(*this);
-            }
-            progress_lhs += this->stats.spd.effectiveValue();
-            progress_rhs += rhs.stats.spd.effectiveValue();
-
-            if (dev_mode) {
-                std::cout << "[" << this->name << " Progress: " << progress_lhs << ", HP: "
-                          << this->stats.hp.effectiveValue() << "] ";
-                std::cout << "[" << rhs.name << " Progress: " << progress_rhs << ", HP: "
-                          << rhs.stats.hp.effectiveValue() << "]\n";
-            }
-
-            if (progress_lhs >= 1000) {
-                // This organism attacks
-                performAttack(rhs, mode);
-                progress_lhs = 0;
-            }
-
-            if (progress_rhs >= 1000) {
-                // The opponent attacks
-                rhs.performAttack(*this, mode);
-                progress_rhs = 0;
-            }
-
-            CombatResult result = check_finish(*this, rhs, mode);
-            if (result.isOver) {
-                if (mode == 0) {
-                    // Fight to the death result
-                    rhs.checkIfDead();
-                    checkIfDead();
-                    if (result.winner == nullptr) {
-                        // nobody won
-                        std::cout << "Both " << this->name << " and " << rhs.name << " have died! Fight over.\n";
-                        // there will be no awarding of xp or anything. Both are dead, after all.
-                    } else {
-                        float power_winner = power_rhs;
-                        float power_loser = power_lhs;
-                        // somebody won
-                        if (result.winner == this) {
-                            // this is lhs, so
-                            power_winner = power_lhs;
-                            power_loser = power_rhs;
-                        }
-                        std::cout << result.winner->name << " wins and " << result.loser->name << " loses.\n";
-                        if (result.loser->balance <= 0) {
-                            //std::cout << result.loser->name << " has no money on their body!\n";
-                        } else {
-                            result.winner->balance += result.loser->balance;
-                            result.loser->balance = 0;
-                        }
-                        result.winner->assignXPGainAndPrint(power_loser, power_winner);
-                        std::cout << result.winner->name << " has " << result.winner->getSingleStat(1) << " / " << result.winner->getSingleStatMax(1) << " health remaining!";
-                    }
-                } else if (mode == 1) {
-                    rhs.checkIfDead();
-                    checkIfDead();
-                    if (result.winner == nullptr) {
-                        // nobody won
-                        std::cout << "Both " << this->name << " and " << rhs.name << " withdrew from the fight.\n";
-                        // You do not get xp from this.
-                    } else {
-                        float power_winner = power_rhs;
-                        float power_loser = power_lhs;
-                        // somebody won
-                        if (result.winner == this) {
-                            // this is lhs, so
-                            power_winner = power_lhs;
-                            power_loser = power_rhs;
-                        }
-                        std::cout << result.winner->name << " wins and " << result.loser->name << " loses!\n";
-                        std::cout << result.winner->name << " has " << result.winner->getSingleStat(1) << " / " << result.winner->getSingleStatMax(1) << " health remaining!";
-                        std::cout << result.loser->name << " has " << result.loser->getSingleStat(1) << " / " << result.loser->getSingleStatMax(1) << " health remaining!";
-
-                    }
-                }
-            }
-
-            if (mode == 1) {
-                // 30% = end fight
-                if ((this->stats.hp.effectiveValue() <= this->stats.hp.max() * 0.3 ||
-                     rhs.stats.hp.effectiveValue() <= rhs.stats.hp.max() * 0.3
-                     || this->stats.hp.effectiveValue() < 3 || rhs.stats.hp.effectiveValue() < 3)) {
-                    // Someone's HP fell below 30% in mode 1
-                    if (this->stats.hp.effectiveValue() <= this->stats.hp.max() * 0.3 ||
-                        this->stats.hp.effectiveValue() < 3) {
-                        // this organism lost in mode 1
-                        std::cout << rhs.name << " wins and takes all the balance from " << this->name << ".\n";
-                        rhs.balance += balance;
-                        balance = 0;
-                        checkIfDead();
-                        return;
-                    } else {
-                        // rhs organism lost in mode 1
-                        std::cout << this->name << " wins and takes all the balance from " << rhs.name << ".\n";
-                        balance += rhs.balance;
-                        rhs.balance = 0;
-                        rhs.checkIfDead();
-                        return;
-                    }
-                }
-            }
-        }
-    }
-
-    void turn_combat_quick(Organism &rhs, int mode = 0) {
-        if (dead || rhs.dead) return;
-
         auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
         std::mt19937 gen(seed);
         std::uniform_real_distribution<> dis(0.0, 100.0); // 0 to 100%
@@ -851,6 +728,9 @@ public:
         float damageDealt_rhs = 0;
         int turns = 0;
 
+        std::cout << this->name << "[" << int(power_lhs) << " power] versus " << rhs.name << "[" << int(power_rhs)
+                  << " power] " << std::endl;
+
         while (this->stats.hp.effectiveValue() > 0 && rhs.stats.hp.effectiveValue() > 0) {
             if (mode != 0) {
                 checkForMercy(rhs);
@@ -859,14 +739,24 @@ public:
             progress_lhs += this->stats.spd.effectiveValue();
             progress_rhs += rhs.stats.spd.effectiveValue();
 
+            if (dev_mode && !quick) {
+                std::cout << "[" << this->name << " Progress: " << progress_lhs << ", HP: "
+                          << this->stats.hp.effectiveValue() << "] ";
+                std::cout << "[" << rhs.name << " Progress: " << progress_rhs << ", HP: "
+                          << rhs.stats.hp.effectiveValue() << "]\n";
+            }
+
             if (progress_lhs >= 1000) {
                 turns++;
-                damageDealt_lhs += performAttack(rhs, mode, true); // Assuming performAttack returns the damage dealt
+                // This organism attacks
+                damageDealt_lhs += performAttack(rhs, mode, true);
                 progress_lhs = 0;
             }
+
             if (progress_rhs >= 1000) {
                 turns++;
-                damageDealt_rhs += rhs.performAttack(*this, mode, true);
+                // The opponent attacks
+                damageDealt_rhs += rhs.performAttack(*this, mode, quick);
                 progress_rhs = 0;
             }
 
@@ -911,7 +801,6 @@ public:
                         result.winner->assignXPGainAndPrint(power_loser, power_winner);
                         std::cout << result.winner->name << " has " << result.winner->getSingleStat(1) << " / " << result.winner->getSingleStatMax(1) << " health remaining!";
                     }
-
                 } else if (mode == 1) {
                     rhs.checkIfDead();
                     checkIfDead();
@@ -960,11 +849,8 @@ public:
                     }
                 }
             }
-
         }
     }
-
-
 
     void attemptToPickpocket(Organism &rhs) {
         if (dead) return;
@@ -1646,7 +1532,7 @@ void choiceSolo(std::shared_ptr<Organism>& player) {
             "Drawing your iron sword — a purchase that cost you the rest of your money - you prepare yourself for the fight."
     );
     Monster first_slime = *monsters_all[1];
-    player->turn_combat_quick(first_slime, 0);
+    player->turn_combat(first_slime, 0, true);
 
 
 
