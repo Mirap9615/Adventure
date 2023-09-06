@@ -11,6 +11,8 @@
 #include <random>
 #include <chrono>
 #include <algorithm>
+#include <thread> // for sleep
+#include <sstream> // for string stream operations
 
 // Global Variables
 bool dev_mode = true;
@@ -48,6 +50,14 @@ struct CombatResult {
     Organism* loser;
 };
 
+void printSlowly(const std::string& text, int delay_ms = 15) {
+    for (char c : text) {
+        std::cout << c;
+        std::cout.flush(); // allows immediate printing
+        std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
+    }
+    std::cout << std::endl;
+}
 
 
 class Attribute {
@@ -1198,12 +1208,19 @@ public:
 
 };
 
-int main() {
-    //loadItems();
-    //printAllItems(items_all);
-    //std::cout << calculatePower(1400, 1000, 1600, 100, 55, 100, 300, 160);
+std::unique_ptr<Organism> createProtagonist() {
+    std::string name;
+    std::cout << "Welcome to the Adventure Game (Sick title coming eventually)!\n";
+    std::cout << "Please enter your character's name: ";
+    std::getline(std::cin, name);
 
+    auto protagonist = std::make_unique<Protagonist>(name);
 
+    std::cout << "You are now " << name << ", a fledgling adventurer in the Empire of Conselle.\n";
+    return protagonist;
+}
+
+void heckOff() {
     std::vector<std::unique_ptr<Organism>> organisms;
     std::cout << std::endl;
     std::unique_ptr<Organism> mae = std::make_unique<Protagonist>("Mae");
@@ -1250,8 +1267,105 @@ int main() {
 
     Salam.listMembers();
     Epoch.listMembers();
+}
+
+void preSetUp() {
+    loadItems();
+}
+
+void displayInitialLore() {
+    printSlowly(
+            "--- The Story Begins ---\n"
+            "You find yourself in the glorious Empire of Conselle, one of the most powerful Empires Syurga has ever seen.\n"
+            "Not long ago, you were expelled from the capital city of Mysynfo, after a misunderstanding with the ruling nobility.\n"
+            "With limited options and the world seemingly against you, you head south to the city of Crende.\n"
+            "Crende, the adventuring hub of the world, calls to you. Here, adventurers rise and fall like the tides, "
+            "and stories of glory and despair turn into legends.\n"
+            "In Crende, you can carve out a new life, reclaim your honor, and perhaps even change the course of all of Sicutity, if you become a Hero.\n"
+            "But there is no way you will become a Hero. Not unless you carve out your own destiny."
+    );
+}
+
+void choiceJob() {
+    printSlowly(
+            "You look around the city hoping to find a job, but people laugh in your face.\n"
+            "'You're too weak,' they say to you, 'go get stronger, weakling. You can't even man a store.'\n"
+            "You get mad and try to swing at someone. You instantly black out.\n"
+            "You wake up a few hours later on the street, feeling saliva all over your body.\n"
+            "You feel bloodied up. Did a random citizen really take you out with one punch?\n"
+            "You realize nobody in this city is normal. You are in the land of wolves."
+    );
+}
+
+void choiceSolo() {
+    printSlowly(
+            "You walk through the city and towards the southern gate—the boundary separating the known world from the unknown.\n"
+            "As you pass through the gate, a strange energy flows through you, making you tremble with excitement.\n"
+            "You venture past the city's boundary into an endless expanse of lush forest. 'This is the land of monsters?' you ponder.\n"
+            "You march forward into the unknown. Suddenly, something hits your leg hard. You recognize it as a slime and prepare for battle.\n"
+            "Drawing your iron sword—a purchase that cost your family a year's salary—you steel yourself for the fight."
+    );
+}
+
+void choiceParty() {
+    printSlowly(
+            "You return to the adventurers' guild, still smarting from the earlier humiliation.\n"
+            "As you step in, the laughter resumes — apparently, adventurers have long memories.\n"
+            "'Oh, its the big shot! You B rank yet?' A roguish adventurer smirked. \n"
+            "Your cheeks burn with embarrassment, and you run out of the hall once more."
+    );
+}
+
+void chapter_one() {
+    printSlowly(
+            "--- Chapter One: The New Beginning ---\n"
+            "You make up your mind. You're going to become a great hero.\n"
+            "After a long journey, you finally arrive in Crende — thirsty, starving, but full of hope.\n"
+            "As you walk through the city, you marvel at its chaotic splendor. Yet, beneath it all, you feel an underlying sense of order, as if the city was controlled by invisible forces.\n"
+            "You know you need to join the adventurers' guild. Finding the grandest building in downtown, you register as an adventurer.\n"
+            "'You are an F10 rank adventurer, the lowest of the low,' says the clerk. You grit your teeth. 'I'll be A-rank soon enough, just you wait!'\n"
+            "The hall erupts in laughter. Face burning, you run out of the hall."
+    );
+    std::vector<char> availableChoices {'a', 'b', 'c'};
+    char choice;
+
+    while (true) {
+        std::cout << "You now stand in the middle of a busy city square, now a 'lowest of the low' tier adventurer. What do you do?\n";
+        if (std::find(availableChoices.begin(), availableChoices.end(), 'a') != availableChoices.end()) {
+            std::cout << "a) Find a job in the city\n";
+        }
+        if (std::find(availableChoices.begin(), availableChoices.end(), 'b') != availableChoices.end()) {
+            std::cout << "b) Immediately go adventuring solo\n";
+        }
+        if (std::find(availableChoices.begin(), availableChoices.end(), 'c') != availableChoices.end()) {
+            std::cout << "c) Try to find an adventuring party to join\n";
+        }
+        std::cout << "Choice: ";
+        std::cin >> choice;
+
+        if (choice == 'a') {
+            choiceJob();
+            availableChoices.erase(std::remove(availableChoices.begin(), availableChoices.end(), 'a'), availableChoices.end());
+        } else if (choice == 'b') {
+            choiceSolo();
+            break;
+        } else if (choice == 'c') {
+            choiceParty();
+            availableChoices.erase(std::remove(availableChoices.begin(), availableChoices.end(), 'c'), availableChoices.end());
+        } else {
+            std::cout << "Invalid choice. Please try again.\n";
+        }
+    }
+}
 
 
+
+
+int main() {
+    // preSetUp()
+    std::unique_ptr<Organism> player = createProtagonist();
+    displayInitialLore();
+    chapter_one();
 
 
 };
