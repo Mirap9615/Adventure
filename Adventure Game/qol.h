@@ -2,11 +2,29 @@
 // Created by M on 9/6/23.
 //
 
+
+
 #ifndef FRONTIER_GAME_QOL_H
 #define FRONTIER_GAME_QOL_H
 
-#endif //FRONTIER_GAME_QOL_H
+#include "universal.h"
 
+// 1. Class-Independent
+// Prints the given string with a set amount of delay for every letter
+void printSlowly(const std::string& text, int delay_ms = 15);
+
+// Uses the m-type power formula to calculate power
+float calculatePower(float hp, float mana, float stamina, float defense, float phys_atk, float mag_atk, float speed, float intelligence);
+
+
+float calculateMercifulDamage(float baseDamage, float opponentHealth);
+
+//std::string getItem(int id, std::map<int, std::string>& items_all) {
+//    return items_all[id];
+//}
+
+
+// 2. Classes
 class Attribute {
     friend std::ostream &operator<<(std::ostream &os, const Attribute &rhs) {
         os << "current " << rhs.value << ", max " << rhs.max_value << ", bonus " << rhs.bonus_flat << ", enhanced by "
@@ -57,3 +75,50 @@ private:
     float bonus_flat;
     float boost_percentage;
 };
+
+class Stats {
+    friend void changeAllTypes(Stats& stat) {
+        stat.hp.changeType(1);
+        stat.mana.changeType(2);
+        stat.stamina.changeType(3);
+        stat.defense.changeType(4);
+        stat.phys_atk.changeType(5);
+        stat.mag_atk.changeType(6);
+        stat.spd.changeType(7);
+        stat.intelligence.changeType(8);
+        stat.luck.changeType(9);
+        stat.cc.changeType(10);
+        stat.cd.changeType(11);
+
+    }
+public:
+    // Default constructor for stats
+    Stats();
+
+    // just calls calculatePower
+    float power() const;
+
+    Attribute hp; Attribute mana; Attribute stamina; Attribute defense; Attribute phys_atk;
+    Attribute mag_atk; Attribute spd; Attribute intelligence; Attribute luck; Attribute cc; Attribute cd;
+
+    // Accepts a vector of any nonzero size and changes the Attributes in order.
+    void board_change(const std::vector<float>& in_stats);
+
+    // Adds the given value to the specified stat.
+    bool changeSingleStat(int type, float value);
+
+    // Sets the given value to the specified stat, max is adjusted as well. The assumption is that
+    // the operator(s) is unlikely to set a stat to an abolute unless it is a permanent change. Everything
+    // gameplay related should be relative e.g. using the += mechanic.
+    bool setSingleStat(int type, float value);
+
+    // returns the effective value of the desired stat type.
+    float getSingleStatEffective(int type) const;
+
+    // returns the maximum value of the desired stat type.
+    float getSingleStatMax(int type) const;
+
+};
+// 3. Class-Dependent
+
+#endif //FRONTIER_GAME_QOL_H
