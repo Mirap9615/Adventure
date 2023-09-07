@@ -26,6 +26,10 @@ Item types:
 Magic types:   
 0 None 1 All 2 Fire, 3 Air, 4 Water, 5 Earth, 6 Light, 7 Dark, 8 Illusionary, 9 E&M    
 
+Slot Numbers:
+0 right hand 1 left hand 1 helmet 2 scarf 3 chestplate 4 rerebrace 5 leggings 6 right shoe 7 left shoe 8 right ring 9 left ring  
+
+
 Slots rules:  
 
 1. You can only equip a weapon on your hand slots
