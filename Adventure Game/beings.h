@@ -5,9 +5,6 @@
 
 #ifndef FRONTIER_GAME_BEINGS_H
 #define FRONTIER_GAME_BEINGS_H
-#include "qol.h"
-#include "universal.h"
-#include "objects.h"
 #include "inventory.h"
 
 // 0. Necessary
@@ -511,6 +508,7 @@ protected:
     Stats stats;
     std::string name;
     Inventory inventory;
+    Slots slots;
     int level;
     float xp;
     float balance;

@@ -49,6 +49,21 @@ enum MagicType {
     EM // Electromagnetic
 };
 
+enum SlotID {
+    RIGHT_HAND = 1,
+    LEFT_HAND,
+    HELMET,
+    SCARF,
+    CHESTPLATE,
+    REREBRACE,
+    LEGGINGS,
+    RIGHT_SHOE,
+    LEFT_SHOE,
+    RIGHT_RING_FINGER,
+    LEFT_RING_FINGER
+};
+
+
 // Prints the given string with a set amount of delay for every letter
 void printSlowly(const std::string& text, int delay_ms = 15);
 

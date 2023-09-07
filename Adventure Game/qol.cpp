@@ -1,13 +1,6 @@
 //
 // Created by M on 9/6/23.
 //
-#include <iostream>
-#include <utility>
-#include <vector>
-#include <cmath>
-#include <chrono>
-#include <algorithm>
-#include <thread> // for sleep
 #include "qol.h"
 
 // 1. Class-Independent

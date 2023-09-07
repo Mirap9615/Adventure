@@ -4,7 +4,6 @@
 
 #ifndef FRONTIER_GAME_WEAPONS_H
 #define FRONTIER_GAME_WEAPONS_H
-#include "universal.h"
 #include "objects.h"
 
 

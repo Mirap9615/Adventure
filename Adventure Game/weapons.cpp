@@ -42,6 +42,7 @@ void loadWeapons() {
 
         weapons_dict[id] = create_new_weapon(id, name, description, base_damage, base_durability, base_range, magical,
                                              magic_type, enchantability);
+        weapons_dict[id]->setType(1);
 
     }
 

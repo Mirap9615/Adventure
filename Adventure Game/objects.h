@@ -5,11 +5,7 @@
 
 #ifndef FRONTIER_GAME_OBJECTS_H
 #define FRONTIER_GAME_OBJECTS_H
-
-#include <string>
-#include <iostream>
 #include "qol.h"
-#include <map>
 
 
 class Object {
@@ -25,13 +21,22 @@ public:
         description = desired_message;
     }
 
-    int ID() {
+    int ID() const {
         return id;
     };
+
+    int getType() const {
+        return type;
+    }
+
+    void setType(int desiredType) {
+        type = desiredType;
+    }
 
 protected:
     std::string name;
     int id;
+    int type;
     std::string description;
     bool stackable;
 };
