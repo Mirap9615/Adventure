@@ -1,5 +1,8 @@
 # Adventure
 
+Multi file compile hierarchy
+universal.h -> qol.h -> objects.h -> weapons.h -> inventory.h -> beings.h -> monsters.h   
+
 Stats is a collection of Attributes  
 
 Object -> Item -> Weapon  
