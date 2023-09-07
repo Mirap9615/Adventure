@@ -5,6 +5,7 @@
 #include "inventory.h"
 #include "monster.h"
 #include "lore.h"
+#include "weapons.h"
 
 
 // Global Variables
@@ -13,7 +14,6 @@ bool dev_mode = false;
 // Pre declaration
 class Object;
 class Item;
-class Weapon;
 class Party;
 class Events;
 
@@ -27,19 +27,11 @@ private:
 
 void chapter_one(std::shared_ptr<Organism>& player);
 
-
-void printAllItems(const std::map<int, std::string>& itemList) {
-    std::cout << "There are currently " << itemList.size() << " registered items." << std::endl;
-    for (const auto& pair : itemList) {
-        std::cout << "id: " << pair.first << " is " << pair.second << std::endl;
-    }
-}
-
 void loadItems() {
     std::ifstream file("items.json");
     nlohmann::json json;
     file >> json;
-    std::map<int, std::string> items_all = ItemsAllHook();
+    std::map<int, std::string>& items_all = ItemsAllHook();
 
     for (const auto& item : json) {
         int id = item["id"];
@@ -362,6 +354,7 @@ void heckOff() {
 void preSetUp() {
     loadItems();
     loadMonsters();
+    loadWeapons();
 }
 
 void awardSlate(std::shared_ptr<Organism>& player, const Monster& defeated_monster) {
@@ -461,16 +454,21 @@ void menuChoice() {
 
 }
 
+
 void chapter_two(std::shared_ptr<Organism>& player) {
     returnToCity();
     menuChoice();
 }
 
-int main() {
+void normalTrack() {
     preSetUp();
     std::shared_ptr<Organism> player = createProtagonist();
     //displayInitialLore();
     chapter_one(player);
     chapter_two(player);
-
+}
+int main() {
+    //normalTrack();
+    preSetUp();
+    printAllWeapons();
 };

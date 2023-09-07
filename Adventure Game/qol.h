@@ -63,7 +63,7 @@ public:
     float max() const;
 
 private:
-    int type; // 0 means unclassified, 1 to 9 are stat types, 10 is damage, 11 is durability
+    int type; // 0 means unclassified, 1 to 9 are stat types, 10 is damage, 11 is durability, 12 is range
     float value;
     float max_value;
     float bonus_flat;

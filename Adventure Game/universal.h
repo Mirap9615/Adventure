@@ -36,11 +36,28 @@ enum PartyRole {
     RULER
 };
 
+enum MagicType {
+    None = 0,
+    All,
+    Fire,
+    Air,
+    Water,
+    Earth,
+    Light,
+    Dark,
+    Illusionary,
+    EM // Electromagnetic
+};
+
 // Prints the given string with a set amount of delay for every letter
 void printSlowly(const std::string& text, int delay_ms = 15);
 
 float clamp(float value, float min, float max);
 
 std::map<int, std::string>& ItemsAllHook();
+
+
+void printAllItems();
+
 
 #endif //FRONTIER_GAME_UNIVERSAL_H
