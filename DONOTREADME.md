@@ -28,3 +28,6 @@ First, there are individual items: dirt, stone, sand, gravel, glass, wood, coppe
 Then there are different tiers of gear: wood, iron, platinum, titanium, orichalcum, mythium, odel, accursed, mystium, great, divine; Each gear tier should have a sword, axe, pickaxe, shovel, spear, bow, helmet, chestplate, leggings, boots, shield, block, and arrow. For example, wood_pickaxe should be an item, and so should odel_chestplate. 
 
  fish, cow, chicken, sheep, goat, pig, ant, cockroach, shark, bird, fox, lion, tiger, cat, rabbit, serpent, worm, skeleton, zombie, ghost, sandman, 
+
+ Pending:  
+ a right hand slot, a left hand slot, a helmet slot, a scarf slot, a chestplate slot, a rerebrace slot, a leggings slot, a right shoe slot, a left shoe slot, a left ring finger slot, and a right ring finger slot. They would be able to hold items that would stay in that slot.
