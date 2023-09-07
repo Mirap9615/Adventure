@@ -18,8 +18,8 @@ Organisms (1 to 9): 1 Health	2 Mana	3 Stamina 4	Defense	5 Phys Atk	6 Mag Atk	7 S
 Weapons (10 to 12): 10 Damage 11 Durability 12 Range  
 
 Item types:  
-0 Material 1 Weapon 2 Tools 3 Consumables 4 Food 
-5 to 12 are slot specific:
+0 Material 1 Weapon 2 Tools 3 Consumables 4 Food  
+
 5 Hands 6 Helmet 7 Scarf 8 Chestplate 9 Rerebrace 10 Leggings 11 Shoes 12 Rings  
 
 
