@@ -14,7 +14,8 @@ Organisms (1 to 9): 1 Health	2 Mana	3 Stamina 4	Defense	5 Phys Atk	6 Mag Atk	7 S
 Weapons (10 to 12): 10 Damage 11 Durability 12 Range  
 
 
-magic_types: 0 None 1 All   
+Magic types:   
+0 None 1 All 2 Fire, 3 Air, 4 Water, 5 Earth, 6 Light, 7 Dark, 8 Illusionary, 9 E&M   
 
 
 All Items list:
