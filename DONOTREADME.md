@@ -27,7 +27,7 @@ Magic types:
 0 None 1 All 2 Fire, 3 Air, 4 Water, 5 Earth, 6 Light, 7 Dark, 8 Illusionary, 9 E&M    
 
 Slot Numbers:
-0 right hand 1 left hand 1 helmet 2 scarf 3 chestplate 4 rerebrace 5 leggings 6 right shoe 7 left shoe 8 right ring 9 left ring  
+0 right hand 1 left hand 2 helmet 3 scarf 4 chestplate 5 rerebrace 6 leggings 7 right shoe 8 left shoe 9 right ring 10 left ring  
 
 
 Slots rules:  
