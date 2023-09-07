@@ -1,131 +1,195 @@
 [
     {
         "id": 1,
-        "name": "dirt"
+        "name": "dirt",
+        "description": "A clump of soil.",
+        "type": "material"
     },
     {
         "id": 2,
-        "name": "stone"
+        "name": "stone",
+        "description": "A piece of hard rock.",
+        "type": "material"
     },
     {
         "id": 3,
-        "name": "sand"
+        "name": "sand",
+        "description": "Fine granules of mineral.",
+        "type": "material"
     },
     {
         "id": 4,
-        "name": "gravel"
+        "name": "gravel",
+        "description": "Small, loose rocks.",
+        "type": "material"
     },
     {
         "id": 5,
-        "name": "glass"
+        "name": "glass",
+        "description": "A transparent material made by melting sand.",
+        "type": "material"
     },
     {
         "id": 6,
-        "name": "wood"
+        "name": "wood",
+        "description": "Material from trees.",
+        "type": "material"
     },
     {
         "id": 7,
-        "name": "copper"
+        "name": "copper",
+        "description": "A reddish-brown metal.",
+        "type": "material"
     },
     {
         "id": 8,
-        "name": "tin"
+        "name": "tin",
+        "description": "A silvery-white metal.",
+        "type": "material"
     },
     {
         "id": 9,
-        "name": "silver"
+        "name": "silver",
+        "description": "A shiny, white precious metal.",
+        "type": "material"
     },
     {
         "id": 10,
-        "name": "lead"
+        "name": "lead",
+        "description": "A heavy, soft, malleable metal.",
+        "type": "material"
     },
     {
         "id": 11,
-        "name": "iron"
+        "name": "iron",
+        "description": "A strong, hard magnetic metal.",
+        "type": "material"
     },
     {
         "id": 12,
-        "name": "cobalt"
+        "name": "cobalt",
+        "description": "A hard, lustrous, silver-gray metal.",
+        "type": "material"
     },
     {
         "id": 13,
-        "name": "gold"
+        "name": "gold",
+        "description": "A yellow precious metal.",
+        "type": "material"
     },
     {
         "id": 14,
-        "name": "platinum"
+        "name": "platinum",
+        "description": "A dense, malleable, precious metal.",
+        "type": "material"
     },
     {
         "id": 15,
-        "name": "natural diamond"
+        "name": "natural diamond",
+        "description": "A precious stone made of carbon.",
+        "type": "material"
     },
     {
         "id": 16,
-        "name": "titanium"
+        "name": "titanium",
+        "description": "A light, strong, lustrous metal.",
+        "type": "material"
     },
     {
         "id": 17,
-        "name": "bucket of water"
+        "name": "bucket of water",
+        "description": "A bucket filled with water.",
+        "type": "tools"
     },
     {
         "id": 18,
-        "name": "bucket of lava"
+        "name": "bucket of lava",
+        "description": "A bucket filled with molten rock.",
+        "type": "tools"
     },
     {
         "id": 19,
-        "name": "bucket of honey"
+        "name": "bucket of honey",
+        "description": "A bucket filled with sweet nectar.",
+        "type": "tools"
     },
     {
         "id": 20,
-        "name": "apple"
+        "name": "apple",
+        "description": "A red or green fruit.",
+        "type": "food"
     },
     {
         "id": 21,
-        "name": "orange"
+        "name": "orange",
+        "description": "A citrus fruit.",
+        "type": "food"
     },
     {
         "id": 22,
-        "name": "grape"
+        "name": "grape",
+        "description": "A small, round, purple or green fruit.",
+        "type": "food"
     },
     {
         "id": 23,
-        "name": "berry"
+        "name": "berry",
+        "description": "A small, juicy fruit.",
+        "type": "food"
     },
     {
         "id": 24,
-        "name": "stone fruit"
+        "name": "stone fruit",
+        "description": "A fruit with a large, hard pit.",
+        "type": "food"
     },
     {
         "id": 25,
-        "name": "empty bucket"
+        "name": "empty bucket",
+        "description": "An empty metal container.",
+        "type": "tools"
     },
     {
         "id": 26,
-        "name": "wood_sword"
+        "name": "wood_sword",
+        "description": "A sword made of wood.",
+        "type": "weapon"
     },
     {
         "id": 27,
-        "name": "wood_axe"
+        "name": "wood_axe",
+        "description": "An axe made of wood.",
+        "type": "weapon"
     },
     {
         "id": 28,
-        "name": "wood_pickaxe"
+        "name": "wood_pickaxe",
+        "description": "A pickaxe made of wood.",
+        "type": "tools"
     },
     {
         "id": 29,
-        "name": "wood_shovel"
+        "name": "wood_shovel",
+        "description": "A shovel made of wood.",
+        "type": "tools"
     },
     {
         "id": 30,
-        "name": "wood_spear"
+        "name": "wood_spear",
+        "description": "A spear made of wood.",
+        "type": "weapon"
     },
     {
         "id": 31,
-        "name": "wood_bow"
+        "name": "wood_bow",
+        "description": "A bow made of wood.",
+        "type": "weapon"
     },
     {
         "id": 32,
-        "name": "wood_helmet"
+        "name": "wood_helmet",
+        "description": "A helmet made of wood.",
+        "type": "helmet"
     },
     {
         "id": 33,
