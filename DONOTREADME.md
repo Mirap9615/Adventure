@@ -18,10 +18,29 @@ Organisms (1 to 9): 1 Health	2 Mana	3 Stamina 4	Defense	5 Phys Atk	6 Mag Atk	7 S
 Weapons (10 to 12): 10 Damage 11 Durability 12 Range  
 
 Item types:  
-0: Material 1: Weapon  
+0 Material 1 Weapon 2 Tools 3 Consumables 4 Food 
+5 to 12 are slot specific:
+5 Hands 6 Helmet 7 Scarf 8 Chestplate 9 Rerebrace 10 Leggings 11 Shoes 12 Rings  
+
 
 Magic types:   
-0 None 1 All 2 Fire, 3 Air, 4 Water, 5 Earth, 6 Light, 7 Dark, 8 Illusionary, 9 E&M   
+0 None 1 All 2 Fire, 3 Air, 4 Water, 5 Earth, 6 Light, 7 Dark, 8 Illusionary, 9 E&M    
+
+Slots rules:  
+
+1. You can only equip a weapon on your hand slots
+2. You can only equip a ring on your ring slot(s)
+3.  You can only equip a material on your hand slots
+4. You cannot equip a consumable or food on any slot that is not your hands 
+5. You can only equip a helmet on your helmet slot, a chestplate on your chestplate slot, a legging on your leggings slot, a rerebrace on your rerebrace slot, a shoe on a shoe slot, and a scarf on a scarf slot, BUT you can also equip all armor types to your hands. 
+6. You can only equip tools on your hands
+7. You can only equip foods on your hands 
+8. If you do not specify which slot you want to equip something, it will automatically equip it to your right hand. If that is full, your left hand. If both is full, it will reject you. 
+
+the method getType will return that item's type:
+type number 0 is material, type number 1 is weapon, type number 2 is tools, type number 3 is consumables, type number 4 is food, type number 5 is right hand, 6 is left hand, 7 is helmet, 8 is scarf, 9 is chestplate, 10 is rerebrace, 11 is leggings, 12 is right shoe, 13 is left shoe, 14 is right hand ring, 15 is left hand ring 
+
+
 
 
 All Items list:
