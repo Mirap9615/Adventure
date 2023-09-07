@@ -9,10 +9,13 @@ Organism -> Magical -> Sicut -> Protagonist
 Inventory: inventoryFull(), addItems(int id, int amount, std::map<int, std::string>& items_all)
 
 Attribute types:
-Organisms (1 to 9): 1 Health	2 Mana	3 Stamina 4	Defense	5 Phys Atk	6 Mag Atk	7 Speed	8 Int 9 Power
-Weapons (10 to 12): 10 Damage 11 Durability 12 Range
+Organisms (1 to 9): 1 Health	2 Mana	3 Stamina 4	Defense	5 Phys Atk	6 Mag Atk	7 Speed	8 Int 9 Power  
 
-magic_types: 0 None 1 All 
+Weapons (10 to 12): 10 Damage 11 Durability 12 Range  
+
+
+magic_types: 0 None 1 All   
+
 
 All Items list:
 First, there are individual items: dirt, stone, sand, gravel, glass, wood, copper, tin, silver, lead, iron, cobalt, gold, platinum, natural diamond, titanium, bucket of water, bucket of lava, bucket of honey, apple, orange, grape, berry, stone fruit, empty bucket. 
