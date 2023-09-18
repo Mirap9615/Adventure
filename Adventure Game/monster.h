@@ -13,12 +13,11 @@ public:
             : Magical(given_name, in_stats), type(std::move(given_type)), habitat(std::move(given_habitat)) {
     }
 
-    // Getter for attributes
+    // Getters for the new attributes
     std::string getType() const {
         return type;
     }
 
-    // Getter for habitat type
     std::string getHabitat() const {
         return habitat;
     }

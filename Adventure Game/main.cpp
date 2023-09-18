@@ -292,8 +292,8 @@ public:
 
 std::unique_ptr<Organism> createProtagonist() {
     std::string name;
-    std::cout << "Welcome to the Adventure Game (Sick title coming eventually)!\n";
-    std::cout << "What would you like to be called?: ";
+    printSlowly("Welcome to the Adventure Game (Sick title coming eventually)!\n"
+                "What would you like to be called?: ");
     std::getline(std::cin, name);
 
     auto protagonist = std::make_unique<Protagonist>(name);
@@ -370,7 +370,7 @@ int choiceSolo(std::shared_ptr<Organism>& player) {
             "As you pass through the gate, you feel energy flowing through you, making you tremble with excitement.\n"
             "You venture past the city's boundary into an endless expanse of lush forest. 'This is the land of monsters?' you ponder.\n"
             "You march forward into the unknown. Suddenly, something hits your leg hard. You recognize it as a slime and prepare for battle.\n"
-            "Drawing your iron sword — a purchase that cost you the rest of your money - you prepare yourself for the fight."
+            "Drawing your iron sword — a purchase that emptied your wallet - you prepare yourself for battle."
     );
     // Prompt the player for a choice
     std::string choice;
@@ -387,10 +387,9 @@ int choiceSolo(std::shared_ptr<Organism>& player) {
     Monster first_slime = *monsters_all[1];
 
     // Perform the combat
-    player->turn_combat(first_slime, 0, true);
+    player->turn_combat(first_slime, 0);
 
     // Congratulate the player
-    awardSlate(player, *monsters_all[1]);
     printSlowly("Congratulations! You have the talents of a true adventurer.");
     printSlowly("\nReveling in the joy of killing monsters, you ventured deeper into the forest.");
 
@@ -398,13 +397,10 @@ int choiceSolo(std::shared_ptr<Organism>& player) {
 
     for (int i = 0; i < 3; ++i) {
         Monster another_slime = *monsters_all[1];
-        player->turn_combat(another_slime, 0, true);
-        awardSlate(player, *monsters_all[1]);
+        player->turn_combat(another_slime, 0);
     }
 
     printSlowly("\nBefore you knew it, you had killed another three slimes.");
-
-
 
     printSlowly(
             "The sun was setting. You quickly gather your things and return to the safety of the city."
@@ -422,7 +418,7 @@ void chapter_one(std::shared_ptr<Organism>& player) {
             std::cout << "a) Find a job in the city\n";
         }
         if (std::find(availableChoices.begin(), availableChoices.end(), 'b') != availableChoices.end()) {
-            std::cout << "b) Immediately go adventuring solo\n";
+            std::cout << "b) Go adventuring solo\n";
         }
         if (std::find(availableChoices.begin(), availableChoices.end(), 'c') != availableChoices.end()) {
             std::cout << "c) Try to find an adventuring party to join\n";
@@ -468,7 +464,6 @@ void normalTrack() {
     chapter_two(player);
 }
 int main() {
-    //normalTrack();
-    preSetUp();
-    printAllWeapons();
+    Settings& current_settings = Settings::getInstance(); // need the & since singleton classes can only have one instance, no copy constructor
+    normalTrack();
 };

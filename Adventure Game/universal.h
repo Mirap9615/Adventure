@@ -21,11 +21,30 @@
 #include <thread> // for sleep
 #include <sstream> // for string stream operations
 
+class Settings {
+public:
+    static Settings& getInstance() {
+        static Settings instance;  // Lazy-initialized and shared instance
+        return instance;
+    }
+
+    // delete the copy and assignment constructors
+    Settings(const Settings&) = delete;
+    void operator=(const Settings&) = delete;
+
+    bool detailed_combat_text;
+    int text_crawl_speed_letter_ms;
+
+    Settings();
+private:
+};
 
 enum AttributeType {
     HP = 1, MANA = 2, STAMINA = 3, DEFENSE = 4, PHYS_ATK = 5, MAG_ATK = 6, SPD = 7, INTELLIGENCE = 8, LUCK = 9,
     CRIT_CHANCE = 10,CRIT_DAMAGE = 11,
 };
+
+// Game settings
 
 
 enum PartyRole {
@@ -65,7 +84,7 @@ enum SlotID {
 
 
 // Prints the given string with a set amount of delay for every letter
-void printSlowly(const std::string& text, int delay_ms = 15);
+void printSlowly(const std::string& text, int delay_ms = Settings::getInstance().text_crawl_speed_letter_ms);
 
 float clamp(float value, float min, float max);
 

@@ -26,3 +26,7 @@ void printSlowly(const std::string& text, int delay_ms) {
     }
     std::cout << std::endl;
 }
+
+Settings::Settings() : detailed_combat_text(false), text_crawl_speed_letter_ms(15) {
+    //std::cout << "created once and only." << std::endl;
+}
