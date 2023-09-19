@@ -24,6 +24,14 @@ Item types:
 
 5 Hands 6 Helmet 7 Scarf 8 Chestplate 9 Rerebrace 10 Leggings 11 Shoes 12 Rings  
 
+id occupied until 62
+id types:
+1 to 16: material  
+17 to 19: tools
+20 to 24: food
+25 to 61: tools  
+62 to 
+
 
 Magic types:   
 0 None 1 All 2 Fire, 3 Air, 4 Water, 5 Earth, 6 Light, 7 Dark, 8 Illusionary, 9 E&M    
