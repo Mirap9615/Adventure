@@ -10,6 +10,8 @@ Object -> Item -> Weapon
 
 Organism -> Magical -> Sicut -> Protagonist  
 
+Sicut -> Vendor
+
 Inventory: inventoryFull(), addItems(int id, int amount, std::map<int, std::string>& items_all)
 
 Attribute types:
