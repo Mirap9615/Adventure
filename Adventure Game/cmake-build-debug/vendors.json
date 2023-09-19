@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "name": "The Fish's Tail Bartender",
+        "Hp": 340,
+        "Mp": 80,
+        "Stamina": 210,
+        "Defense": 45,
+        "Phys_Atk": 13,
+        "Mag_Atk": 6,
+        "Speed": 100,
+        "Intelligence": 115,
+        "description": "An intimidating-looking man.",
+        "friendship_changes": [],
+        "reputation_text": ["He looks at you coldly.", "He seems to be okay with your presence.", "He seems happier than usual...", "He's grinning from ear to ear."]
+    }
+]

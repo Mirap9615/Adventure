@@ -27,11 +27,13 @@ public:
     bool inventoryFull() const;
 
     // Id-based item adding
-    void addItems(int id, int amount, std::map<int, std::string>& items_all);
+    void addItems(int id, int amount, std::map<int, std::shared_ptr<Object>>& items_all);
 
-    void removeItems(int id, int amount, std::map<int, std::string>& items_all);
+    void removeItems(int id, int amount, std::map<int, std::shared_ptr<Object>>& items_all);
 
     void expandInventory(int slots);
+
+    std::string merchantStyle();
 
     // Assignment operator
     Inventory& operator=(const Inventory& other);
@@ -130,8 +132,6 @@ public:
 
         return *this;
     }
-
-
 };
 
 #endif //FRONTIER_GAME_INVENTORY_H

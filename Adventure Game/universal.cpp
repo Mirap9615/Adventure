@@ -4,19 +4,12 @@
 
 #include "universal.h"
 
-static std::map<int, std::string> items_all;
-std::map<int, std::string>& ItemsAllHook() {
-    return items_all;
+std::map<int, std::shared_ptr<Object>> all_items;
+std::map<int, std::shared_ptr<Object>>& ItemsAllHook() {
+    return all_items;
 }
 
 
-void printAllItems() {
-    std::map<int, std::string> itemList = ItemsAllHook();
-    std::cout << "There are currently " << itemList.size() << " registered items." << std::endl;
-    for (const auto& pair : itemList) {
-        std::cout << "id: " << pair.first << " is " << pair.second << std::endl;
-    }
-}
 
 void printSlowly(const std::string& text, int delay_ms) {
     for (char c : text) {

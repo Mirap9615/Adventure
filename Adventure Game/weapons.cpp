@@ -13,8 +13,8 @@ std::map<int, std::unique_ptr<Weapon>> weapons_dict;
 
 Weapon::Weapon(int given_id, const std::string& given_name, const std::string& given_description, float given_base_damage,
                float given_base_durability, float given_base_range, bool given_magical, int given_magic_type, int given_enchantability)
-: Item(), damage(10, given_base_damage), durability(11, given_base_durability), range(12, given_base_range) {
-    id = given_id; name = given_name; description = given_description; magical = given_magical; magic_type = given_magic_type; enchantability = given_enchantability;
+: Item(given_id, given_name), damage(10, given_base_damage), durability(11, given_base_durability), range(12, given_base_range) {
+    description = given_description; magical = given_magical; magic_type = given_magic_type; enchantability = given_enchantability;
 
 }
 

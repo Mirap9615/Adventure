@@ -21,6 +21,8 @@
 #include <thread> // for sleep
 #include <sstream> // for string stream operations
 
+class Object;
+
 class Settings {
 public:
     static Settings& getInstance() {
@@ -88,7 +90,7 @@ void printSlowly(const std::string& text, int delay_ms = Settings::getInstance()
 
 float clamp(float value, float min, float max);
 
-std::map<int, std::string>& ItemsAllHook();
+std::map<int, std::shared_ptr<Object>>& ItemsAllHook();
 
 
 void printAllItems();

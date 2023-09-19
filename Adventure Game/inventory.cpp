@@ -10,7 +10,8 @@ bool Inventory::inventoryFull() const {
     return (used_slots >= max_slots);
 }
 
-void Inventory::addItems(int id, int amount, std::map<int, std::string>& items_all) {
+void Inventory::addItems(int id, int amount, std::map<int, std::shared_ptr<Object>>& items_all) {
+/*
     // Variable to keep track of remaining items to add
     int remaining = amount;
 
@@ -36,8 +37,8 @@ void Inventory::addItems(int id, int amount, std::map<int, std::string>& items_a
     if (!inventoryFull()) {
         // Check if id is valid
         if (items_all.find(id) != items_all.end()) {
-            items[++used_slots] = std::make_pair(new Object(), remaining); // Create a new Object here
-            items[used_slots].first->changeID(id);
+            //items[++used_slots] = std::make_pair(new Object(), remaining); // Create a new Object here
+            //items[used_slots].first->changeID(id);
             std::cout << "Item " << items_all[id] << " x " << amount << " was added successfully!\n";
         } else {
             std::cout << "Invalid item ID. Couldn't add item.\n";
@@ -45,9 +46,11 @@ void Inventory::addItems(int id, int amount, std::map<int, std::string>& items_a
     } else {
         std::cout << "Inventory is full. Couldn't add remaining " << remaining << " items.\n";
     }
+    */
 }
 
-void Inventory::removeItems(int id, int amount, std::map<int, std::string>& items_all) {
+void Inventory::removeItems(int id, int amount, std::map<int, std::shared_ptr<Object>>& items_all) {
+    /*
     int remaining = amount;
 
     // Try to remove the item from existing stacks, starting from the first slot
@@ -78,11 +81,13 @@ void Inventory::removeItems(int id, int amount, std::map<int, std::string>& item
     if (remaining > 0) {
         std::cout << "Could not remove all items. " << remaining << " items remaining.\n";
     }
+     */
 }
 
 void Inventory::expandInventory(int slots) { max_slots += slots; }
 
 Inventory& Inventory::operator=(const Inventory& other) {
+    /*
     // 1. Check self assignment
     if (this == &other) {
         return *this;
@@ -104,10 +109,13 @@ Inventory& Inventory::operator=(const Inventory& other) {
         this->items[item.first] = {objCopy, item.second.second};
     }
 
+
+     */
     return *this;
 }
 
 bool Slots::equip_item(std::unique_ptr<Item> item, int desired_slot) {
+    /*
     int item_type = item->getType();
 
     // play the logic games
@@ -149,6 +157,11 @@ bool Slots::equip_item(std::unique_ptr<Item> item, int desired_slot) {
 
     // Equip the new item
     slots[desired_slot] = std::move(item);
-
+*/
     return true;
+}
+
+std::string Inventory::merchantStyle() {
+    items[0];
+    return "";
 }

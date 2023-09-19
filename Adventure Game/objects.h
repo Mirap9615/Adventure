@@ -11,7 +11,7 @@
 class Object {
 public:
     // Default constructor
-    explicit Object(std::string  given_name = "None");
+    Object(int id, std::string given_name);
 
     void changeID(int newID) {
         id = newID;
@@ -19,6 +19,10 @@ public:
 
     void editDescription(const std::string& desired_message) {
         description = desired_message;
+    }
+
+    std::string getName() {
+        return name;
     }
 
     int ID() const {
@@ -37,17 +41,20 @@ protected:
     std::string name;
     int id;
     int type;
+    int price;
     std::string description;
     bool stackable;
 };
 
 class Item : public Object  {
 public:
-    Item() : Object() {}
+    Item(int id, std::string given_name);
 
 private:
 
 };
+
+void printAllItems();
 
 
 

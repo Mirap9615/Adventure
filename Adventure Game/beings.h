@@ -388,8 +388,8 @@ public:
         std::stringstream ss;
         float gainedXP = calculateXPGain(opponentPower, selfPower);
         addXP(gainedXP);
-        ss << name << " gained " << gainedXP << " xp! ";
-        ss << "[Level " << level << ", " << round(xp) << "/" << xpRequiredForLevelUp() << " until next level ]\n";
+        ss << name << " gained " << round(gainedXP) << " xp! ";
+        ss << "[Level " << level << ", " << round(xpRequiredForLevelUp() - xp) << "/" << xpRequiredForLevelUp() << " until next level ]\n";
         return ss.str();
     }
 
@@ -487,6 +487,7 @@ protected:
     float xp;
     float balance;
     std::string details;
+    int id;
 };
 class Magical : public Organism {
 public:
@@ -569,19 +570,98 @@ protected:
     Attribute charm;
 };
 
+class ProtagonistObserver {
+public:
+    virtual void onProtagonistCreated(int player_id) = 0;
+};
+
 class Protagonist : public Sicut {
 public:
     explicit Protagonist(const std::string& given_name) : Sicut(given_name) {}
     Protagonist(const std::string& inputName, const std::vector<float>& in_stats) : Sicut(inputName) {
         stats.board_change(in_stats);
+        player_id = generatePlayerID();
+        notifyObservers();
     }
 
     void behavior() override {
         std::cout << "As the protagonist, " << name << " is capable of performing world-changing feats, perhaps of magic, and potentially while running. Probably would not roll, maybe not even in private." << std::endl;
     }
+
+    void notifyObservers() {
+        for (auto observer : observers) {
+            observer->onProtagonistCreated(player_id);
+            //std::cout << "Player " << player_id << " was created!";
+        }
+    }
+
+    static int generatePlayerID() {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(10000000, 99999999);  // 8 digits
+        return dis(gen);
+    }
+
+    static std::vector<ProtagonistObserver*> observers;
 private:
     std::vector<std::string> current_quests;
+    int player_id;
 
+};
+
+class Vendor : public Sicut, public ProtagonistObserver {
+    //Vendor>(id, name, description, friendship_text)
+    friend std::ostream& operator<<(std::ostream& os, Vendor& rhs) {
+        os << rhs.name << std::endl << rhs.getReputationText() << std::endl << rhs.showShop();
+        return os;
+    }
+public:
+    Vendor(int given_id, const std::string& name, const std::vector<float>& in_stats, const std::string& description,
+           std::vector<std::string>& friendship_text, std::vector<std::string>& reputation_text) : Sicut(name, in_stats),friendship_text(friendship_text), reputation_text(reputation_text) {
+        id = given_id;
+        details = description;
+    }
+
+    void onProtagonistCreated(int player_id) override {
+        // Initialize map entry for the new Protagonist
+        player_specific_social[player_id] = {0, 0, 3};  // friendship_xp, friendship_level, reputation
+    }
+
+    std::string showShop() {
+        return shopInventory.merchantStyle();
+    }
+
+    std::string getReputationText() {
+        return reputation_text[0];
+    }
+
+    std::string& getReputationText(int player_id) {
+        int reputation_score = player_specific_social[player_id][0];
+        if (reputation_score <= 3) {
+            return reputation_text[0];
+        } else if (reputation_score <= 7) {
+            return reputation_text[1];
+        } else if (reputation_score < 10) {
+            return reputation_text[2];
+        } else {
+            return reputation_text[3];
+        }
+    }
+
+    bool buyItem(int requested_item, Protagonist& Buyer) {
+        return true;
+    }
+
+    bool sellItem(int item_for_sale, Protagonist& Buyer) {
+        return false;
+    }
+
+private:
+    std::vector<std::string> friendship_text;
+    std::vector<std::string> reputation_text;
+    Inventory shopInventory;
+    // 3 ints: reputation, friendship_level, and friendship_xp
+    std::map<int, std::vector<int>> player_specific_social;
 };
 
 // 3. Class-Dependent

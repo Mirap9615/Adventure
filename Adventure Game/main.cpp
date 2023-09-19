@@ -18,6 +18,8 @@ class Party;
 class Events;
 
 std::map<int, std::unique_ptr<Monster>> monsters_all;
+std::map<int, std::shared_ptr<Vendor>> npcs;
+std::vector<ProtagonistObserver*> Protagonist::observers;
 
 class Events {
 public:
@@ -31,12 +33,12 @@ void loadItems() {
     std::ifstream file("items.json");
     nlohmann::json json;
     file >> json;
-    std::map<int, std::string>& items_all = ItemsAllHook();
+    std::map<int, std::shared_ptr<Object>>& items_all = ItemsAllHook();
 
     for (const auto& item : json) {
         int id = item["id"];
         std::string name = item["name"];
-        items_all[id] = name;
+        items_all[id] = std::make_shared<Object>( id, name);
     }
 }
 
@@ -60,6 +62,24 @@ void loadMonsters() {
         std::string type = entry["type"];
         std::string habitat = entry["habitat"];
         monsters_all[id] = createBasicMonster(name, stats, type, habitat);
+    }
+}
+
+void loadVendors() {
+    std::ifstream file("vendors.json");
+    nlohmann::json json;
+    file >> json;
+
+    for (const auto& entry : json) {
+        int id = entry["id"];
+        std::string name = entry["name"];
+        std::string description = entry["description"];
+        std::vector<std::string> friendship_text = entry["friendship_changes"];
+        std::vector<float> stats = {entry["Hp"], entry["Mp"], entry["Stamina"], entry["Defense"],
+                    entry["Phys_Atk"], entry["Mag_Atk"], entry["Intelligence"]};
+        std::vector<std::string> reputation_text = entry["reputation_text"];
+        npcs[id] = std::make_shared<Vendor>(id, name, stats,description, friendship_text, reputation_text);
+        Protagonist::observers.push_back(static_cast<ProtagonistObserver*>(npcs[id].get()));
     }
 }
 
@@ -355,6 +375,7 @@ void preSetUp() {
     loadItems();
     loadMonsters();
     loadWeapons();
+    loadVendors();
 }
 
 void awardSlate(std::shared_ptr<Organism>& player, const Monster& defeated_monster) {
@@ -456,14 +477,19 @@ void chapter_two(std::shared_ptr<Organism>& player) {
     menuChoice();
 }
 
-void normalTrack() {
-    preSetUp();
-    std::shared_ptr<Organism> player = createProtagonist();
+void normalTrack(std::shared_ptr<Organism> player) {
     //displayInitialLore();
     chapter_one(player);
     chapter_two(player);
 }
+
 int main() {
     Settings& current_settings = Settings::getInstance(); // need the & since singleton classes can only have one instance, no copy constructor
-    normalTrack();
+    for (int i = 0; i < npcs.size(); i++) {
+        std::cout << *npcs[i] << std::endl;
+    }
+    std::shared_ptr<Organism> player = createProtagonist();
+    preSetUp();
+    normalTrack(player);
+
 };
