@@ -483,13 +483,20 @@ void normalTrack(std::shared_ptr<Organism> player) {
     chapter_two(player);
 }
 
+void invTest(std::shared_ptr<Organism>& player) {
+    player->showInventory();
+    player->addItemsToInventory(1,2);
+    player->showInventory();
+    player->removeItemsFromInventory(1,7);
+    player->showInventory();
+    player->addItemsToInventory(1,1);
+    player->showInventory();
+}
+
 int main() {
     Settings& current_settings = Settings::getInstance(); // need the & since singleton classes can only have one instance, no copy constructor
-    for (int i = 0; i < npcs.size(); i++) {
-        std::cout << *npcs[i] << std::endl;
-    }
-    std::shared_ptr<Organism> player = createProtagonist();
     preSetUp();
+    std::shared_ptr<Organism> player = createProtagonist();
     normalTrack(player);
 
 };

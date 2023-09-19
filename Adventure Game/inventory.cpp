@@ -10,47 +10,91 @@ bool Inventory::inventoryFull() const {
     return (used_slots >= max_slots);
 }
 
-void Inventory::addItems(int id, int amount, std::map<int, std::shared_ptr<Object>>& items_all) {
-/*
+void Inventory::show() const {
+    std::string border(70, '=');
+    std::cout << border << std::endl;
+
+    for (int slot = 0; slot < max_slots; slot += 2) {
+        std::string leftItem, rightItem;
+
+        // Process left item
+        auto it = items.find(slot);
+        if (it != items.end() && it->second.first) {
+            std::string itemName = it->second.first->getName();
+            if (itemName.length() > 30) {
+                itemName = itemName.substr(0, 27) + "...";
+            }
+            leftItem = "[" + std::to_string(slot + 1) + "]: " + itemName + " {x" + std::to_string(it->second.second) + "}";
+        } else {
+            leftItem = "[" + std::to_string(slot + 1) + "]: empty";
+        }
+        leftItem = leftItem + std::string(35 - leftItem.length(), ' ');
+
+        // Process right item
+        it = items.find(slot + 1);
+        if (it != items.end() && it->second.first) {
+            std::string itemName = it->second.first->getName();
+            if (itemName.length() > 30) {
+                itemName = itemName.substr(0, 27) + "...";
+            }
+            rightItem = "[" + std::to_string(slot + 2) + "]: " + itemName + " {x" + std::to_string(it->second.second) + "}";
+        } else {
+            rightItem = "[" + std::to_string(slot + 2) + "]: empty";
+        }
+
+        std::cout << leftItem << "|   " << rightItem << std::endl;
+    }
+
+    std::cout << border << std::endl;
+}
+
+
+
+bool Inventory::addItemsInOrder(int id, int amount) {
+    /*
+     * Tries to add the given item to an existing stack with space, but if that does not exist,
+     * finds the first available slot to add the item into. If inventory full, we say that.
+     */
     // Variable to keep track of remaining items to add
     int remaining = amount;
 
-    // First, try to add the item to an existing stack
+    // Tries to find an existing stack with space
     for (auto& pair : items) {
-        if (pair.second.second == id) {
+        if (pair.second.first->ID() == id) {
             // Found a stack with the same item ID
             int canAdd = max_stack_size - pair.second.second;
 
             if (canAdd >= remaining) {
                 // The stack can accommodate all the new items
-                pair.second.first += remaining;
-                return;
+                pair.second.second += remaining;
+                return true;
             } else {
                 // Partially fill this stack and update remaining
-                pair.second.second += max_stack_size;
+                pair.second.second = max_stack_size;
                 remaining -= canAdd;
             }
         }
     }
 
-    // Check if a new slot is available for the remaining items.
+    // Check if a new slot is available for the remaining items
     if (!inventoryFull()) {
         // Check if id is valid
-        if (items_all.find(id) != items_all.end()) {
-            //items[++used_slots] = std::make_pair(new Object(), remaining); // Create a new Object here
-            //items[used_slots].first->changeID(id);
-            std::cout << "Item " << items_all[id] << " x " << amount << " was added successfully!\n";
+        if (all_items.find(id) != all_items.end()) {
+            // First uses used_slots and then ++s.
+            items[used_slots++] = std::make_pair(all_items[id], remaining);
+            std::cout << "Item " << all_items[id]->getName() << " x " << amount << " was added successfully!\n";
         } else {
             std::cout << "Invalid item ID. Couldn't add item.\n";
+            return false;
         }
     } else {
         std::cout << "Inventory is full. Couldn't add remaining " << remaining << " items.\n";
+        return false;
     }
-    */
+    return true;
 }
 
-void Inventory::removeItems(int id, int amount, std::map<int, std::shared_ptr<Object>>& items_all) {
-    /*
+bool Inventory::removeItemsInOrder(int id, int amount) {
     int remaining = amount;
 
     // Try to remove the item from existing stacks, starting from the first slot
@@ -60,34 +104,42 @@ void Inventory::removeItems(int id, int amount, std::map<int, std::shared_ptr<Ob
             if (it->second.second >= remaining) {
                 // The stack has enough items to fulfill the request
                 it->second.second -= remaining;
-                std::cout << "Item " << items_all[id] << " x " << remaining << " was removed successfully!\n";
-                return;
+                std::cout << "Item " << all_items[id]->getName() << " x " << remaining << " was removed successfully!\n";
+
+                // Check if stack is empty
+                if (it->second.second == 0) {
+                    it = items.erase(it);
+                    --used_slots;
+                }
+                return true;
             } else {
                 // Remove all items in this stack and update remaining
                 remaining -= it->second.second;
-                std::cout << "Item " << items_all[id] << " x " << it->second.second << " was removed successfully!\n";
+                std::cout << "Item " << all_items[id]->getName() << " x " << it->second.second << " was removed successfully!\n";
 
                 // Remove this slot from the map and update used_slots
-                delete it->second.first;  // Free the Object*
-                it = items.erase(it);  // Remove the slot
+                it = items.erase(it);  // Remove the slot and get the iterator to the next element
                 --used_slots;
                 continue;  // Skip the iterator increment
             }
+        } else {
+            ++it;  // Move to the next slot
         }
-        ++it;  // Move to the next slot
     }
 
     // If we reached here, there were not enough items to fulfill the request
     if (remaining > 0) {
         std::cout << "Could not remove all items. " << remaining << " items remaining.\n";
+        return false;
     }
-     */
+    return true;
 }
+
 
 void Inventory::expandInventory(int slots) { max_slots += slots; }
 
+// Assignment operator overload
 Inventory& Inventory::operator=(const Inventory& other) {
-    /*
     // 1. Check self assignment
     if (this == &other) {
         return *this;
@@ -97,20 +149,15 @@ Inventory& Inventory::operator=(const Inventory& other) {
     this->max_slots = other.max_slots;
     this->used_slots = other.used_slots;
 
-    // 3. Clear existing items
-    for (auto& item : this->items) {
-        delete item.second.first;  // Deallocate Object* pointers
-    }
+    // 3. Clear existing items (smart pointer so no need to use del)
     this->items.clear();
 
-    // 4. Copy items from 'other' object
+    // 4. Copy items from 'other' object one by one
     for (const auto& item : other.items) {
-        auto objCopy = new Object(*(item.second.first));  // Deep copy, assuming Object has a copy constructor
+        auto objCopy = std::make_shared<Object>(*(item.second.first));  // Deep copy
         this->items[item.first] = {objCopy, item.second.second};
     }
 
-
-     */
     return *this;
 }
 

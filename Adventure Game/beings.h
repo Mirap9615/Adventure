@@ -28,6 +28,11 @@ public:
         stats.board_change(in_stats);
     }
 
+    void showInventory() {
+        if (dead) return;
+        inventory.show();
+    }
+
     // assignment operator overload:
     Organism& operator=(const Organism& other) {
         if (this == &other) {
@@ -72,13 +77,13 @@ public:
     void addItemsToInventory(int id, int amount) {
         if (dead) return;
         std::cout << "[" << name << "]" << " ";
-        inventory.addItems(id, amount, ItemsAllHook());
+        inventory.addItemsInOrder(id, amount);
     }
 
     void removeItemsFromInventory(int id, int amount) {
         if (dead) return;
         std::cout << "[" << name << "]" << " ";
-        inventory.removeItems(id, amount, ItemsAllHook());
+        inventory.removeItemsInOrder(id, amount);
     }
 
     void expandInventory(int amount) {
@@ -86,10 +91,6 @@ public:
         inventory.expandInventory(amount);
     }
 
-    void printInventory() {
-        if (dead) return;
-        std::cout << inventory << std::endl;
-    };
 
     bool changeSingleStat(int type, float value) {
         // type: in the same order as always; value can be negative
@@ -601,6 +602,7 @@ public:
         std::uniform_int_distribution<> dis(10000000, 99999999);  // 8 digits
         return dis(gen);
     }
+
 
     static std::vector<ProtagonistObserver*> observers;
 private:

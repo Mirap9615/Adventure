@@ -26,14 +26,15 @@ public:
 
     bool inventoryFull() const;
 
-    // Id-based item adding
-    void addItems(int id, int amount, std::map<int, std::shared_ptr<Object>>& items_all);
+    bool addItemsInOrder(int id, int amount);
 
-    void removeItems(int id, int amount, std::map<int, std::shared_ptr<Object>>& items_all);
+    bool removeItemsInOrder(int id, int amount);
 
     void expandInventory(int slots);
 
     std::string merchantStyle();
+
+    void show() const;
 
     // Assignment operator
     Inventory& operator=(const Inventory& other);
@@ -42,7 +43,7 @@ private:
     int max_slots;
     int used_slots;
     const int max_stack_size = 128;
-    std::map<int, std::pair<Object*, int>> items;  // Slot # -> {Object*, Count}
+    std::map<int, std::pair<std::shared_ptr<Object>, int>> items;  // Slot # -> {Object*, Count}
 };
 
 class Slots {

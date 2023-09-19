@@ -4,7 +4,6 @@
 
 #include "objects.h"
 
-#include <utility>
 
 Object::Object(int id, std::string given_name) : name(std::move(given_name)), id(id) {
     stackable = true;

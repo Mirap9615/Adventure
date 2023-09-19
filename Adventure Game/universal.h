@@ -90,6 +90,7 @@ void printSlowly(const std::string& text, int delay_ms = Settings::getInstance()
 
 float clamp(float value, float min, float max);
 
+extern std::map<int, std::shared_ptr<Object>> all_items;
 std::map<int, std::shared_ptr<Object>>& ItemsAllHook();
 
 
