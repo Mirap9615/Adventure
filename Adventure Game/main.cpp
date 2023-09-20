@@ -45,7 +45,29 @@ void loadItems() {
     for (const auto& item : json) {
         int id = item["id"];
         std::string name = item["name"];
-        items_all[id] = std::make_shared<Object>( id, name);
+        std::string description = item["description"];
+        std::string mainType = item["maintype"];
+        std::string subType = item["subtype"];
+        if (mainType == "material") {
+            items_all[id] = std::make_shared<Object>(id, name, description, mainType, subType);
+        }
+        else if (mainType == "tool") {
+            if (subType == "pickaxe" || subType == "axe") {
+                float base_atk_dmg = item["base attack damage"];
+                float base_durability = item["base durability"];
+                float base_range = item["base range"];
+                bool magical = item["magical"];
+                int magic_type = item["magic type"];
+                int enchantability = item["enchantability"];
+                items_all[id] = std::make_shared<Item>(
+                        id, name, description, mainType, subType,base_atk_dmg,
+                        base_durability, base_range, magical, magic_type, enchantability);
+            }
+            if (subType == "bucket") {
+                items_all[id] = std::make_shared<Item>(id, name, description, mainType, subType);
+            }
+        }
+
     }
 }
 
@@ -381,7 +403,7 @@ void heckOff() {
 void preSetUp() {
     loadItems();
     loadMonsters();
-    loadWeapons();
+    //loadWeapons();
     loadVendors();
 }
 
@@ -492,11 +514,13 @@ void normalTrack(std::shared_ptr<Organism> player) {
 
 void invTest(std::shared_ptr<Organism>& player) {
     player->showInventory();
-    player->addItemsToInventory(1,2);
+    player->addItemsToInventory(1,600);
     player->showInventory();
     player->removeItemsFromInventory(1,7);
     player->showInventory();
     player->addItemsToInventory(1,1);
+    player->showInventory();
+    player->addItemsToInventory(27,3);
     player->showInventory();
 }
 
@@ -504,6 +528,7 @@ int main() {
     Settings& current_settings = Settings::getInstance(); // need the & since singleton classes can only have one instance, no copy constructor
     preSetUp();
     std::shared_ptr<Organism> player = createProtagonist();
+    invTest(player);
     normalTrack(player);
 
 };

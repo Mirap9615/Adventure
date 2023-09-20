@@ -9,7 +9,8 @@
 
 class Weapon : public Item {
 public:
-    Weapon(int id, const std::string& name, const std::string& description, float base_damage, float base_durability, float base_range, bool magical, int magic_type, int enchantability);
+    Weapon(int id, std::string given_name, std::string description, const std::string& mainType, const std::string& subType,
+           float base_atk_dmg, float base_durability, float base_range, bool magical, int given_magic_type, int enchantability);
 
     float reportDamage() {
         return damage.effectiveValue();
@@ -34,18 +35,14 @@ public:
     int getEnchantability() const;
 
 private:
-    Attribute damage;
-    Attribute durability;
-    Attribute range;
-    bool magical;
-    int magic_type;
-    int enchantability;
+
 };
 
-std::unique_ptr<Weapon> create_new_weapon(int id, const std::string& name, const std::string& description, float base_damage, float base_durability, float base_range, bool magical, int magic_type, int enchantability);
+std::unique_ptr<Weapon> create_new_weapon(int id, std::string given_name, std::string description, const std::string& mainType, const std::string& subType,
+                                          float base_atk_dmg, float base_durability, float base_range, bool magical, int given_magic_type, int enchantability);
 
 #endif //FRONTIER_GAME_WEAPONS_H
 
-void loadWeapons();
+//void loadWeapons();
 
-void printAllWeapons();
+//void printAllWeapons();
