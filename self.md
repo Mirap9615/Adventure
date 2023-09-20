@@ -13,6 +13,6 @@ Add specific files:
 git add path/to/file  
 
 Commit the change:  
-git commit -m   "Your commit message here"
+git commit -m   "Your commit message here"  
 Push the committed changes to Github:  
 git push origin main
