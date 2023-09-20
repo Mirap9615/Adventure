@@ -30,8 +30,7 @@ id types:
 1 to 16: material  
 17 to 19: tools
 20 to 24: food
-25 to 61: tools  
-62 to 
+25 to 27: tools  
 
 
 Magic types:   
