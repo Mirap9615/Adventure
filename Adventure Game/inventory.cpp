@@ -49,12 +49,15 @@ void Inventory::show() const {
 }
 
 
-
 bool Inventory::addItemsInOrder(int id, int amount) {
-    /*
-     * Tries to add the given item to an existing stack with space, but if that does not exist,
-     * finds the first available slot to add the item into. If inventory full, we say that.
-     */
+    if (id > 0 and all_items[id]->isStackable()) {
+        return addDefaultItemsInOrder(id, amount);
+    } else {
+        return addUniquesInOrder(id, amount);
+    }
+}
+
+bool Inventory::addStackableItemsInOrder(int id, int amount) {
     // Variable to keep track of remaining items to add
     int remaining = amount;
 
@@ -76,22 +79,66 @@ bool Inventory::addItemsInOrder(int id, int amount) {
         }
     }
 
-    // Check if a new slot is available for the remaining items
-    if (!inventoryFull()) {
-        // Check if id is valid
-        if (all_items.find(id) != all_items.end()) {
-            // First uses used_slots and then ++s.
-            items[used_slots++] = std::make_pair(all_items[id], remaining);
-            std::cout << "Item " << all_items[id]->getName() << " x " << amount << " was added successfully!\n";
-        } else {
-            std::cout << "Invalid item ID. Couldn't add item.\n";
-            return false;
+    while (!inventoryFull()) {
+        int curr_slot = used_slots;
+        if (remaining >= max_stack_size) {
+            remaining -= max_stack_size;
+            items[curr_slot] = std::make_pair(all_items[id], max_stack_size);
+            used_slots++;
+        } else if (remaining > 0) {
+            items[curr_slot] = std::make_pair(all_items[id], remaining);
+            remaining = 0;
+            used_slots++;
         }
-    } else {
-        std::cout << "Inventory is full. Couldn't add remaining " << remaining << " items.\n";
+        if (remaining == 0) {
+            return true;
+        }
+    }
+    std::cout << "Inventory is full. Couldn't add remaining " << remaining << " items.\n";
+    return false;
+}
+
+bool Inventory::addNonStackableItemsInOrder(int id, int amount) {
+    // Variable to keep track of remaining items to add
+    int remaining = amount;
+
+    // Since these items are non stackable, we only need to find new slots
+    while (!inventoryFull()) {
+        int curr_slot = used_slots;
+        if (remaining > 0) {
+            remaining -= 1;
+            items[curr_slot] = std::make_pair(all_items[id], 1);
+            used_slots++;
+        }
+        if (remaining == 0) {
+            return true;
+        }
+    }
+    std::cout << "Inventory is full. Couldn't add remaining " << remaining << " items.\n";
+    return false;
+}
+
+bool Inventory::addDefaultItemsInOrder(int id, int amount) {
+    /*
+     * Tries to add the given item to an existing stack with space, but if that does not exist,
+     * finds the first available slot to add the item into. If inventory full, we say that.
+     */
+
+    // Trivial case: unmatchable id
+    if (all_items.find(id) == all_items.end()) {
+        std::cout << "Unable to add item id = " << id << " , bad id\n";
         return false;
     }
-    return true;
+
+    if (all_items[id]->isStackable()) {
+        return addStackableItemsInOrder(id, amount);
+    } else {
+        return addNonStackableItemsInOrder(id, amount);
+    }
+}
+
+bool Inventory::addUniquesInOrder(int id, int amount) {
+    return false;
 }
 
 bool Inventory::removeItemsInOrder(int id, int amount) {

@@ -4,25 +4,23 @@
 
 #include "weapons.h"
 
-std::map<int, std::unique_ptr<Weapon>> weapons_dict;
+#include <utility>
 
 
 // Enum for magic types
 
-
-
-Weapon::Weapon(int given_id, const std::string& given_name, const std::string& given_description, float given_base_damage,
-               float given_base_durability, float given_base_range, bool given_magical, int given_magic_type, int given_enchantability)
-: Item(given_id, given_name), damage(10, given_base_damage), durability(11, given_base_durability), range(12, given_base_range) {
-    description = given_description; magical = given_magical; magic_type = given_magic_type; enchantability = given_enchantability;
-
+Weapon::Weapon(int id, std::string given_name, std::string description, const std::string& mainType, const std::string& subType,
+               float base_atk_dmg, float base_durability, float base_range, bool magical, int given_magic_type, int enchantability)
+: Item(id, std::move(given_name), description, mainType, subType, base_atk_dmg, base_durability, base_range, magical, given_magic_type, enchantability) {
 }
 
 
-std::unique_ptr<Weapon> create_new_weapon(int id, const std::string& name, const std::string& description, float base_damage, float base_durability, float base_range, bool magical, int magic_type, int enchantability) {
-    return std::make_unique<Weapon>(id, name, description, base_damage, base_durability, base_range, magical, magic_type, enchantability);
+std::unique_ptr<Weapon> create_new_weapon(int id, std::string given_name, std::string description, const std::string& mainType, const std::string& subType,
+                                          float base_atk_dmg, float base_durability, float base_range, bool magical, int given_magic_type, int enchantability) {
+    return std::make_unique<Weapon>(id, given_name, description, mainType, subType, base_atk_dmg, base_durability, base_range, magical, given_magic_type, enchantability);
 }
 
+/*
 void loadWeapons() {
     std::ifstream weaponFile("weapons.json");
     nlohmann::json weaponData;
@@ -47,6 +45,7 @@ void loadWeapons() {
     }
 
 }
+ */
 
 
 int Weapon::getID() const {
@@ -84,6 +83,7 @@ int Weapon::getEnchantability() const {
     return enchantability;
 }
 
+/*
 void printAllWeapons() {
     for (const auto& entry : weapons_dict) {
         const Weapon& weapon = *(entry.second);
@@ -108,3 +108,4 @@ void printAllWeapons() {
         std::cout << "------------------------\n";
     }
 }
+ */

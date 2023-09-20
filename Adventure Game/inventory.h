@@ -28,6 +28,14 @@ public:
 
     bool addItemsInOrder(int id, int amount);
 
+    bool addStackableItemsInOrder(int id, int amount);
+
+    bool addNonStackableItemsInOrder(int id, int amount);
+
+    bool addDefaultItemsInOrder(int id, int amount);
+
+    bool addUniquesInOrder(int id, int amount);
+
     bool removeItemsInOrder(int id, int amount);
 
     void expandInventory(int slots);
