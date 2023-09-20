@@ -206,54 +206,99 @@ Inventory& Inventory::operator=(const Inventory& other) {
     return *this;
 }
 
-bool Slots::equip_item(std::shared_ptr<Object> potential_item_from_inventory, int desired_slot) {
-    /*
-    int item_type = item->getType();
+bool Slots::equip_item(const std::shared_ptr<Object>& potential_item_from_inventory, int desired_slot) {
+    std::shared_ptr<Item> itemPtr = std::dynamic_pointer_cast<Item>(potential_item_from_inventory);
 
-    // play the logic games
-    if (!logic_games(item_type, desired_slot)) {
+    // trivial case
+    if (!itemPtr) {
+        // Failed cast, potential_item_from_inventory is not an item
         return false;
     }
 
-    if (slots[desired_slot]) {
-        // Handle existing item in the slot
+    // first step: least expensive: logic games
+    if (!logic_games(potential_item_from_inventory->getMainType(), potential_item_from_inventory->getSubType(),
+                     desired_slot)) {
+        // Failed logic games
+        return false;
+    }
 
-        // For hand, foot, and ring slots, check the other slot of the same type
+    // Slot is full, but if the desired slot is a hand, foot or ring slot, we check if the other slot of the same type is empty.
+    // If it is, then we equip the object to that slot instead.
+    if (slots[desired_slot]) {
+
         if (desired_slot == 0 || desired_slot == 1) { // Hand slots
             int other_hand = (desired_slot == 0) ? 1 : 0;
             if (!slots[other_hand]) {
-                slots[other_hand] = std::move(item);
+                slots[other_hand] = std::make_unique<Item>(*itemPtr);
                 return true;
             }
-        }
-        else if (desired_slot == 7 || desired_slot == 8) { // Foot slots
+        } else if (desired_slot == 7 || desired_slot == 8) { // Foot slots
             int other_foot = (desired_slot == 7) ? 8 : 7;
             if (!slots[other_foot]) {
-                slots[other_foot] = std::move(item);
+                slots[other_foot] = std::make_unique<Item>(*itemPtr);
                 return true;
             }
-        }
-        else if (desired_slot == 9 || desired_slot == 10) { // Ring slots
+        } else if (desired_slot == 9 || desired_slot == 10) { // Ring slots
             int other_ring = (desired_slot == 9) ? 10 : 9;
             if (!slots[other_ring]) {
-                slots[other_ring] = std::move(item);
+                slots[other_ring] = std::make_unique<Item>(*itemPtr);
                 return true;
             }
         }
-        else {
-            return false;
-        }
-
         return false;
+    } else {
+        slots[desired_slot] = std::make_unique<Item>(*itemPtr);
+        return true;
     }
-
-    // Equip the new item
-    slots[desired_slot] = std::move(item);
-*/
-    return true;
 }
+
 
 std::string Inventory::merchantStyle() {
     items[0];
     return "";
+}
+
+void Slots::show() const {
+    std::string border(70, '=');
+    std::cout << border << std::endl;
+
+    // Define slot names
+    std::vector<std::string> slotNames = {"Left Hand", "Right Hand", "Helmet", "Scarf", "Chestplate",
+                                          "Rerebrace", "Leggings", "Right Shoe", "Left Shoe", "Right Ring", "Left Ring"};
+
+    // Re-arrange the indices in the desired order
+    std::vector<int> slotOrder = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    for (size_t i = 0; i < slotOrder.size(); i += 2) {
+        std::string leftSlot, rightSlot;
+
+        // Process left slot
+        int leftIndex = slotOrder[i];
+        if (slots[leftIndex]) {
+            std::string itemName = slots[leftIndex]->getName();
+            if (itemName.length() > 30) {
+                itemName = itemName.substr(0, 27) + "...";
+            }
+            leftSlot = "[" + slotNames[leftIndex] + "]: " + itemName;
+        } else {
+            leftSlot = "[" + slotNames[leftIndex] + "]: None";
+        }
+        leftSlot = leftSlot + std::string(35 - leftSlot.length(), ' ');
+
+        // Process right slot
+        int rightIndex = slotOrder[i + 1];
+        if (slots[rightIndex]) {
+            std::string itemName = slots[rightIndex]->getName();
+            if (itemName.length() > 30) {
+                itemName = itemName.substr(0, 27) + "...";
+            }
+            rightSlot = "[" + slotNames[rightIndex] + "]: " + itemName;
+        } else {
+            rightSlot = "[" + slotNames[rightIndex] + "]: None";
+        }
+
+        std::cout << leftSlot << "|   " << rightSlot << std::endl;
+    }
+
+    std::cout << border << std::endl;
 }

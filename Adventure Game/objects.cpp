@@ -65,3 +65,62 @@ std::pair<int,int> Object::determineType(const std::string& given_mainType, cons
     }
     return std::make_pair(curr_mainType, curr_subType);
 }
+
+Object::Object(const Object& other)
+        : name(other.name),
+          id(other.id),
+          mainType(other.mainType),
+          subType(other.subType),
+          price(other.price),
+          description(other.description),
+          stackable(other.stackable)
+{}
+
+Object& Object::operator=(const Object& other) {
+    if (this == &other) {
+        return *this;  // Handle self-assignment
+    }
+
+    // Copy over each field from the other Object
+    name = other.name;
+    id = other.id;
+    mainType = other.mainType;
+    subType = other.subType;
+    price = other.price;
+    description = other.description;
+    stackable = other.stackable;
+
+    return *this;
+}
+
+
+Item::Item(const Item& other)
+        : Object(other),  // Call the copy constructor of the parent class
+          damage(other.damage),  // Call the copy constructor for Attribute classes
+          durability(other.durability),
+          range(other.range),
+          magical(other.magical),
+          magic_type(other.magic_type),
+          enchantability(other.enchantability)
+          // all other fields are copied automatically}
+          {}
+
+Item& Item::operator=(const Item& other) {
+    // 1. Check for self assignment
+    if (this == &other) {
+        return *this;
+    }
+
+    // 2. Call the copy-assignment operator of the parent class
+    Object::operator=(other);
+
+    // 3. Copy over the unique fields for Item
+    damage = other.damage;
+    durability = other.durability;
+    range = other.range;
+    magical = other.magical;
+    magic_type = other.magic_type;
+    enchantability = other.enchantability;
+
+    return *this;
+}

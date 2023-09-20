@@ -476,6 +476,10 @@ public:
         }
     }
 
+    void showSlots() const {
+        slots.show();
+    }
+
 protected:
     bool magic_able = false;
     bool dead;

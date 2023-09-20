@@ -12,11 +12,17 @@ public:
     // Default constructor
     Object(int id, std::string given_name, std::string description, const std::string& mainType, const std::string& subType);
 
+
+
+    static std::pair<int,int> determineType(const std::string& given_mainType, const std::string& given_subType);
+
+    Object(const Object& other);
+
+    Object& operator=(const Object& other);
+
     void changeID(int newID) {
         id = newID;
     }
-
-    static std::pair<int,int> determineType(const std::string& given_mainType, const std::string& given_subType);
 
     virtual bool isItem() {
         return false;
@@ -75,6 +81,12 @@ public:
     bool isItem() override {
         return true;
     }
+
+    // copy constructor
+    Item(const Item& other);
+
+    // assignment operator
+    Item& operator=(const Item& other);
 
 protected:
     Attribute damage;

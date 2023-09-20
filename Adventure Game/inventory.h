@@ -75,11 +75,44 @@ public:
         return *(slots[slot-1]); // SlotID starts from 1
     }
 
+    void show() const;
+
     static bool logic_games(int item_main_type, int item_sub_type, int desired_slot) {
-        return false;
+        switch (item_main_type) {
+            case 0:  // Material
+            case 1:
+            case 2:
+            case 3:
+                return (desired_slot == 0 || desired_slot == 1);  // Can only equip to hands
+
+            case 4:  // Armor
+                switch (item_sub_type) {
+                    case 0:  // Hand
+                        return (desired_slot == 0 || desired_slot == 1);  // Can equip to hands
+                    case 1:  // Helmet
+                        return (desired_slot == 2);  // Only helmet slot
+                    case 2:  // Scarf
+                        return (desired_slot == 3);  // Only scarf slot
+                    case 3:  // Chestplate
+                        return (desired_slot == 4);  // Only chestplate slot
+                    case 4:  // Rerebrace
+                        return (desired_slot == 5);  // Only rerebrace slot
+                    case 5:  // Leggings
+                        return (desired_slot == 6);  // Only leggings slot
+                    case 6:  // Shoes
+                        return (desired_slot == 7 || desired_slot == 8);  // Either shoe slot
+                    case 7:  // Ring
+                        return (desired_slot == 9 || desired_slot == 10);  // Either ring slot
+                    default:
+                        return false;
+                }
+
+            default:
+                return false;
+        }
     }
 
-    bool equip_item(std::shared_ptr<Object> potential_item_from_inventory, int desired_slot);
+    bool equip_item(const std::shared_ptr<Object>& potential_item_from_inventory, int desired_slot);
 
     // Copy constructor
     Slots(const Slots& other) {

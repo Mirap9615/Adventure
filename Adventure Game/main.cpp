@@ -531,6 +531,8 @@ void invTest(std::shared_ptr<Organism>& player) {
     player->showInventory();
     player->removeItemsFromInventory(27, 4);
     player->showInventory();
+    player->showSlots();
+
 }
 
 int main() {
