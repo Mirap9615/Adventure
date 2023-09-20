@@ -50,11 +50,11 @@ void Inventory::show() const {
 
 
 bool Inventory::addItemsInOrder(int id, int amount) {
-    if (id > 0 and all_items[id]->isStackable()) {
+    if (id > 0) {
         std::cout << all_items[id]->getName() << " is stackable.";
         return addDefaultItemsInOrder(id, amount);
     } else {
-        return addNonStackableItemsInOrder(id, amount);
+        return false;
     }
 }
 
@@ -206,7 +206,7 @@ Inventory& Inventory::operator=(const Inventory& other) {
     return *this;
 }
 
-bool Slots::equip_item(std::unique_ptr<Item> item, int desired_slot) {
+bool Slots::equip_item(std::shared_ptr<Object> potential_item_from_inventory, int desired_slot) {
     /*
     int item_type = item->getType();
 

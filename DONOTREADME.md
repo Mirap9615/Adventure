@@ -19,18 +19,27 @@ Organisms (1 to 9): 1 Health	2 Mana	3 Stamina 4	Defense	5 Phys Atk	6 Mag Atk	7 S
 
 Weapons (10 to 12): 10 Damage 11 Durability 12 Range  
 
-Item types:  
-0 Material 1 Weapon 2 Tools 3 Consumables 4 Food  
+Item maintypes:  
+0 material  1 weapon 2 tool 3 consumable 4 armor
 
-5 Hands 6 Helmet 7 Scarf 8 Chestplate 9 Rerebrace 10 Leggings 11 Shoes 12 Rings  
+Item subtypes (for main type 0):
+0 material
+
+Item subtypes (for main type 3):
+0 food
+1 potion 
+
+Item subtypes (for main type 4): 
+0 hand 1 helmet 2 scarf 3 chestplate 4 rerebrace 5 leggings 6 shoes 7 ring 
+
+OLD: 5 hand 6 helmet 7 Scarf 8 Chestplate 9 Rerebrace 10 Leggings 11 Shoes 12 Rings  
 
 id occupied until 62
 id types:
 1 to 16: material  
 17 to 19: tools
 20 to 24: food
-25 to 61: tools  
-62 to 
+25 to 27: tools
 
 
 Magic types:   

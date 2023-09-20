@@ -76,13 +76,13 @@ public:
 
     void addItemsToInventory(int id, int amount) {
         if (dead) return;
-        std::cout << "[" << name << "]" << " ";
+        std::cout << "[" << name << "]" << " \n";
         inventory.addItemsInOrder(id, amount);
     }
 
     void removeItemsFromInventory(int id, int amount) {
         if (dead) return;
-        std::cout << "[" << name << "]" << " ";
+        std::cout << "[" << name << "]" << " \n";
         inventory.removeItemsInOrder(id, amount);
     }
 

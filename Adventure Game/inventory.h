@@ -75,41 +75,11 @@ public:
         return *(slots[slot-1]); // SlotID starts from 1
     }
 
-    static bool logic_games(int item_type, int desired_slot) {
-        switch (desired_slot) {
-            case 0:  // Right hand
-            case 1:  // Left hand
-                return true;
-
-            case 2:  // Helmet
-                return item_type == 6;
-
-            case 3:  // Scarf
-                return item_type == 7;
-
-            case 4:  // Chestplate
-                return item_type == 8;
-
-            case 5:  // Rerebrace
-                return item_type == 9;
-
-            case 6:  // Leggings
-                return item_type == 10;
-
-            case 7:  // Right shoe
-            case 8:  // Left shoe
-                return item_type == 11;
-
-            case 9:  // Right ring
-            case 10: // Left ring
-                return item_type == 12;
-
-            default:
-                return false;
-        }
+    static bool logic_games(int item_main_type, int item_sub_type, int desired_slot) {
+        return false;
     }
 
-    bool equip_item(std::unique_ptr<Item> item, int desired_slot);
+    bool equip_item(std::shared_ptr<Object> potential_item_from_inventory, int desired_slot);
 
     // Copy constructor
     Slots(const Slots& other) {

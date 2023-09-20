@@ -16,6 +16,12 @@ public:
         id = newID;
     }
 
+    static std::pair<int,int> determineType(const std::string& given_mainType, const std::string& given_subType);
+
+    virtual bool isItem() {
+        return false;
+    }
+
     bool isStackable() const {
         return stackable;
     }
@@ -36,7 +42,7 @@ public:
         return mainType;
     }
 
-    std::string getSubType() const {
+    int getSubType() const {
         return subType;
     }
 
@@ -44,8 +50,8 @@ public:
         mainType = desiredType;
     }
 
-    void setSubType(const std::string& desiredType) {
-        subType = desiredType;
+    void setSubType(int desiredSubType) {
+        subType = desiredSubType;
     }
 
 
@@ -53,7 +59,7 @@ protected:
     std::string name;
     int id;
     int mainType;
-    std::string subType;
+    int subType;
     int price;
     std::string description;
     bool stackable;
@@ -65,6 +71,11 @@ public:
 
     Item(int id, std::string given_name, std::string description, const std::string& mainType, const std::string& subType,
          float base_atk_dmg, float base_durability, float base_range, bool magical, int magic_type, int enchantability);
+
+    bool isItem() override {
+        return true;
+    }
+
 protected:
     Attribute damage;
     Attribute durability;

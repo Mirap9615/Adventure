@@ -30,7 +30,18 @@ void printAllItems() {
     std::map<int, std::shared_ptr<Object>> itemList = ItemsAllHook();
     std::cout << "There are currently " << itemList.size() << " registered items." << std::endl;
     for (const auto& pair : itemList) {
-        std::cout << "id: " << pair.first << " is " << pair.second->getName() << std::endl;
+        std::cout << "id: " << pair.first << " is " << pair.second->getName() << ", ";
+        std::shared_ptr<Item> itemPtr = std::dynamic_pointer_cast<Item>(pair.second);
+
+        if (itemPtr) {
+            std::cout << "and it is an item." << std::endl;
+            // Successful cast, itemPtr is now a valid std::shared_ptr<Item>
+            // You can safely access Item-specific attributes and methods
+        } else {
+            std::cout << "and it is not an item." << std::endl;
+            // Failed cast, objPtr did not point to an Item
+            // itemPtr is nullptr
+        }
     }
 }
 
@@ -516,11 +527,9 @@ void invTest(std::shared_ptr<Organism>& player) {
     player->showInventory();
     player->addItemsToInventory(1,600);
     player->showInventory();
-    player->removeItemsFromInventory(1,7);
-    player->showInventory();
-    player->addItemsToInventory(1,1);
-    player->showInventory();
     player->addItemsToInventory(27,3);
+    player->showInventory();
+    player->removeItemsFromInventory(27, 4);
     player->showInventory();
 }
 
