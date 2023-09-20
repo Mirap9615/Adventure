@@ -17,7 +17,7 @@ Inventory: inventoryFull(), addItems(int id, int amount, std::map<int, std::stri
 Attribute types:
 Organisms (1 to 9): 1 Health	2 Mana	3 Stamina 4	Defense	5 Phys Atk	6 Mag Atk	7 Speed	8 Int 9 Power  
 
-Weapons (10 to 12): 10 Damage 11 Durability 12 Range  
+Weapons and tools (10 to 12): 10 Damage 11 Durability 12 Range  
 
 Main Item types:  
 0 Material 1 Weapon 2 Tools 3 Consumables
