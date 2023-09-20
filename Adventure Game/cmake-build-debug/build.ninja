@@ -36,7 +36,7 @@ include CMakeFiles/rules.ninja
 #############################################
 # Logical path to working directory; prefix for absolute paths.
 
-cmake_ninja_workdir = /Users/mira/Desktop/Coding/1.$ C++/Adventure$ Game/cmake-build-debug/
+cmake_ninja_workdir = /Users/mira/Desktop/Coding/C++/Adventure$ Game/cmake-build-debug/
 # =============================================================================
 # Object build statements for EXECUTABLE target Frontier_Game
 
@@ -46,7 +46,7 @@ cmake_ninja_workdir = /Users/mira/Desktop/Coding/1.$ C++/Adventure$ Game/cmake-b
 
 build cmake_object_order_depends_target_Frontier_Game: phony || CMakeFiles/Frontier_Game.dir
 
-build CMakeFiles/Frontier_Game.dir/main.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/1.$ C++/Adventure$ Game/main.cpp || cmake_object_order_depends_target_Frontier_Game
+build CMakeFiles/Frontier_Game.dir/main.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/C++/Adventure$ Game/main.cpp || cmake_object_order_depends_target_Frontier_Game
   DEP_FILE = CMakeFiles/Frontier_Game.dir/main.cpp.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -std=gnu++14
   INCLUDES = -I/opt/homebrew/Cellar/nlohmann-json/3.11.2/include
@@ -55,7 +55,7 @@ build CMakeFiles/Frontier_Game.dir/main.cpp.o: CXX_COMPILER__Frontier_Game_Debug
   TARGET_COMPILE_PDB = CMakeFiles/Frontier_Game.dir/
   TARGET_PDB = Frontier_Game.pdb
 
-build CMakeFiles/Frontier_Game.dir/beings.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/1.$ C++/Adventure$ Game/beings.cpp || cmake_object_order_depends_target_Frontier_Game
+build CMakeFiles/Frontier_Game.dir/beings.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/C++/Adventure$ Game/beings.cpp || cmake_object_order_depends_target_Frontier_Game
   DEP_FILE = CMakeFiles/Frontier_Game.dir/beings.cpp.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -std=gnu++14
   INCLUDES = -I/opt/homebrew/Cellar/nlohmann-json/3.11.2/include
@@ -64,7 +64,7 @@ build CMakeFiles/Frontier_Game.dir/beings.cpp.o: CXX_COMPILER__Frontier_Game_Deb
   TARGET_COMPILE_PDB = CMakeFiles/Frontier_Game.dir/
   TARGET_PDB = Frontier_Game.pdb
 
-build CMakeFiles/Frontier_Game.dir/qol.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/1.$ C++/Adventure$ Game/qol.cpp || cmake_object_order_depends_target_Frontier_Game
+build CMakeFiles/Frontier_Game.dir/qol.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/C++/Adventure$ Game/qol.cpp || cmake_object_order_depends_target_Frontier_Game
   DEP_FILE = CMakeFiles/Frontier_Game.dir/qol.cpp.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -std=gnu++14
   INCLUDES = -I/opt/homebrew/Cellar/nlohmann-json/3.11.2/include
@@ -73,7 +73,7 @@ build CMakeFiles/Frontier_Game.dir/qol.cpp.o: CXX_COMPILER__Frontier_Game_Debug 
   TARGET_COMPILE_PDB = CMakeFiles/Frontier_Game.dir/
   TARGET_PDB = Frontier_Game.pdb
 
-build CMakeFiles/Frontier_Game.dir/objects.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/1.$ C++/Adventure$ Game/objects.cpp || cmake_object_order_depends_target_Frontier_Game
+build CMakeFiles/Frontier_Game.dir/objects.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/C++/Adventure$ Game/objects.cpp || cmake_object_order_depends_target_Frontier_Game
   DEP_FILE = CMakeFiles/Frontier_Game.dir/objects.cpp.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -std=gnu++14
   INCLUDES = -I/opt/homebrew/Cellar/nlohmann-json/3.11.2/include
@@ -82,7 +82,7 @@ build CMakeFiles/Frontier_Game.dir/objects.cpp.o: CXX_COMPILER__Frontier_Game_De
   TARGET_COMPILE_PDB = CMakeFiles/Frontier_Game.dir/
   TARGET_PDB = Frontier_Game.pdb
 
-build CMakeFiles/Frontier_Game.dir/universal.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/1.$ C++/Adventure$ Game/universal.cpp || cmake_object_order_depends_target_Frontier_Game
+build CMakeFiles/Frontier_Game.dir/universal.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/C++/Adventure$ Game/universal.cpp || cmake_object_order_depends_target_Frontier_Game
   DEP_FILE = CMakeFiles/Frontier_Game.dir/universal.cpp.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -std=gnu++14
   INCLUDES = -I/opt/homebrew/Cellar/nlohmann-json/3.11.2/include
@@ -91,7 +91,7 @@ build CMakeFiles/Frontier_Game.dir/universal.cpp.o: CXX_COMPILER__Frontier_Game_
   TARGET_COMPILE_PDB = CMakeFiles/Frontier_Game.dir/
   TARGET_PDB = Frontier_Game.pdb
 
-build CMakeFiles/Frontier_Game.dir/inventory.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/1.$ C++/Adventure$ Game/inventory.cpp || cmake_object_order_depends_target_Frontier_Game
+build CMakeFiles/Frontier_Game.dir/inventory.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/C++/Adventure$ Game/inventory.cpp || cmake_object_order_depends_target_Frontier_Game
   DEP_FILE = CMakeFiles/Frontier_Game.dir/inventory.cpp.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -std=gnu++14
   INCLUDES = -I/opt/homebrew/Cellar/nlohmann-json/3.11.2/include
@@ -100,7 +100,7 @@ build CMakeFiles/Frontier_Game.dir/inventory.cpp.o: CXX_COMPILER__Frontier_Game_
   TARGET_COMPILE_PDB = CMakeFiles/Frontier_Game.dir/
   TARGET_PDB = Frontier_Game.pdb
 
-build CMakeFiles/Frontier_Game.dir/monster.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/1.$ C++/Adventure$ Game/monster.cpp || cmake_object_order_depends_target_Frontier_Game
+build CMakeFiles/Frontier_Game.dir/monster.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/C++/Adventure$ Game/monster.cpp || cmake_object_order_depends_target_Frontier_Game
   DEP_FILE = CMakeFiles/Frontier_Game.dir/monster.cpp.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -std=gnu++14
   INCLUDES = -I/opt/homebrew/Cellar/nlohmann-json/3.11.2/include
@@ -109,7 +109,7 @@ build CMakeFiles/Frontier_Game.dir/monster.cpp.o: CXX_COMPILER__Frontier_Game_De
   TARGET_COMPILE_PDB = CMakeFiles/Frontier_Game.dir/
   TARGET_PDB = Frontier_Game.pdb
 
-build CMakeFiles/Frontier_Game.dir/lore.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/1.$ C++/Adventure$ Game/lore.cpp || cmake_object_order_depends_target_Frontier_Game
+build CMakeFiles/Frontier_Game.dir/lore.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/C++/Adventure$ Game/lore.cpp || cmake_object_order_depends_target_Frontier_Game
   DEP_FILE = CMakeFiles/Frontier_Game.dir/lore.cpp.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -std=gnu++14
   INCLUDES = -I/opt/homebrew/Cellar/nlohmann-json/3.11.2/include
@@ -118,7 +118,7 @@ build CMakeFiles/Frontier_Game.dir/lore.cpp.o: CXX_COMPILER__Frontier_Game_Debug
   TARGET_COMPILE_PDB = CMakeFiles/Frontier_Game.dir/
   TARGET_PDB = Frontier_Game.pdb
 
-build CMakeFiles/Frontier_Game.dir/weapons.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/1.$ C++/Adventure$ Game/weapons.cpp || cmake_object_order_depends_target_Frontier_Game
+build CMakeFiles/Frontier_Game.dir/weapons.cpp.o: CXX_COMPILER__Frontier_Game_Debug /Users/mira/Desktop/Coding/C++/Adventure$ Game/weapons.cpp || cmake_object_order_depends_target_Frontier_Game
   DEP_FILE = CMakeFiles/Frontier_Game.dir/weapons.cpp.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX12.3.sdk -mmacosx-version-min=12.2 -std=gnu++14
   INCLUDES = -I/opt/homebrew/Cellar/nlohmann-json/3.11.2/include
@@ -149,7 +149,7 @@ build Frontier_Game: CXX_EXECUTABLE_LINKER__Frontier_Game_Debug CMakeFiles/Front
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd "/Users/mira/Desktop/Coding/1. C++/Adventure Game/cmake-build-debug" && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  COMMAND = cd "/Users/mira/Desktop/Coding/C++/Adventure Game/cmake-build-debug" && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -160,7 +160,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd "/Users/mira/Desktop/Coding/1. C++/Adventure Game/cmake-build-debug" && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S"/Users/mira/Desktop/Coding/1. C++/Adventure Game" -B"/Users/mira/Desktop/Coding/1. C++/Adventure Game/cmake-build-debug"
+  COMMAND = cd "/Users/mira/Desktop/Coding/C++/Adventure Game/cmake-build-debug" && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S"/Users/mira/Desktop/Coding/C++/Adventure Game" -B"/Users/mira/Desktop/Coding/C++/Adventure Game/cmake-build-debug"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -176,7 +176,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 
 #############################################
-# Folder: /Users/mira/Desktop/Coding/1. C++/Adventure Game/cmake-build-debug
+# Folder: /Users/mira/Desktop/Coding/C++/Adventure Game/cmake-build-debug
 
 build all: phony Frontier_Game
 

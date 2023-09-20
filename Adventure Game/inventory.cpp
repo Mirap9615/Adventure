@@ -49,10 +49,10 @@ void Inventory::show() const {
 }
 
 
-/*
 bool Inventory::addDefaultItemsInOrder(int id, int amount) {
-     * Tries to add the given item to an existing stack with space, but if that does not exist,
-     * finds the first available slot to add the item into. If inventory full, we say that.
+     /* Tries to add the given item to an existing stack with space, but if that does not exist,
+      finds the first available slot to add the item into. If inventory full, we say that.
+     */
     // Variable to keep track of remaining items to add
     int remaining = amount;
 
@@ -92,7 +92,7 @@ bool Inventory::addDefaultItemsInOrder(int id, int amount) {
     all_items[id]->isStackable();
     return true;
 }
-*/
+
 
 bool Inventory::removeItemsInOrder(int id, int amount) {
     int remaining = amount;
