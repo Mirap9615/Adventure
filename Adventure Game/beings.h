@@ -77,7 +77,7 @@ public:
     void addItemsToInventory(int id, int amount) {
         if (dead) return;
         std::cout << "[" << name << "]" << " ";
-        inventory.addDefaultItemsInOrder(id, amount);
+        inventory.addItemsInOrder(id, amount);
     }
 
     void removeItemsFromInventory(int id, int amount) {

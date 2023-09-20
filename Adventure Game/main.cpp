@@ -527,6 +527,7 @@ void invTest(std::shared_ptr<Organism>& player) {
 int main() {
     Settings& current_settings = Settings::getInstance(); // need the & since singleton classes can only have one instance, no copy constructor
     preSetUp();
+    printAllItems();
     std::shared_ptr<Organism> player = createProtagonist();
     invTest(player);
     normalTrack(player);

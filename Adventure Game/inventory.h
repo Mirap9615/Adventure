@@ -34,8 +34,6 @@ public:
 
     bool addDefaultItemsInOrder(int id, int amount);
 
-    bool addUniquesInOrder(int id, int amount);
-
     bool removeItemsInOrder(int id, int amount);
 
     void expandInventory(int slots);

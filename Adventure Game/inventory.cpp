@@ -51,9 +51,10 @@ void Inventory::show() const {
 
 bool Inventory::addItemsInOrder(int id, int amount) {
     if (id > 0 and all_items[id]->isStackable()) {
+        std::cout << all_items[id]->getName() << " is stackable.";
         return addDefaultItemsInOrder(id, amount);
     } else {
-        return addUniquesInOrder(id, amount);
+        return addNonStackableItemsInOrder(id, amount);
     }
 }
 
@@ -100,6 +101,7 @@ bool Inventory::addStackableItemsInOrder(int id, int amount) {
 
 bool Inventory::addNonStackableItemsInOrder(int id, int amount) {
     // Variable to keep track of remaining items to add
+    std::cout << " we are here." << std::endl;
     int remaining = amount;
 
     // Since these items are non stackable, we only need to find new slots
@@ -135,10 +137,6 @@ bool Inventory::addDefaultItemsInOrder(int id, int amount) {
     } else {
         return addNonStackableItemsInOrder(id, amount);
     }
-}
-
-bool Inventory::addUniquesInOrder(int id, int amount) {
-    return false;
 }
 
 bool Inventory::removeItemsInOrder(int id, int amount) {
