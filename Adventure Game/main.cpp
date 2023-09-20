@@ -7,7 +7,6 @@
 #include "lore.h"
 #include "weapons.h"
 
-
 // Global Variables
 bool dev_mode = false;
 
@@ -26,6 +25,14 @@ public:
 
 private:
 };
+
+void printAllItems() {
+    std::map<int, std::shared_ptr<Object>> itemList = ItemsAllHook();
+    std::cout << "There are currently " << itemList.size() << " registered items." << std::endl;
+    for (const auto& pair : itemList) {
+        std::cout << "id: " << pair.first << " is " << pair.second->getName() << std::endl;
+    }
+}
 
 void chapter_one(std::shared_ptr<Organism>& player);
 

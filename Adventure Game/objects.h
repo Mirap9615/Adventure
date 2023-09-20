@@ -54,9 +54,4 @@ private:
 
 };
 
-void printAllItems();
-
-
-
-
 #endif //FRONTIER_GAME_OBJECTS_H

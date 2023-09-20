@@ -1,0 +1,11 @@
+# ninja log v5
+1	1032	1695175891928150244	CMakeFiles/Frontier_Game.dir/lore.cpp.o	184738da4b055eda
+1	1147	1695175892034633221	CMakeFiles/Frontier_Game.dir/universal.cpp.o	2a5b5de679122330
+0	1154	1695175892044740639	CMakeFiles/Frontier_Game.dir/qol.cpp.o	8a453e7a3557a6cf
+1	1158	1695175892053588849	CMakeFiles/Frontier_Game.dir/objects.cpp.o	601cdb247fc4ce13
+1	1166	1695175892061864225	CMakeFiles/Frontier_Game.dir/monster.cpp.o	55464a3232b2efb9
+1	1237	1695175892131607487	CMakeFiles/Frontier_Game.dir/inventory.cpp.o	c3fcf8a3f3ede758
+0	1270	1695175892167687702	CMakeFiles/Frontier_Game.dir/beings.cpp.o	1b1f607d47768097
+0	1804	1695175892700606626	CMakeFiles/Frontier_Game.dir/main.cpp.o	a80641a34b10d17d
+1034	2171	1695175893068267522	CMakeFiles/Frontier_Game.dir/weapons.cpp.o	dba1daaec218d5b6
+2171	2225	1695175893125128282	Frontier_Game	6f19ba749b5fc706
