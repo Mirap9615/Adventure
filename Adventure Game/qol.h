@@ -21,8 +21,7 @@ float calculateMercifulDamage(float baseDamage, float opponentHealth);
 // 2. Classes
 class Attribute {
     friend std::ostream &operator<<(std::ostream &os, const Attribute &rhs) {
-        os << "current " << rhs.value << ", max " << rhs.max_value << ", bonus " << rhs.bonus_flat << ", enhanced by "
-           << rhs.boost_percentage << "%" << ", netting " << rhs.effectiveValue();
+        os << rhs.effectiveValue() << " / " << rhs.max_value;
         return os;
     }
 

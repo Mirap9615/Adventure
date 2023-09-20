@@ -350,7 +350,7 @@ public:
 
 };
 
-std::unique_ptr<Organism> createProtagonist() {
+std::unique_ptr<Protagonist> createProtagonist() {
     std::string name;
     printSlowly("Welcome to the Adventure Game (Sick title coming eventually)!\n"
                 "What would you like to be called?: ");
@@ -523,15 +523,11 @@ void normalTrack(std::shared_ptr<Organism> player) {
     chapter_two(player);
 }
 
-void invTest(std::shared_ptr<Organism>& player) {
-    player->showInventory();
+void invTest(std::shared_ptr<Protagonist>& player) {
     player->addItemsToInventory(1,600);
-    player->showInventory();
     player->addItemsToInventory(27,3);
-    player->showInventory();
     player->removeItemsFromInventory(27, 4);
-    player->showInventory();
-    player->showSlots();
+    player->showAll();
 
 }
 
@@ -539,8 +535,9 @@ int main() {
     Settings& current_settings = Settings::getInstance(); // need the & since singleton classes can only have one instance, no copy constructor
     preSetUp();
     printAllItems();
-    std::shared_ptr<Organism> player = createProtagonist();
+    std::shared_ptr<Protagonist> player = createProtagonist();
     invTest(player);
+    return 0;
     normalTrack(player);
 
 };

@@ -476,6 +476,11 @@ public:
         }
     }
 
+    int percentToNextXPLevel() {
+        float progress = (xp / xpRequiredForLevelUp()) * 100;
+        return round(progress);
+    }
+
     void showSlots() const {
         slots.show();
     }
@@ -607,6 +612,7 @@ public:
         return dis(gen);
     }
 
+    void showAll();
 
     static std::vector<ProtagonistObserver*> observers;
 private:
