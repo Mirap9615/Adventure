@@ -1,0 +1,3 @@
+/Users/mira/Desktop/1. Projects/Tic Tac Toe Game/cmake-build-debug/CMakeFiles/Tic_Tac_Toe_Game.dir
+/Users/mira/Desktop/1. Projects/Tic Tac Toe Game/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/mira/Desktop/1. Projects/Tic Tac Toe Game/cmake-build-debug/CMakeFiles/rebuild_cache.dir

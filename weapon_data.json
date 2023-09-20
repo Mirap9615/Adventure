@@ -1,0 +1,882 @@
+[
+    {
+        "id": 1,
+        "name": "wood_sword",
+        "description": "A sword made of wood.",
+        "base_attack_damage": 5,
+        "base_durability": 23,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 100
+    },
+    {
+        "id": 2,
+        "name": "wood_dagger",
+        "description": "A dagger made of wood.",
+        "base_attack_damage": 6,
+        "base_durability": 26,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 99
+    },
+    {
+        "id": 3,
+        "name": "wood_spear",
+        "description": "A spear made of wood.",
+        "base_attack_damage": 6,
+        "base_durability": 29,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 99
+    },
+    {
+        "id": 4,
+        "name": "wood_bow",
+        "description": "A bow made of wood.",
+        "base_attack_damage": 7,
+        "base_durability": 32,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 98
+    },
+    {
+        "id": 5,
+        "name": "wood_staff",
+        "description": "A staff made of wood.",
+        "base_attack_damage": 7,
+        "base_durability": 35,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 98
+    },
+    {
+        "id": 6,
+        "name": "wood_wand",
+        "description": "A wand made of wood.",
+        "base_attack_damage": 8,
+        "base_durability": 38,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 97
+    },
+    {
+        "id": 7,
+        "name": "wood_scepter",
+        "description": "A scepter made of wood.",
+        "base_attack_damage": 8,
+        "base_durability": 41,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 97
+    },
+    {
+        "id": 8,
+        "name": "wood_tome",
+        "description": "A tome made of wood.",
+        "base_attack_damage": 9,
+        "base_durability": 44,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 96
+    },
+    {
+        "id": 9,
+        "name": "iron_sword",
+        "description": "A sword made of iron.",
+        "base_attack_damage": 9,
+        "base_durability": 47,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 96
+    },
+    {
+        "id": 10,
+        "name": "iron_dagger",
+        "description": "A dagger made of iron.",
+        "base_attack_damage": 10,
+        "base_durability": 50,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 95
+    },
+    {
+        "id": 11,
+        "name": "iron_spear",
+        "description": "A spear made of iron.",
+        "base_attack_damage": 10,
+        "base_durability": 53,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 95
+    },
+    {
+        "id": 12,
+        "name": "iron_bow",
+        "description": "A bow made of iron.",
+        "base_attack_damage": 11,
+        "base_durability": 56,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 94
+    },
+    {
+        "id": 13,
+        "name": "iron_staff",
+        "description": "A staff made of iron.",
+        "base_attack_damage": 11,
+        "base_durability": 59,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 94
+    },
+    {
+        "id": 14,
+        "name": "iron_wand",
+        "description": "A wand made of iron.",
+        "base_attack_damage": 12,
+        "base_durability": 62,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 93
+    },
+    {
+        "id": 15,
+        "name": "iron_scepter",
+        "description": "A scepter made of iron.",
+        "base_attack_damage": 12,
+        "base_durability": 65,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 93
+    },
+    {
+        "id": 16,
+        "name": "iron_tome",
+        "description": "A tome made of iron.",
+        "base_attack_damage": 13,
+        "base_durability": 68,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 92
+    },
+    {
+        "id": 17,
+        "name": "platinum_sword",
+        "description": "A sword made of platinum.",
+        "base_attack_damage": 13,
+        "base_durability": 71,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 92
+    },
+    {
+        "id": 18,
+        "name": "platinum_dagger",
+        "description": "A dagger made of platinum.",
+        "base_attack_damage": 14,
+        "base_durability": 74,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 91
+    },
+    {
+        "id": 19,
+        "name": "platinum_spear",
+        "description": "A spear made of platinum.",
+        "base_attack_damage": 14,
+        "base_durability": 77,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 91
+    },
+    {
+        "id": 20,
+        "name": "platinum_bow",
+        "description": "A bow made of platinum.",
+        "base_attack_damage": 15,
+        "base_durability": 80,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 90
+    },
+    {
+        "id": 21,
+        "name": "platinum_staff",
+        "description": "A staff made of platinum.",
+        "base_attack_damage": 15,
+        "base_durability": 83,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 90
+    },
+    {
+        "id": 22,
+        "name": "platinum_wand",
+        "description": "A wand made of platinum.",
+        "base_attack_damage": 16,
+        "base_durability": 86,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 89
+    },
+    {
+        "id": 23,
+        "name": "platinum_scepter",
+        "description": "A scepter made of platinum.",
+        "base_attack_damage": 16,
+        "base_durability": 89,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 89
+    },
+    {
+        "id": 24,
+        "name": "platinum_tome",
+        "description": "A tome made of platinum.",
+        "base_attack_damage": 17,
+        "base_durability": 92,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 88
+    },
+    {
+        "id": 25,
+        "name": "titanium_sword",
+        "description": "A sword made of titanium.",
+        "base_attack_damage": 17,
+        "base_durability": 95,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 88
+    },
+    {
+        "id": 26,
+        "name": "titanium_dagger",
+        "description": "A dagger made of titanium.",
+        "base_attack_damage": 18,
+        "base_durability": 98,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 87
+    },
+    {
+        "id": 27,
+        "name": "titanium_spear",
+        "description": "A spear made of titanium.",
+        "base_attack_damage": 18,
+        "base_durability": 101,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 87
+    },
+    {
+        "id": 28,
+        "name": "titanium_bow",
+        "description": "A bow made of titanium.",
+        "base_attack_damage": 19,
+        "base_durability": 104,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 86
+    },
+    {
+        "id": 29,
+        "name": "titanium_staff",
+        "description": "A staff made of titanium.",
+        "base_attack_damage": 19,
+        "base_durability": 107,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 86
+    },
+    {
+        "id": 30,
+        "name": "titanium_wand",
+        "description": "A wand made of titanium.",
+        "base_attack_damage": 20,
+        "base_durability": 110,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 85
+    },
+    {
+        "id": 31,
+        "name": "titanium_scepter",
+        "description": "A scepter made of titanium.",
+        "base_attack_damage": 20,
+        "base_durability": 113,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 85
+    },
+    {
+        "id": 32,
+        "name": "titanium_tome",
+        "description": "A tome made of titanium.",
+        "base_attack_damage": 21,
+        "base_durability": 116,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 84
+    },
+    {
+        "id": 33,
+        "name": "orichalcum_sword",
+        "description": "A sword made of orichalcum.",
+        "base_attack_damage": 21,
+        "base_durability": 119,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 84
+    },
+    {
+        "id": 34,
+        "name": "orichalcum_dagger",
+        "description": "A dagger made of orichalcum.",
+        "base_attack_damage": 22,
+        "base_durability": 122,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 83
+    },
+    {
+        "id": 35,
+        "name": "orichalcum_spear",
+        "description": "A spear made of orichalcum.",
+        "base_attack_damage": 22,
+        "base_durability": 125,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 83
+    },
+    {
+        "id": 36,
+        "name": "orichalcum_bow",
+        "description": "A bow made of orichalcum.",
+        "base_attack_damage": 23,
+        "base_durability": 128,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 82
+    },
+    {
+        "id": 37,
+        "name": "orichalcum_staff",
+        "description": "A staff made of orichalcum.",
+        "base_attack_damage": 23,
+        "base_durability": 131,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 82
+    },
+    {
+        "id": 38,
+        "name": "orichalcum_wand",
+        "description": "A wand made of orichalcum.",
+        "base_attack_damage": 24,
+        "base_durability": 134,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 81
+    },
+    {
+        "id": 39,
+        "name": "orichalcum_scepter",
+        "description": "A scepter made of orichalcum.",
+        "base_attack_damage": 24,
+        "base_durability": 137,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 81
+    },
+    {
+        "id": 40,
+        "name": "orichalcum_tome",
+        "description": "A tome made of orichalcum.",
+        "base_attack_damage": 25,
+        "base_durability": 140,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 80
+    },
+    {
+        "id": 41,
+        "name": "mythium_sword",
+        "description": "A sword made of mythium.",
+        "base_attack_damage": 25,
+        "base_durability": 143,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 80
+    },
+    {
+        "id": 42,
+        "name": "mythium_dagger",
+        "description": "A dagger made of mythium.",
+        "base_attack_damage": 26,
+        "base_durability": 146,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 79
+    },
+    {
+        "id": 43,
+        "name": "mythium_spear",
+        "description": "A spear made of mythium.",
+        "base_attack_damage": 26,
+        "base_durability": 149,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 79
+    },
+    {
+        "id": 44,
+        "name": "mythium_bow",
+        "description": "A bow made of mythium.",
+        "base_attack_damage": 27,
+        "base_durability": 152,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 78
+    },
+    {
+        "id": 45,
+        "name": "mythium_staff",
+        "description": "A staff made of mythium.",
+        "base_attack_damage": 27,
+        "base_durability": 155,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 78
+    },
+    {
+        "id": 46,
+        "name": "mythium_wand",
+        "description": "A wand made of mythium.",
+        "base_attack_damage": 28,
+        "base_durability": 158,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 77
+    },
+    {
+        "id": 47,
+        "name": "mythium_scepter",
+        "description": "A scepter made of mythium.",
+        "base_attack_damage": 28,
+        "base_durability": 161,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 77
+    },
+    {
+        "id": 48,
+        "name": "mythium_tome",
+        "description": "A tome made of mythium.",
+        "base_attack_damage": 29,
+        "base_durability": 164,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 76
+    },
+    {
+        "id": 49,
+        "name": "odel_sword",
+        "description": "A sword made of odel.",
+        "base_attack_damage": 29,
+        "base_durability": 167,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 76
+    },
+    {
+        "id": 50,
+        "name": "odel_dagger",
+        "description": "A dagger made of odel.",
+        "base_attack_damage": 30,
+        "base_durability": 170,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 75
+    },
+    {
+        "id": 51,
+        "name": "odel_spear",
+        "description": "A spear made of odel.",
+        "base_attack_damage": 30,
+        "base_durability": 173,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 75
+    },
+    {
+        "id": 52,
+        "name": "odel_bow",
+        "description": "A bow made of odel.",
+        "base_attack_damage": 31,
+        "base_durability": 176,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 74
+    },
+    {
+        "id": 53,
+        "name": "odel_staff",
+        "description": "A staff made of odel.",
+        "base_attack_damage": 31,
+        "base_durability": 179,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 74
+    },
+    {
+        "id": 54,
+        "name": "odel_wand",
+        "description": "A wand made of odel.",
+        "base_attack_damage": 32,
+        "base_durability": 182,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 73
+    },
+    {
+        "id": 55,
+        "name": "odel_scepter",
+        "description": "A scepter made of odel.",
+        "base_attack_damage": 32,
+        "base_durability": 185,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 73
+    },
+    {
+        "id": 56,
+        "name": "odel_tome",
+        "description": "A tome made of odel.",
+        "base_attack_damage": 33,
+        "base_durability": 188,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 72
+    },
+    {
+        "id": 57,
+        "name": "accursed_sword",
+        "description": "A sword made of accursed.",
+        "base_attack_damage": 33,
+        "base_durability": 191,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 72
+    },
+    {
+        "id": 58,
+        "name": "accursed_dagger",
+        "description": "A dagger made of accursed.",
+        "base_attack_damage": 34,
+        "base_durability": 194,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 71
+    },
+    {
+        "id": 59,
+        "name": "accursed_spear",
+        "description": "A spear made of accursed.",
+        "base_attack_damage": 34,
+        "base_durability": 197,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 71
+    },
+    {
+        "id": 60,
+        "name": "accursed_bow",
+        "description": "A bow made of accursed.",
+        "base_attack_damage": 35,
+        "base_durability": 200,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 70
+    },
+    {
+        "id": 61,
+        "name": "accursed_staff",
+        "description": "A staff made of accursed.",
+        "base_attack_damage": 35,
+        "base_durability": 203,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 70
+    },
+    {
+        "id": 62,
+        "name": "accursed_wand",
+        "description": "A wand made of accursed.",
+        "base_attack_damage": 36,
+        "base_durability": 206,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 69
+    },
+    {
+        "id": 63,
+        "name": "accursed_scepter",
+        "description": "A scepter made of accursed.",
+        "base_attack_damage": 36,
+        "base_durability": 209,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 69
+    },
+    {
+        "id": 64,
+        "name": "accursed_tome",
+        "description": "A tome made of accursed.",
+        "base_attack_damage": 37,
+        "base_durability": 212,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 68
+    },
+    {
+        "id": 65,
+        "name": "mystium_sword",
+        "description": "A sword made of mystium.",
+        "base_attack_damage": 37,
+        "base_durability": 215,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 68
+    },
+    {
+        "id": 66,
+        "name": "mystium_dagger",
+        "description": "A dagger made of mystium.",
+        "base_attack_damage": 38,
+        "base_durability": 218,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 67
+    },
+    {
+        "id": 67,
+        "name": "mystium_spear",
+        "description": "A spear made of mystium.",
+        "base_attack_damage": 38,
+        "base_durability": 221,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 67
+    },
+    {
+        "id": 68,
+        "name": "mystium_bow",
+        "description": "A bow made of mystium.",
+        "base_attack_damage": 39,
+        "base_durability": 224,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 66
+    },
+    {
+        "id": 69,
+        "name": "mystium_staff",
+        "description": "A staff made of mystium.",
+        "base_attack_damage": 39,
+        "base_durability": 227,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 66
+    },
+    {
+        "id": 70,
+        "name": "mystium_wand",
+        "description": "A wand made of mystium.",
+        "base_attack_damage": 40,
+        "base_durability": 230,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 65
+    },
+    {
+        "id": 71,
+        "name": "mystium_scepter",
+        "description": "A scepter made of mystium.",
+        "base_attack_damage": 40,
+        "base_durability": 233,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 65
+    },
+    {
+        "id": 72,
+        "name": "mystium_tome",
+        "description": "A tome made of mystium.",
+        "base_attack_damage": 41,
+        "base_durability": 236,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 64
+    },
+    {
+        "id": 73,
+        "name": "great_sword",
+        "description": "A sword made of great.",
+        "base_attack_damage": 41,
+        "base_durability": 239,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 64
+    },
+    {
+        "id": 74,
+        "name": "great_dagger",
+        "description": "A dagger made of great.",
+        "base_attack_damage": 42,
+        "base_durability": 242,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 63
+    },
+    {
+        "id": 75,
+        "name": "great_spear",
+        "description": "A spear made of great.",
+        "base_attack_damage": 42,
+        "base_durability": 245,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 63
+    },
+    {
+        "id": 76,
+        "name": "great_bow",
+        "description": "A bow made of great.",
+        "base_attack_damage": 43,
+        "base_durability": 248,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 62
+    },
+    {
+        "id": 77,
+        "name": "great_staff",
+        "description": "A staff made of great.",
+        "base_attack_damage": 43,
+        "base_durability": 251,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 62
+    },
+    {
+        "id": 78,
+        "name": "great_wand",
+        "description": "A wand made of great.",
+        "base_attack_damage": 44,
+        "base_durability": 254,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 61
+    },
+    {
+        "id": 79,
+        "name": "great_scepter",
+        "description": "A scepter made of great.",
+        "base_attack_damage": 44,
+        "base_durability": 257,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 61
+    },
+    {
+        "id": 80,
+        "name": "great_tome",
+        "description": "A tome made of great.",
+        "base_attack_damage": 45,
+        "base_durability": 260,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 60
+    },
+    {
+        "id": 81,
+        "name": "divine_sword",
+        "description": "A sword made of divine.",
+        "base_attack_damage": 45,
+        "base_durability": 263,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 60
+    },
+    {
+        "id": 82,
+        "name": "divine_dagger",
+        "description": "A dagger made of divine.",
+        "base_attack_damage": 46,
+        "base_durability": 266,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 60
+    },
+    {
+        "id": 83,
+        "name": "divine_spear",
+        "description": "A spear made of divine.",
+        "base_attack_damage": 46,
+        "base_durability": 269,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 60
+    },
+    {
+        "id": 84,
+        "name": "divine_bow",
+        "description": "A bow made of divine.",
+        "base_attack_damage": 47,
+        "base_durability": 272,
+        "magical": false,
+        "magic_type": "none",
+        "enchantability": 60
+    },
+    {
+        "id": 85,
+        "name": "divine_staff",
+        "description": "A staff made of divine.",
+        "base_attack_damage": 47,
+        "base_durability": 275,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 60
+    },
+    {
+        "id": 86,
+        "name": "divine_wand",
+        "description": "A wand made of divine.",
+        "base_attack_damage": 48,
+        "base_durability": 278,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 60
+    },
+    {
+        "id": 87,
+        "name": "divine_scepter",
+        "description": "A scepter made of divine.",
+        "base_attack_damage": 48,
+        "base_durability": 281,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 60
+    },
+    {
+        "id": 88,
+        "name": "divine_tome",
+        "description": "A tome made of divine.",
+        "base_attack_damage": 49,
+        "base_durability": 284,
+        "magical": true,
+        "magic_type": "all",
+        "enchantability": 60
+    }
+]

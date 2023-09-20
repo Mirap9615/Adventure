@@ -1,0 +1,6 @@
+# ninja log v5
+325	355	1693075326799729297	Tic_Tac_Toe_Game	aa5b8a4b93dafedf
+1	325	1693075326767473953	CMakeFiles/Tic_Tac_Toe_Game.dir/main.cpp.o	85955ac7aa44f17a
+0	33	1693075491509129440	build.ninja	af1049d7e2f00d71
+0	327	1693075491841357319	CMakeFiles/Tic_Tac_Toe_Game.dir/calculator.cpp.o	b390646ad9a3aff1
+327	357	1693075491872879081	Tic_Tac_Toe_Game	b091eda1e5321999

@@ -1,0 +1,374 @@
+[
+    {
+        "id": 1,
+        "name": "dirt",
+        "description": "A clump of soil.",
+        "type": "material"
+    },
+    {
+        "id": 2,
+        "name": "stone",
+        "description": "A piece of hard rock.",
+        "type": "material"
+    },
+    {
+        "id": 3,
+        "name": "sand",
+        "description": "Fine granules of mineral.",
+        "type": "material"
+    },
+    {
+        "id": 4,
+        "name": "gravel",
+        "description": "Small, loose rocks.",
+        "type": "material"
+    },
+    {
+        "id": 5,
+        "name": "glass",
+        "description": "A transparent material made by melting sand.",
+        "type": "material"
+    },
+    {
+        "id": 6,
+        "name": "wood",
+        "description": "Material from trees.",
+        "type": "material"
+    },
+    {
+        "id": 7,
+        "name": "copper",
+        "description": "A reddish-brown metal.",
+        "type": "material"
+    },
+    {
+        "id": 8,
+        "name": "tin",
+        "description": "A silvery-white metal.",
+        "type": "material"
+    },
+    {
+        "id": 9,
+        "name": "silver",
+        "description": "A shiny, white precious metal.",
+        "type": "material"
+    },
+    {
+        "id": 10,
+        "name": "lead",
+        "description": "A heavy, soft, malleable metal.",
+        "type": "material"
+    },
+    {
+        "id": 11,
+        "name": "iron",
+        "description": "A strong, hard magnetic metal.",
+        "type": "material"
+    },
+    {
+        "id": 12,
+        "name": "cobalt",
+        "description": "A hard, lustrous, silver-gray metal.",
+        "type": "material"
+    },
+    {
+        "id": 13,
+        "name": "gold",
+        "description": "A yellow precious metal.",
+        "type": "material"
+    },
+    {
+        "id": 14,
+        "name": "platinum",
+        "description": "A dense, malleable, precious metal.",
+        "type": "material"
+    },
+    {
+        "id": 15,
+        "name": "natural diamond",
+        "description": "A precious stone made of carbon.",
+        "type": "material"
+    },
+    {
+        "id": 16,
+        "name": "titanium",
+        "description": "A light, strong, lustrous metal.",
+        "type": "material"
+    },
+    {
+        "id": 17,
+        "name": "bucket of water",
+        "description": "A bucket filled with water.",
+        "type": "tools"
+    },
+    {
+        "id": 18,
+        "name": "bucket of lava",
+        "description": "A bucket filled with molten rock.",
+        "type": "tools"
+    },
+    {
+        "id": 19,
+        "name": "bucket of honey",
+        "description": "A bucket filled with sweet nectar.",
+        "type": "tools"
+    },
+    {
+        "id": 20,
+        "name": "apple",
+        "description": "A red or green fruit.",
+        "type": "food"
+    },
+    {
+        "id": 21,
+        "name": "orange",
+        "description": "A citrus fruit.",
+        "type": "food"
+    },
+    {
+        "id": 22,
+        "name": "grape",
+        "description": "A small, round, purple or green fruit.",
+        "type": "food"
+    },
+    {
+        "id": 23,
+        "name": "berry",
+        "description": "A small, juicy fruit.",
+        "type": "food"
+    },
+    {
+        "id": 24,
+        "name": "stone fruit",
+        "description": "A fruit with a large, hard pit.",
+        "type": "food"
+    },
+    {
+        "id": 25,
+        "name": "empty bucket",
+        "description": "An empty metal container.",
+        "type": "tools"
+    },
+    {
+        "id": 26,
+        "name": "wood_pickaxe",
+        "description": "A pickaxe made of wood.",
+        "type": "tools"
+    },
+    {
+        "id": 27,
+        "name": "wood_axe",
+        "description": "A axe made of wood.",
+        "type": "tools"
+    },
+    {
+        "id": 28,
+        "name": "wood_shovel",
+        "description": "A shovel made of wood.",
+        "type": "tools"
+    },
+    {
+        "id": 29,
+        "name": "wood_hammer",
+        "description": "A hammer made of wood.",
+        "type": "tools"
+    },
+    {
+        "id": 30,
+        "name": "iron_pickaxe",
+        "description": "A pickaxe made of iron.",
+        "type": "tools"
+    },
+    {
+        "id": 31,
+        "name": "iron_axe",
+        "description": "A axe made of iron.",
+        "type": "tools"
+    },
+    {
+        "id": 32,
+        "name": "iron_shovel",
+        "description": "A shovel made of iron.",
+        "type": "tools"
+    },
+    {
+        "id": 33,
+        "name": "iron_hammer",
+        "description": "A hammer made of iron.",
+        "type": "tools"
+    },
+    {
+        "id": 34,
+        "name": "platinum_pickaxe",
+        "description": "A pickaxe made of platinum.",
+        "type": "tools"
+    },
+    {
+        "id": 35,
+        "name": "platinum_axe",
+        "description": "A axe made of platinum.",
+        "type": "tools"
+    },
+    {
+        "id": 36,
+        "name": "platinum_shovel",
+        "description": "A shovel made of platinum.",
+        "type": "tools"
+    },
+    {
+        "id": 37,
+        "name": "platinum_hammer",
+        "description": "A hammer made of platinum.",
+        "type": "tools"
+    },
+    {
+        "id": 38,
+        "name": "orichalcum_pickaxe",
+        "description": "A pickaxe made of orichalcum.",
+        "type": "tools"
+    },
+    {
+        "id": 39,
+        "name": "orichalcum_axe",
+        "description": "A axe made of orichalcum.",
+        "type": "tools"
+    },
+    {
+        "id": 40,
+        "name": "orichalcum_shovel",
+        "description": "A shovel made of orichalcum.",
+        "type": "tools"
+    },
+    {
+        "id": 41,
+        "name": "orichalcum_hammer",
+        "description": "A hammer made of orichalcum.",
+        "type": "tools"
+    },
+    {
+        "id": 42,
+        "name": "titanium_pickaxe",
+        "description": "A pickaxe made of titanium.",
+        "type": "tools"
+    },
+    {
+        "id": 43,
+        "name": "titanium_axe",
+        "description": "A axe made of titanium.",
+        "type": "tools"
+    },
+    {
+        "id": 44,
+        "name": "titanium_shovel",
+        "description": "A shovel made of titanium.",
+        "type": "tools"
+    },
+    {
+        "id": 45,
+        "name": "titanium_hammer",
+        "description": "A hammer made of titanium.",
+        "type": "tools"
+    },
+    {
+        "id": 46,
+        "name": "mythium_pickaxe",
+        "description": "A pickaxe made of mythium.",
+        "type": "tools"
+    },
+    {
+        "id": 47,
+        "name": "mythium_axe",
+        "description": "A axe made of mythium.",
+        "type": "tools"
+    },
+    {
+        "id": 48,
+        "name": "mythium_shovel",
+        "description": "A shovel made of mythium.",
+        "type": "tools"
+    },
+    {
+        "id": 49,
+        "name": "mythium_hammer",
+        "description": "A hammer made of mythium.",
+        "type": "tools"
+    },
+    {
+        "id": 50,
+        "name": "odel_pickaxe",
+        "description": "A pickaxe made of odel.",
+        "type": "tools"
+    },
+    {
+        "id": 51,
+        "name": "odel_axe",
+        "description": "A axe made of odel.",
+        "type": "tools"
+    },
+    {
+        "id": 52,
+        "name": "odel_shovel",
+        "description": "A shovel made of odel.",
+        "type": "tools"
+    },
+    {
+        "id": 53,
+        "name": "odel_hammer",
+        "description": "A hammer made of odel.",
+        "type": "tools"
+    },
+    {
+        "id": 54,
+        "name": "accursed_pickaxe",
+        "description": "A pickaxe made of accursed.",
+        "type": "tools"
+    },
+    {
+        "id": 55,
+        "name": "accursed_axe",
+        "description": "A axe made of accursed.",
+        "type": "tools"
+    },
+    {
+        "id": 56,
+        "name": "accursed_shovel",
+        "description": "A shovel made of accursed.",
+        "type": "tools"
+    },
+    {
+        "id": 57,
+        "name": "accursed_hammer",
+        "description": "A hammer made of accursed.",
+        "type": "tools"
+    },
+    {
+        "id": 58,
+        "name": "divine_pickaxe",
+        "description": "A pickaxe made of divine.",
+        "type": "tools"
+    },
+    {
+        "id": 59,
+        "name": "divine_axe",
+        "description": "A axe made of divine.",
+        "type": "tools"
+    },
+    {
+        "id": 60,
+        "name": "divine_shovel",
+        "description": "A shovel made of divine.",
+        "type": "tools"
+    },
+    {
+        "id": 61,
+        "name": "divine_hammer",
+        "description": "A hammer made of divine.",
+        "type": "tools"
+    },
+    {
+        "id": 62,
+        "name": "chicken noodle soup",
+        "description": "Homemade chicken noodle soup.",
+        "type": "food"
+    }
+]
