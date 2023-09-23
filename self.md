@@ -1,6 +1,6 @@
 Using git (default all commit):
 Initial setup: 
-cd /Users/<user>/Desktop/Coding/C++
+cd /Users/mira/Desktop/Coding/C++
 git init
 git remote add origin https://github.com/Mirap9615/Adventure.git
 

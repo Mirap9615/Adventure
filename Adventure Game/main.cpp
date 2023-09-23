@@ -528,16 +528,14 @@ void invTest(std::shared_ptr<Protagonist>& player) {
     player->addItemsToInventory(27,3);
     player->removeItemsFromInventory(27, 4);
     player->showAll();
-
 }
 
 int main() {
     Settings& current_settings = Settings::getInstance(); // need the & since singleton classes can only have one instance, no copy constructor
     preSetUp();
-    printAllItems();
+    //printAllItems();
     std::shared_ptr<Protagonist> player = createProtagonist();
     invTest(player);
-    return 0;
     normalTrack(player);
-
+    player->showAll();
 };
