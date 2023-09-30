@@ -16,3 +16,5 @@ Commit the change:
 git commit -m   "Your commit message here"
 Push the committed changes to Github:  
 git push origin main
+
+Be sure to remember to git pull when setting up a remote workplace
