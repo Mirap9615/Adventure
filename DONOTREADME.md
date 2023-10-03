@@ -80,3 +80,5 @@ Then there are different tiers of gear: wood, iron, platinum, titanium, orichalc
  right_hand(nullptr), left_hand(nullptr), helmet(nullptr), scarf(nullptr),
               chestplate(nullptr), rerebrace(nullptr), leggings(nullptr),
               right_shoe(nullptr), left_shoe(nullptr), left_ring_finger(nullptr), right_ring_finger(nullptr)
+
+Next thing to work on: selection-based (non-automated) combat system
