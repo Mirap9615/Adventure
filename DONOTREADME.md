@@ -75,7 +75,7 @@ Then there are different tiers of gear: wood, iron, platinum, titanium, orichalc
 
  Pending:  
  a right hand slot, a left hand slot, a helmet slot, a scarf slot, a chestplate slot, a rerebrace slot, a leggings slot, a right shoe slot, a left shoe slot, a left ring finger slot, and a right ring finger slot. They would be able to hold items that would stay in that slot.
-
+IMPLEMENTED 
 
  right_hand(nullptr), left_hand(nullptr), helmet(nullptr), scarf(nullptr),
               chestplate(nullptr), rerebrace(nullptr), leggings(nullptr),
