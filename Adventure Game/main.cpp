@@ -352,7 +352,7 @@ public:
 
 std::unique_ptr<Protagonist> createProtagonist() {
     std::string name;
-    printSlowly("Welcome to the Adventure Game (Sick title coming eventually)!\n"
+    printSlowly("Welcome to Splendorous Rainfall.\n"
                 "What would you like to be called?: ");
     std::getline(std::cin, name);
 
